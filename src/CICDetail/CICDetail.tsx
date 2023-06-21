@@ -1,10 +1,11 @@
 import React from 'react'
 
 import classes from './CICDetail.module.css'
-import { CICEntryDetail } from '../types'
+import { AdminCic } from '../apiClient/models'
+import { formatDateDistance } from '../utils/formatDate'
 
 interface CICDetailProps {
-  data: CICEntryDetail
+  data: AdminCic
 }
 
 export function CICDetail({ data }: CICDetailProps) {
@@ -26,7 +27,7 @@ export function CICDetail({ data }: CICDetailProps) {
       </DetailField>
       <DetailField>
         <DetailFieldTitle>Last connection status updated at</DetailFieldTitle>
-        <DetailFieldContent>{cicData.lastConnectionStatusUpdatedAt}</DetailFieldContent>
+        <DetailFieldContent>{formatDateDistance(cicData.lastConnectionStatusUpdatedAt)}</DetailFieldContent>
       </DetailField>
     </div>
   )

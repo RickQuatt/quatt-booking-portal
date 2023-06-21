@@ -49,9 +49,15 @@ models/*
 !models/HeatPumpTestLevel.ts
 !models/IdentificationStatus.ts
 !models/IdentificationTestStatus.ts
-
-#!models/index.ts
+!models/AdminGetCic200Response.ts
+!models/UpdateAdminCic.ts
+!models/AdminGetCic200ResponseFromJSON.ts
+!models/AdminGetCic200ResponseToJSON.ts
+!models/UpdateAdminCicFromJSON.ts
+!models/UpdateAdminCicToJSON.ts
 
 apis/*
 !apis/SupportDashboardApi.ts
+
+!models/index.ts
 #!apis/index.ts

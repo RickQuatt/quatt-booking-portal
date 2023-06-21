@@ -43,17 +43,12 @@ function App() {
               className={classes['main-logo']}
             /> */}
             <Route path="/">
-              <CICListRenderer
-                token={token}
-              />
+              <CICListRenderer />
             </Route>
             <Route path="/:cicId">
               {(params) => {
                 return (
-                  <CICDetailRenderer
-                    token={token}
-                    cicId={params.cicId}
-                  />
+                  <CICDetailRenderer cicId={params.cicId} />
                 )
               }}
             </Route>
@@ -65,22 +60,22 @@ function App() {
 }
 
 const CICDetailRenderer = ({
-  token,
   cicId
 }: {
-  token: string
   cicId: string
 }) => {
-  const { data, status, error } = useQuery(["cicDetail", cicId, token], () => {
-    return getCicDetail(token, cicId)
+  const apiClient = useApiClient()
+  const { data, status, error } = useQuery(["cicDetail", cicId], () => {
+    return apiClient.adminGetCic({ cicId })
   });
+
 
   // TODO: Render a spinner and handle errors - 2023-06-19
   if (status !== 'success') return null
 
   return (
     <div>
-      <CICDetail data={data} />
+      <CICDetail data={data.result} />
     </div>
   )
 }
@@ -98,13 +93,9 @@ const getCicDetail = async (token: string, cicId: string) => {
 }
 
 
-const CICListRenderer = ({
-  token
-}: {
-  token: string
-}) => {
+const CICListRenderer = () => {
   const apiClient = useApiClient()
-  const { data, status, error } = useQuery(["cicList", token], () => {
+  const { data, status, error } = useQuery("cicList", () => {
     return apiClient.adminListCics()
   });
 
@@ -116,18 +107,6 @@ const CICListRenderer = ({
       <CICList data={data.result} />
     </div>
   )
-}
-
-const getCiCList = async (token: string) => {
-  // const response = await fetch("https://mobile-api-develop.quatt.io/api/v1/admin/cic/list", {
-  const response = await fetch("http://localhost:3500/api/v1/admin/cic/list", {
-    headers: {
-      'Authorization': `Bearer ${token}`,
-    }
-  })
-
-  const jsonData = await response.json()
-  return jsonData.result
 }
 
 export default App

@@ -1,5 +1,6 @@
 apis/SupportDashboardApi.ts
 models/AdminCic.ts
+models/AdminGetCic200Response.ts
 models/AdminListCics200Response.ts
 models/BoilerType.ts
 models/CicAvailableWifiNetworksInner.ts
@@ -18,4 +19,6 @@ models/InstallerCicAllOfLastCommissioning.ts
 models/ResponseMeta.ts
 models/SilentMode.ts
 models/ThermostatType.ts
+models/UpdateAdminCic.ts
+models/index.ts
 runtime.ts

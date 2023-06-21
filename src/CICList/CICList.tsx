@@ -1,5 +1,4 @@
 import React from 'react'
-import { formatDistance } from 'date-fns'
 import { Link } from 'wouter'
 
 import classes from './CICList.module.css'
@@ -17,6 +16,7 @@ import {
    } from './Filters'
 import { ButtonLink } from '../Button/Button'
 import { AdminCic } from '../apiClient/models'
+import { formatDate, formatDateDistance } from '../utils/formatDate'
 
 export function CICList({
   data
@@ -124,21 +124,5 @@ function CICRow({ cicEntry }: { cicEntry: AdminCic }) {
         </Link>
       </Td>
     </tr>
-  )
-}
-
-// as in 2023-05-23 
-function formatDate(date: Date | null) {
-  if (!date) return null
-  return date.toISOString().split('T')[0]
-}
-
-// as in "x minutes ago"
-function formatDateDistance(date: Date | null) {
-  if (!date) return null
-  return formatDistance(
-    date,
-    new Date(),
-    { addSuffix: true }
   )
 }

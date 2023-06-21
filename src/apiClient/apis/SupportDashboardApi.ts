@@ -15,20 +15,66 @@
 
 import * as runtime from '../runtime';
 import type {
+  AdminGetCic200Response,
   AdminListCics200Response,
   ErrorResponse,
+  UpdateAdminCic,
 } from '../models';
 import {
+    AdminGetCic200ResponseFromJSON,
+    AdminGetCic200ResponseToJSON,
     AdminListCics200ResponseFromJSON,
     AdminListCics200ResponseToJSON,
     ErrorResponseFromJSON,
     ErrorResponseToJSON,
+    UpdateAdminCicFromJSON,
+    UpdateAdminCicToJSON,
 } from '../models';
+
+export interface AdminCicCicIdOptionsRequest {
+    cicId: string;
+}
+
+export interface AdminGetCicRequest {
+    cicId: string;
+}
+
+export interface AdminUpdateCicRequest {
+    cicId: string;
+    updateAdminCic?: UpdateAdminCic;
+}
 
 /**
  * 
  */
 export class SupportDashboardApi extends runtime.BaseAPI {
+
+    /**
+     */
+    async adminCicCicIdOptionsRaw(requestParameters: AdminCicCicIdOptionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters.cicId === null || requestParameters.cicId === undefined) {
+            throw new runtime.RequiredError('cicId','Required parameter requestParameters.cicId was null or undefined when calling adminCicCicIdOptions.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/admin/cic/{cicId}`.replace(`{${"cicId"}}`, encodeURIComponent(String(requestParameters.cicId))),
+            method: 'OPTIONS',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     */
+    async adminCicCicIdOptions(requestParameters: AdminCicCicIdOptionsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
+        await this.adminCicCicIdOptionsRaw(requestParameters, initOverrides);
+    }
 
     /**
      */
@@ -51,6 +97,44 @@ export class SupportDashboardApi extends runtime.BaseAPI {
      */
     async adminCicListOptions(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
         await this.adminCicListOptionsRaw(initOverrides);
+    }
+
+    /**
+     * Get cic
+     */
+    async adminGetCicRaw(requestParameters: AdminGetCicRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AdminGetCic200Response>> {
+        if (requestParameters.cicId === null || requestParameters.cicId === undefined) {
+            throw new runtime.RequiredError('cicId','Required parameter requestParameters.cicId was null or undefined when calling adminGetCic.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/admin/cic/{cicId}`.replace(`{${"cicId"}}`, encodeURIComponent(String(requestParameters.cicId))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => AdminGetCic200ResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Get cic
+     */
+    async adminGetCic(requestParameters: AdminGetCicRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AdminGetCic200Response> {
+        const response = await this.adminGetCicRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
     /**
@@ -84,6 +168,47 @@ export class SupportDashboardApi extends runtime.BaseAPI {
      */
     async adminListCics(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AdminListCics200Response> {
         const response = await this.adminListCicsRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Update cic
+     */
+    async adminUpdateCicRaw(requestParameters: AdminUpdateCicRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AdminGetCic200Response>> {
+        if (requestParameters.cicId === null || requestParameters.cicId === undefined) {
+            throw new runtime.RequiredError('cicId','Required parameter requestParameters.cicId was null or undefined when calling adminUpdateCic.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            const token = this.configuration.accessToken;
+            const tokenString = await token("bearerAuth", []);
+
+            if (tokenString) {
+                headerParameters["Authorization"] = `Bearer ${tokenString}`;
+            }
+        }
+        const response = await this.request({
+            path: `/admin/cic/{cicId}`.replace(`{${"cicId"}}`, encodeURIComponent(String(requestParameters.cicId))),
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: UpdateAdminCicToJSON(requestParameters.updateAdminCic),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => AdminGetCic200ResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Update cic
+     */
+    async adminUpdateCic(requestParameters: AdminUpdateCicRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AdminGetCic200Response> {
+        const response = await this.adminUpdateCicRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
