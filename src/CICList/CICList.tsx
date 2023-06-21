@@ -3,14 +3,25 @@ import { formatDistance } from 'date-fns'
 import { Link } from 'wouter'
 
 import classes from './CICList.module.css'
-import { CICFilters, CableConnectionStatusFilter, CreatedDateFilter, IDFilter, LTEConnectionStatusFilter, LastConnectionStatusFilter, OrderNumberFilter, SupervisoryControlModeFilter, WifiConnectionStatusFilter, filterCICList } from './Filters'
-import { CICEntry, CICEntryList } from '../types'
+import {
+   CICFilters,
+    CableConnectionStatusFilter,
+    CreatedDateFilter,
+    IDFilter,
+    LTEConnectionStatusFilter,
+    LastConnectionStatusFilter,
+    OrderNumberFilter,
+    SupervisoryControlModeFilter,
+    WifiConnectionStatusFilter,
+    filterCICList
+   } from './Filters'
 import { ButtonLink } from '../Button/Button'
+import { AdminCic } from '../apiClient/models'
 
 export function CICList({
   data
 }: {
-  data: CICEntryList
+  data: AdminCic[]
 }) {
   const [filters, setFilters] = React.useState<CICFilters>({})
   const hasFilters = React.useMemo(() => {
@@ -52,7 +63,7 @@ export function CICList({
           </tr>
         </thead>
         <tbody className={classes.tbody}>
-          {CICListData.map((cicEntry: CICEntry) => (
+          {CICListData.map((cicEntry) => (
             <CICRow
               key={cicEntry.id}
               cicEntry={cicEntry}
@@ -84,7 +95,7 @@ function getGrafanaLink(id: string) {
   return `https://g-736ff2fef7.grafana-workspace.eu-west-1.amazonaws.com/d/HaR0DRlVk/production?orgId=1&from=now-6h&to=now&var-CICuuid=${id}`
 }
 
-function CICRow({ cicEntry }: { cicEntry: CICEntry }) {
+function CICRow({ cicEntry }: { cicEntry: AdminCic }) {
   return (
     <tr className={classes.tr}>
       <Td>{cicEntry.id}</Td>
@@ -117,14 +128,16 @@ function CICRow({ cicEntry }: { cicEntry: CICEntry }) {
 }
 
 // as in 2023-05-23 
-function formatDate(isoString: string) {
-  return isoString.substring(0, 10)
+function formatDate(date: Date | null) {
+  if (!date) return null
+  return date.toISOString().split('T')[0]
 }
 
 // as in "x minutes ago"
-function formatDateDistance(isoString: string) {
+function formatDateDistance(date: Date | null) {
+  if (!date) return null
   return formatDistance(
-    new Date(isoString),
+    date,
     new Date(),
     { addSuffix: true }
   )

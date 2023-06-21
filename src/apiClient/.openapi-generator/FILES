@@ -1,5 +1,4 @@
 apis/SupportDashboardApi.ts
-index.ts
 models/AdminCic.ts
 models/AdminListCics200Response.ts
 models/BoilerType.ts

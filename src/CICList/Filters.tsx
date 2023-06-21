@@ -2,46 +2,41 @@ import React from 'react'
 import { debounce, omit } from 'lodash-es'
 
 import classes from './Filters.module.css'
-import { CICEntry, CICEntryList } from "../types";
+import { AdminCic } from '../apiClient/models';
 
 export type CICFilters = 
-  Partial<Omit<CICEntry, 'created_at'>>
+  Partial<Omit<AdminCic, 'created_at'>>
   & {
-    minCreatedAt?: CICEntry['createdAt']
-    maxCreatedAt?: CICEntry['createdAt']
-    minLastConnectionStatusUpdatedAt?: CICEntry['lastConnectionStatusUpdatedAt']
-    maxLastConnectionStatusUpdatedAt?: CICEntry['lastConnectionStatusUpdatedAt']
+    minCreatedAt?: AdminCic['createdAt']
+    maxCreatedAt?: AdminCic['createdAt']
+    minLastConnectionStatusUpdatedAt?: AdminCic['lastConnectionStatusUpdatedAt']
+    maxLastConnectionStatusUpdatedAt?: AdminCic['lastConnectionStatusUpdatedAt']
   }
 
 export function filterCICList(
-  list: CICEntryList,
+  list: AdminCic[],
   filters: CICFilters
 ) {
-  const minCreatedDate = filters.minCreatedAt ? new Date(filters.minCreatedAt) : null
-  const maxCreatedDate = filters.maxCreatedAt ? new Date(filters.maxCreatedAt) : null
-  const minLastConnectionStatusUpdatedAt = filters.minLastConnectionStatusUpdatedAt ? new Date(filters.minLastConnectionStatusUpdatedAt) : null
-  const maxLastConnectionStatusUpdatedAt = filters.maxLastConnectionStatusUpdatedAt ? new Date(filters.maxLastConnectionStatusUpdatedAt) : null
-
   return list.filter(cicEntry => {
     return Object.entries(filters).every(([filterKey, filterValue]) => {
-      if (minCreatedDate && filterKey === 'minCreatedAt') {
+      if (filters.minCreatedAt && filterKey === 'minCreatedAt') {
+        const createdDate = cicEntry.createdAt
+        return filters.minCreatedAt < createdDate
+      }
+      if (filters.maxCreatedAt && filterKey === 'maxCreatedAt') {
         const createdDate = new Date(cicEntry.createdAt)
-        return minCreatedDate < createdDate
+        return filters.maxCreatedAt > createdDate
       }
-      if (maxCreatedDate && filterKey === 'maxCreatedAt') {
-        const createdDate = new Date(cicEntry.createdAt)
-        return maxCreatedDate > createdDate
+      if (filters.minLastConnectionStatusUpdatedAt && filterKey === 'minLastConnectionStatusUpdatedAt') {
+        if (!cicEntry.lastConnectionStatusUpdatedAt) return false
+        return filters.minLastConnectionStatusUpdatedAt < cicEntry.lastConnectionStatusUpdatedAt
       }
-      if (minLastConnectionStatusUpdatedAt && filterKey === 'minLastConnectionStatusUpdatedAt') {
-        const lastConnectionStatusUpdatedAt = new Date(cicEntry.lastConnectionStatusUpdatedAt)
-        return minLastConnectionStatusUpdatedAt < lastConnectionStatusUpdatedAt
-      }
-      if (maxLastConnectionStatusUpdatedAt && filterKey === 'maxLastConnectionStatusUpdatedAt') {
-        const lastConnectionStatusUpdatedAt = new Date(cicEntry.lastConnectionStatusUpdatedAt)
-        return maxLastConnectionStatusUpdatedAt > lastConnectionStatusUpdatedAt
+      if (filters.maxLastConnectionStatusUpdatedAt && filterKey === 'maxLastConnectionStatusUpdatedAt') {
+        if (!cicEntry.lastConnectionStatusUpdatedAt) return false
+        return filters.maxLastConnectionStatusUpdatedAt > cicEntry.lastConnectionStatusUpdatedAt
       }
 
-      return filterValue === cicEntry[filterKey as keyof CICEntry]
+      return filterValue === cicEntry[filterKey as keyof AdminCic]
     })
   })
 }
@@ -52,7 +47,7 @@ export function TextFilter({
   inputType = 'text'
 }: {
   setFilters: SetFiltersFunc
-  filterKey: keyof CICEntry
+  filterKey: keyof AdminCic
   inputType?: React.HTMLInputTypeAttribute
 }) {
   const doSetFilters = React.useCallback((value: string) => {
@@ -99,7 +94,7 @@ export function CableConnectionStatusFilter({
   setFilters: SetFiltersFunc
 }) {
   const onChange = React.useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value as CICEntry['cableConnectionStatus']
+    const value = e.target.value as AdminCic['cableConnectionStatus']
     setFilters((filters: CICFilters) => {
       if (!value) {
         return omit(filters, 'cableConnectionStatus')
@@ -124,7 +119,7 @@ export function WifiConnectionStatusFilter({
   setFilters: SetFiltersFunc
 }) {
   const onChange = React.useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value as CICEntry['wifiConnectionStatus']
+    const value = e.target.value as AdminCic['wifiConnectionStatus']
     setFilters((filters: CICFilters) => {
       if (!value) {
         return omit(filters, 'wifiConnectionStatus')
@@ -150,7 +145,7 @@ export function LTEConnectionStatusFilter({
   setFilters: SetFiltersFunc
 }) {
   const onChange = React.useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value as CICEntry['lteConnectionStatus']
+    const value = e.target.value as AdminCic['lteConnectionStatus']
     setFilters((filters: CICFilters) => {
       if (!value) {
         return omit(filters, 'lteConnectionStatus')
@@ -192,22 +187,22 @@ const maxDate = new Date().toISOString().slice(0,-8)
 
 export function CreatedDateFilter({ setFilters }: FilterProps) {
   const onChangeMinDate = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value as CICEntry['createdAt']
+    const value = e.target.value
     setFilters((filters: CICFilters) => {
       if (!value) {
         return omit(filters, 'minCreatedAt')
       }
-      return { ...filters, minCreatedAt: value }
+      return { ...filters, minCreatedAt: new Date(value) }
     })
   }, [setFilters])
 
   const onChangeMaxDate = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value as CICEntry['createdAt']
+    const value = e.target.value
     setFilters((filters: CICFilters) => {
       if (!value) {
         return omit(filters, 'maxCreatedAt')
       }
-      return { ...filters, maxCreatedAt: value }
+      return { ...filters, maxCreatedAt: new Date(value) }
     })
   }, [setFilters])
 
@@ -229,22 +224,22 @@ export function CreatedDateFilter({ setFilters }: FilterProps) {
 
 export function LastConnectionStatusFilter({ setFilters }: FilterProps) {
   const onChangeMinDate = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value as CICEntry['lastConnectionStatusUpdatedAt']
+    const value = e.target.value
     setFilters((filters: CICFilters) => {
       if (!value) {
         return omit(filters, 'minLastConnectionStatusUpdatedAt')
       }
-      return { ...filters, minLastConnectionStatusUpdatedAt: value }
+      return { ...filters, minLastConnectionStatusUpdatedAt: new Date(value) }
     })
   }, [setFilters])
 
   const onChangeMaxDate = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value as CICEntry['createdAt']
+    const value = e.target.value
     setFilters((filters: CICFilters) => {
       if (!value) {
         return omit(filters, 'maxLastConnectionStatusUpdatedAt')
       }
-      return { ...filters, maxLastConnectionStatusUpdatedAt: value }
+      return { ...filters, maxLastConnectionStatusUpdatedAt: new Date(value) }
     })
   }, [setFilters])
 

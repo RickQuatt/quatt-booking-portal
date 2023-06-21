@@ -16,8 +16,10 @@
 
     /* Linting */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    // disabled this because openapi-generator generates code with a lot of unused imports
+    "noUnusedLocals": false,
+    // disabled this because openapi-generator generates code with a lot of unused parameters
+    "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src"],

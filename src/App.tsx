@@ -8,6 +8,7 @@ import classes from './App.module.css'
 import quattSvg from './assets/quatt.svg'
 import { CICList } from './CICList/CICList';
 import { CICDetail } from './CICDetail/CICDetail';
+import { ApiClientProvider, useApiClient } from './apiClient/context';
 
 const queryClient = new QueryClient()
 
@@ -34,33 +35,34 @@ function App() {
       {(!user || !token) ? (
         <button onClick={signinWithGoogle}>Authenticate</button>
       ) : (
-        <div>
-          {/* <img
-            src={quattSvg}
-            alt="Quatt"
-            className={classes['main-logo']}
-          /> */}
-          <Route path="/">
-            <CICListRenderer
-              token={token}
-            />
-          </Route>
-          <Route path="/:cicId">
-            {(params) => {
-              return (
-                <CICDetailRenderer
-                  token={token}
-                  cicId={params.cicId}
-                />
-              )
-            }}
-          </Route>
-        </div>
+        <ApiClientProvider token={token}>
+          <div>
+            {/* <img
+              src={quattSvg}
+              alt="Quatt"
+              className={classes['main-logo']}
+            /> */}
+            <Route path="/">
+              <CICListRenderer
+                token={token}
+              />
+            </Route>
+            <Route path="/:cicId">
+              {(params) => {
+                return (
+                  <CICDetailRenderer
+                    token={token}
+                    cicId={params.cicId}
+                  />
+                )
+              }}
+            </Route>
+          </div>
+        </ApiClientProvider>
       )}
     </QueryClientProvider>
   )
 }
-
 
 const CICDetailRenderer = ({
   token,
@@ -72,8 +74,6 @@ const CICDetailRenderer = ({
   const { data, status, error } = useQuery(["cicDetail", cicId, token], () => {
     return getCicDetail(token, cicId)
   });
-
-  console.log(data, status, error)
 
   // TODO: Render a spinner and handle errors - 2023-06-19
   if (status !== 'success') return null
@@ -103,18 +103,17 @@ const CICListRenderer = ({
 }: {
   token: string
 }) => {
+  const apiClient = useApiClient()
   const { data, status, error } = useQuery(["cicList", token], () => {
-    return getCiCList(token)
+    return apiClient.adminListCics()
   });
-
-  console.log(data, status, error)
 
   // TODO: Render a spinner and handle errors - 2023-06-19
   if (status !== 'success') return null
 
   return (
     <div>
-      <CICList data={data} />
+      <CICList data={data.result} />
     </div>
   )
 }

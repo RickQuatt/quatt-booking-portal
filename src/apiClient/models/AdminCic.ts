@@ -109,7 +109,7 @@ export interface AdminCic {
      * @type {Array<CicAvailableWifiNetworksInner>}
      * @memberof AdminCic
      */
-    availableWifiNetworks: Array<CicAvailableWifiNetworksInner>;
+    availableWifiNetworks: Array<CicAvailableWifiNetworksInner> | null;
     /**
      * 
      * @type {Date}
@@ -361,7 +361,7 @@ export interface AdminCic {
      * @type {Array<HeatDeliverySystem>}
      * @memberof AdminCic
      */
-    heatDeliverySystems: Array<HeatDeliverySystem>;
+    heatDeliverySystems: Array<HeatDeliverySystem> | null;
     /**
      * 
      * @type {ThermostatType}
@@ -549,7 +549,7 @@ export function AdminCicFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         'cableConnectionStatus': ConnectionStatusFromJSON(json['cableConnectionStatus']),
         'wifiConnectionStatus': ConnectionStatusFromJSON(json['wifiConnectionStatus']),
         'wifiSSID': json['wifiSSID'],
-        'availableWifiNetworks': ((json['availableWifiNetworks'] as Array<any>).map(CicAvailableWifiNetworksInnerFromJSON)),
+        'availableWifiNetworks': (json['availableWifiNetworks'] === null ? null : (json['availableWifiNetworks'] as Array<any>).map(CicAvailableWifiNetworksInnerFromJSON)),
         'lastScannedForWifi': (json['lastScannedForWifi'] === null ? null : new Date(json['lastScannedForWifi'])),
         'isScanningForWifi': json['isScanningForWifi'],
         'updateStatus': json['updateStatus'],
@@ -591,7 +591,7 @@ export function AdminCicFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         'wifiEnabled': json['wifiEnabled'],
         'addressStreet': json['addressStreet'],
         'addressNumber': !exists(json, 'addressNumber') ? undefined : json['addressNumber'],
-        'heatDeliverySystems': ((json['heatDeliverySystems'] as Array<any>).map(HeatDeliverySystemFromJSON)),
+        'heatDeliverySystems': (json['heatDeliverySystems'] === null ? null : (json['heatDeliverySystems'] as Array<any>).map(HeatDeliverySystemFromJSON)),
         'thermostatType': ThermostatTypeFromJSON(json['thermostatType']),
         'boilerType': BoilerTypeFromJSON(json['boilerType']),
         'quattBuild': json['quattBuild'],
@@ -621,7 +621,7 @@ export function AdminCicToJSON(value?: AdminCic | null): any {
         'cableConnectionStatus': ConnectionStatusToJSON(value.cableConnectionStatus),
         'wifiConnectionStatus': ConnectionStatusToJSON(value.wifiConnectionStatus),
         'wifiSSID': value.wifiSSID,
-        'availableWifiNetworks': ((value.availableWifiNetworks as Array<any>).map(CicAvailableWifiNetworksInnerToJSON)),
+        'availableWifiNetworks': (value.availableWifiNetworks === null ? null : (value.availableWifiNetworks as Array<any>).map(CicAvailableWifiNetworksInnerToJSON)),
         'lastScannedForWifi': (value.lastScannedForWifi === null ? null : value.lastScannedForWifi.toISOString()),
         'isScanningForWifi': value.isScanningForWifi,
         'updateStatus': value.updateStatus,
@@ -663,7 +663,7 @@ export function AdminCicToJSON(value?: AdminCic | null): any {
         'wifiEnabled': value.wifiEnabled,
         'addressStreet': value.addressStreet,
         'addressNumber': value.addressNumber,
-        'heatDeliverySystems': ((value.heatDeliverySystems as Array<any>).map(HeatDeliverySystemToJSON)),
+        'heatDeliverySystems': (value.heatDeliverySystems === null ? null : (value.heatDeliverySystems as Array<any>).map(HeatDeliverySystemToJSON)),
         'thermostatType': ThermostatTypeToJSON(value.thermostatType),
         'boilerType': BoilerTypeToJSON(value.boilerType),
         'quattBuild': value.quattBuild,
