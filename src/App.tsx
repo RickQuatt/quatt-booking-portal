@@ -36,23 +36,21 @@ function App() {
         <button onClick={signinWithGoogle}>Authenticate</button>
       ) : (
         <ApiClientProvider token={token}>
-          <div>
-            {/* <img
-              src={quattSvg}
-              alt="Quatt"
-              className={classes['main-logo']}
-            /> */}
-            <Route path="/">
-              <CICListRenderer />
-            </Route>
-            <Route path="/:cicId">
-              {(params) => {
-                return (
-                  <CICDetailRenderer cicId={params.cicId} />
-                )
-              }}
-            </Route>
-          </div>
+          {/* <img
+            src={quattSvg}
+            alt="Quatt"
+            className={classes['main-logo']}
+          /> */}
+          <Route path="/">
+            <CICListRenderer />
+          </Route>
+          <Route path="/:cicId">
+            {(params) => {
+              return (
+                <CICDetailRenderer cicId={params.cicId} />
+              )
+            }}
+          </Route>
         </ApiClientProvider>
       )}
     </QueryClientProvider>
@@ -74,24 +72,9 @@ const CICDetailRenderer = ({
   if (status !== 'success') return null
 
   return (
-    <div>
-      <CICDetail cicId={cicId} data={data.result} />
-    </div>
+    <CICDetail cicId={cicId} data={data.result} />
   )
 }
-
-const getCicDetail = async (token: string, cicId: string) => {
-  // const response = await fetch("https://mobile-api-develop.quatt.io/api/v1/admin/cic/list", {
-  const response = await fetch(`http://localhost:3500/api/v1/admin/cic/${cicId}`, {
-    headers: {
-      'Authorization': `Bearer ${token}`,
-    }
-  })
-
-  const jsonData = await response.json()
-  return jsonData.result
-}
-
 
 const CICListRenderer = () => {
   const apiClient = useApiClient()
@@ -103,9 +86,7 @@ const CICListRenderer = () => {
   if (status !== 'success') return null
 
   return (
-    <div>
-      <CICList data={data.result} />
-    </div>
+    <CICList data={data.result} />
   )
 }
 

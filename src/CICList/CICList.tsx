@@ -17,6 +17,7 @@ import {
 import { ButtonLink } from '../Button/Button'
 import { AdminCic } from '../apiClient/models'
 import { formatDate, formatDateDistance } from '../utils/formatDate'
+import { getGrafanaLink, getMenderLink } from '../CICDetail/getLinks'
 
 export function CICList({
   data
@@ -31,7 +32,7 @@ export function CICList({
   const CICListData = filterCICList(data, filters)
 
   return (
-    <>
+    <div>
       <h2>CIC List, {CICListData.length} {hasFilters ? 'filtered ' : ''}results</h2>
       <table className={classes.table}>
         <thead className={classes.thead}>
@@ -71,7 +72,7 @@ export function CICList({
           ))}
         </tbody>
       </table>
-    </>
+    </div>
   )
 }
 
@@ -85,14 +86,6 @@ function Td(props: React.PropsWithChildren) {
   return (
     <td className={classes.td} {...props} />
   )
-}
-
-function getMenderLink(id: string) {
-  return `https://hosted.mender.io/ui/devices/accepted?sort=system:updated_ts:desc&id=${id}`
-}
-
-function getGrafanaLink(id: string) {
-  return `https://g-736ff2fef7.grafana-workspace.eu-west-1.amazonaws.com/d/HaR0DRlVk/production?orgId=1&from=now-6h&to=now&var-CICuuid=${id}`
 }
 
 function CICRow({ cicEntry }: { cicEntry: AdminCic }) {

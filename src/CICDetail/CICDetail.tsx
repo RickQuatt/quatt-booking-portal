@@ -7,6 +7,8 @@ import classes from "./CICDetail.module.css";
 import { AdminCic } from "../apiClient/models";
 import { formatDate, formatDateDistance } from "../utils/formatDate";
 import { useApiClient } from "../apiClient/context";
+import { Button, ButtonLink } from "../Button/Button";
+import { getGrafanaLink, getHubspotSearchOrderLink, getMenderLink } from "./getLinks";
 
 interface CICDetailProps {
   cicId: string;
@@ -88,7 +90,7 @@ export function CICDetail({ cicId, data }: CICDetailProps) {
   };
 
   return (
-    <div className={classes['detail-sections']}>
+    <div className={classes["detail-sections"]}>
       <div className={classes["detail-section"]}>
         <h3>CIC Details Main</h3>
         <div className={classes["detail-list"]}>
@@ -175,164 +177,193 @@ export function CICDetail({ cicId, data }: CICDetailProps) {
                 })}
               />
             </DetailField>
-
-            <input
+            <Button
               type="submit"
-              value="Save updated settings to CIC"
               disabled={!isDirty || isSubmitting}
-              // className={classes['detail-field-submit']}
-            />
+            >
+              Save updated settings to CIC
+            </Button>
           </form>
         </div>
       </div>
       <div className={classes["detail-section"]}>
         <h3>CIC Details</h3>
         <div className={classes["detail-list"]}>
-            <DetailField>
-              <DetailFieldTitle>Quatt build</DetailFieldTitle>
-              <DetailFieldValue value={cicData.quattBuild} />
-            </DetailField>
-            <DetailField>
-              <DetailFieldTitle>Last connection status updated at</DetailFieldTitle>
-              <DetailFieldValue
-                value={formatDateDistance(
-                  cicData.lastConnectionStatusUpdatedAt
-                )}
-              />
-            </DetailField>
-            <DetailField>
-              <DetailFieldTitle>Boiler power</DetailFieldTitle>
-              <DetailFieldValue value={cicData.boilerPower} />
-            </DetailField>
-            <DetailField>
-              <DetailFieldTitle>Cable connection status</DetailFieldTitle>
-              <DetailFieldValue value={cicData.cableConnectionStatus} />
-            </DetailField>
-            <DetailField>
-              <DetailFieldTitle>Flow rate</DetailFieldTitle>
-              <DetailFieldValue value={cicData.flowRate} />
-            </DetailField>
-            <DetailField>
-              <DetailFieldTitle>LTE connection status</DetailFieldTitle>
-              <DetailFieldValue value={cicData.lteConnectionStatus} />
-            </DetailField>
-            <DetailField>
-              <DetailFieldTitle>Wifi connection status</DetailFieldTitle>
-              <DetailFieldValue value={cicData.wifiConnectionStatus} />
-            </DetailField>
-            <DetailField>
-              <DetailFieldTitle>Wifi SSID</DetailFieldTitle>
-              <DetailFieldValue value={cicData.wifiSSID} />
-            </DetailField>
-            <DetailField>
-              <DetailFieldTitle>Electricity price</DetailFieldTitle>
-              <DetailFieldValue value={cicData.electricityPrice} />
-            </DetailField>
-            <DetailField>
-              <DetailFieldTitle>Day electricity price</DetailFieldTitle>
-              <DetailFieldValue value={cicData.dayElectricityPrice} />
-            </DetailField>
-            <DetailField>
-              <DetailFieldTitle>Night electricity price</DetailFieldTitle>
-              <DetailFieldValue value={cicData.nightElectricityPrice} />
-            </DetailField>
-            <DetailField>
-              <DetailFieldTitle>Gas price</DetailFieldTitle>
-              <DetailFieldValue value={cicData.gasPrice} />
-            </DetailField>
-            <DetailField>
-              <DetailFieldTitle>Boiler demand</DetailFieldTitle>
-              <DetailFieldValue value={cicData.boilerDemand} />
-            </DetailField>
-            <DetailField>
-              <DetailFieldTitle>Boiler water temperature in</DetailFieldTitle>
-              <DetailFieldValue value={cicData.boilerWaterTemperatureIn} />
-            </DetailField>
-            <DetailField>
-              <DetailFieldTitle>Boiler water temperature out</DetailFieldTitle>
-              <DetailFieldValue value={cicData.boilerWaterTemperatureOut} />
-            </DetailField>
-            <DetailField>
-              <DetailFieldTitle>Thermostat control temperature set point</DetailFieldTitle>
-              <DetailFieldValue value={cicData.thermostatControlTemperatureSetPoint} />
-            </DetailField>
-            <DetailField>
-              <DetailFieldTitle>Thermostat demand</DetailFieldTitle>
-              <DetailFieldValue value={cicData.thermostatDemand} />
-            </DetailField>
-            <DetailField>
-              <DetailFieldTitle>Thermostat room temperature</DetailFieldTitle>
-              <DetailFieldValue value={cicData.thermostatRoomTemperature} />
-            </DetailField>
-            <DetailField>
-              <DetailFieldTitle>Serial</DetailFieldTitle>
-              <DetailFieldValue value={cicData.serial} />
-            </DetailField>
-            <DetailField>
-              <DetailFieldTitle>Supervisory control mode</DetailFieldTitle>
-              <DetailFieldValue value={cicData.supervisoryControlMode} />
-            </DetailField>
-            <DetailField>
-              <DetailFieldTitle>Is HP1 connected</DetailFieldTitle>
-              <DetailFieldValue value={cicData.isHp1Connected} />
-            </DetailField>
-            <DetailField>
-              <DetailFieldTitle>Is thermostat connected</DetailFieldTitle>
-              <DetailFieldValue value={cicData.isThermostatConnected} />
-            </DetailField>
-            <DetailField>
-              <DetailFieldTitle>Is boiler connected</DetailFieldTitle>
-              <DetailFieldValue value={cicData.isBoilerConnected} />
-            </DetailField>
-            <DetailField>
-              <DetailFieldTitle>Is temperature sensor connected</DetailFieldTitle>
-              <DetailFieldValue value={cicData.isTemperatureSensorConnected} />
-            </DetailField>
-            <DetailField>
-              <DetailFieldTitle>Is controller alive</DetailFieldTitle>
-              <DetailFieldValue value={cicData.isControllerAlive} />
-            </DetailField>
-            <DetailField>
-              <DetailFieldTitle>Boiler type</DetailFieldTitle>
-              <DetailFieldValue value={cicData.boilerType} />
-            </DetailField>
-            <DetailField>
-              <DetailFieldTitle>Zip code</DetailFieldTitle>
-              <DetailFieldValue value={cicData.zipCode} />
-            </DetailField>
-            <DetailField>
-              <DetailFieldTitle>
-                Last commissioning completed at
-              </DetailFieldTitle>
-              <DetailFieldValue
-                value={formatDateDistance(
-                  cicData.lastConnectionStatusUpdatedAt
-                )}
-              />
-            </DetailField>
-            <DetailField>
-              <DetailFieldTitle>Thermostat type</DetailFieldTitle>
-              <DetailFieldValue value={cicData.thermostatType} />
-            </DetailField>
-            <DetailField>
-              <DetailFieldTitle>Rated maximum house power</DetailFieldTitle>
-              <DetailFieldValue value={cicData.ratedMaximumHousePower} />
-            </DetailField>
-            <DetailField>
-              <DetailFieldTitle>Maximum heating outdoor temperature</DetailFieldTitle>
-              <DetailFieldValue value={cicData.maximumHeatingOutdoorTemperature} />
-            </DetailField>
-            <DetailField>
-              <DetailFieldTitle>Created at</DetailFieldTitle>
-              <DetailFieldValue
-                value={formatDate(cicData.createdAt)}
-              />
-            </DetailField>
-            <DetailField>
-              <DetailFieldTitle>Mender ID</DetailFieldTitle>
-              <DetailFieldValue value={cicData.menderId} />
-            </DetailField>
+          <DetailField>
+            <DetailFieldTitle>Quatt build</DetailFieldTitle>
+            <DetailFieldValue value={cicData.quattBuild} />
+          </DetailField>
+          <DetailField>
+            <DetailFieldTitle>
+              Last connection status updated at
+            </DetailFieldTitle>
+            <DetailFieldValue
+              value={formatDateDistance(cicData.lastConnectionStatusUpdatedAt)}
+            />
+          </DetailField>
+          <DetailField>
+            <DetailFieldTitle>Boiler power</DetailFieldTitle>
+            <DetailFieldValue value={cicData.boilerPower} />
+          </DetailField>
+          <DetailField>
+            <DetailFieldTitle>Cable connection status</DetailFieldTitle>
+            <DetailFieldValue value={cicData.cableConnectionStatus} />
+          </DetailField>
+          <DetailField>
+            <DetailFieldTitle>Flow rate</DetailFieldTitle>
+            <DetailFieldValue value={cicData.flowRate} />
+          </DetailField>
+          <DetailField>
+            <DetailFieldTitle>LTE connection status</DetailFieldTitle>
+            <DetailFieldValue value={cicData.lteConnectionStatus} />
+          </DetailField>
+          <DetailField>
+            <DetailFieldTitle>Wifi connection status</DetailFieldTitle>
+            <DetailFieldValue value={cicData.wifiConnectionStatus} />
+          </DetailField>
+          <DetailField>
+            <DetailFieldTitle>Wifi SSID</DetailFieldTitle>
+            <DetailFieldValue value={cicData.wifiSSID} />
+          </DetailField>
+          <DetailField>
+            <DetailFieldTitle>Electricity price</DetailFieldTitle>
+            <DetailFieldValue value={cicData.electricityPrice} />
+          </DetailField>
+          <DetailField>
+            <DetailFieldTitle>Day electricity price</DetailFieldTitle>
+            <DetailFieldValue value={cicData.dayElectricityPrice} />
+          </DetailField>
+          <DetailField>
+            <DetailFieldTitle>Night electricity price</DetailFieldTitle>
+            <DetailFieldValue value={cicData.nightElectricityPrice} />
+          </DetailField>
+          <DetailField>
+            <DetailFieldTitle>Gas price</DetailFieldTitle>
+            <DetailFieldValue value={cicData.gasPrice} />
+          </DetailField>
+          <DetailField>
+            <DetailFieldTitle>Boiler demand</DetailFieldTitle>
+            <DetailFieldValue value={cicData.boilerDemand} />
+          </DetailField>
+          <DetailField>
+            <DetailFieldTitle>Boiler water temperature in</DetailFieldTitle>
+            <DetailFieldValue value={cicData.boilerWaterTemperatureIn} />
+          </DetailField>
+          <DetailField>
+            <DetailFieldTitle>Boiler water temperature out</DetailFieldTitle>
+            <DetailFieldValue value={cicData.boilerWaterTemperatureOut} />
+          </DetailField>
+          <DetailField>
+            <DetailFieldTitle>
+              Thermostat control temperature set point
+            </DetailFieldTitle>
+            <DetailFieldValue
+              value={cicData.thermostatControlTemperatureSetPoint}
+            />
+          </DetailField>
+          <DetailField>
+            <DetailFieldTitle>Thermostat demand</DetailFieldTitle>
+            <DetailFieldValue value={cicData.thermostatDemand} />
+          </DetailField>
+          <DetailField>
+            <DetailFieldTitle>Thermostat room temperature</DetailFieldTitle>
+            <DetailFieldValue value={cicData.thermostatRoomTemperature} />
+          </DetailField>
+          <DetailField>
+            <DetailFieldTitle>Serial</DetailFieldTitle>
+            <DetailFieldValue value={cicData.serial} />
+          </DetailField>
+          <DetailField>
+            <DetailFieldTitle>Supervisory control mode</DetailFieldTitle>
+            <DetailFieldValue value={cicData.supervisoryControlMode} />
+          </DetailField>
+          <DetailField>
+            <DetailFieldTitle>Is HP1 connected</DetailFieldTitle>
+            <DetailFieldValue value={cicData.isHp1Connected} />
+          </DetailField>
+          <DetailField>
+            <DetailFieldTitle>Is thermostat connected</DetailFieldTitle>
+            <DetailFieldValue value={cicData.isThermostatConnected} />
+          </DetailField>
+          <DetailField>
+            <DetailFieldTitle>Is boiler connected</DetailFieldTitle>
+            <DetailFieldValue value={cicData.isBoilerConnected} />
+          </DetailField>
+          <DetailField>
+            <DetailFieldTitle>Is temperature sensor connected</DetailFieldTitle>
+            <DetailFieldValue value={cicData.isTemperatureSensorConnected} />
+          </DetailField>
+          <DetailField>
+            <DetailFieldTitle>Is controller alive</DetailFieldTitle>
+            <DetailFieldValue value={cicData.isControllerAlive} />
+          </DetailField>
+          <DetailField>
+            <DetailFieldTitle>Boiler type</DetailFieldTitle>
+            <DetailFieldValue value={cicData.boilerType} />
+          </DetailField>
+          <DetailField>
+            <DetailFieldTitle>Zip code</DetailFieldTitle>
+            <DetailFieldValue value={cicData.zipCode} />
+          </DetailField>
+          <DetailField>
+            <DetailFieldTitle>Last commissioning completed at</DetailFieldTitle>
+            <DetailFieldValue
+              value={formatDateDistance(cicData.lastConnectionStatusUpdatedAt)}
+            />
+          </DetailField>
+          <DetailField>
+            <DetailFieldTitle>Thermostat type</DetailFieldTitle>
+            <DetailFieldValue value={cicData.thermostatType} />
+          </DetailField>
+          <DetailField>
+            <DetailFieldTitle>Rated maximum house power</DetailFieldTitle>
+            <DetailFieldValue value={cicData.ratedMaximumHousePower} />
+          </DetailField>
+          <DetailField>
+            <DetailFieldTitle>
+              Maximum heating outdoor temperature
+            </DetailFieldTitle>
+            <DetailFieldValue
+              value={cicData.maximumHeatingOutdoorTemperature}
+            />
+          </DetailField>
+          <DetailField>
+            <DetailFieldTitle>Last commissioning</DetailFieldTitle>
+            <DetailFieldJson value={cicData.lastCommissioning} />
+          </DetailField>
+          <DetailField>
+            <DetailFieldTitle>Created at</DetailFieldTitle>
+            <DetailFieldValue value={formatDate(cicData.createdAt)} />
+          </DetailField>
+          <DetailField>
+            <DetailFieldTitle>Mender ID</DetailFieldTitle>
+            <DetailFieldValue value={cicData.menderId} />
+          </DetailField>
+        </div>
+      </div>
 
+      <div className={classes["detail-section"]}>
+        <div className={classes["detail-list"]}>
+          <ButtonLink
+            href={cicData.orderNumber ? getHubspotSearchOrderLink(cicData.orderNumber) : undefined}
+            target="_blank"
+            disabled={!cicData.orderNumber}
+          >
+            Hubspot Search Order
+          </ButtonLink>
+          <ButtonLink href={getMenderLink(cicData.id)} target="_blank">
+            Mender
+          </ButtonLink>
+          <ButtonLink href={getGrafanaLink(cicData.id)} target="_blank">
+            Grafana
+          </ButtonLink>
+          <DetailField>
+            <DetailFieldTitle>Supervisory Control Mode</DetailFieldTitle>
+            <DetailFieldValue value={cicData.supervisoryControlMode} />
+          </DetailField>
+          <Button color="danger">
+            Advanced settings
+          </Button>
         </div>
       </div>
     </div>
@@ -378,5 +409,18 @@ function DetailFieldValue({ value }: DetailFieldValueProps) {
     <span className={classes["detail-field-value"]}>
       {value ?? "N/A"}
     </span>
+  );
+}
+
+type DetailFieldJsonProps = {
+  value?: object;
+};
+function DetailFieldJson({ value }: DetailFieldJsonProps) {
+  return (
+    <pre className={classes["detail-field-json"]}>
+      <code>
+        {JSON.stringify(value, null, 4)}
+      </code>
+    </pre>
   );
 }

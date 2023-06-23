@@ -7,6 +7,7 @@
   font-family: inherit;
   cursor: pointer;
   transition: border-color 0.25s;
+  text-align: center;
 
   /* Dark mode */
   background-color: var(--button-background);
@@ -20,6 +21,22 @@
 .button:focus,
 .button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+.button.disabled, .button:disabled {
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+
+  border-color: unset;
+  &:hover {
+    border-color: unset
+  }
+}
+
+.button.danger {
+  background-color: #E0401D;
+  color: white;
 }
 
 @media (prefers-color-scheme: light) {
