@@ -72,9 +72,11 @@ export const FormSelectInput = React.forwardRef<
 ) {
   return (
     <>
-      <select ref={ref} {...selectProps}>
-        {children}
-      </select>
+      <div className={classes['form-select']}>
+        <select ref={ref} {...selectProps}>
+          {children}
+        </select>
+      </div>
       {error && <p>{error.message}</p>}
     </>
   );

@@ -50,10 +50,10 @@ export const ModalInner = (({ closeModal, children }: ModalInnerProps) => {
         }
       }
 
-      document.addEventListener('click', clickListener, true)
+      document.addEventListener('mousedown', clickListener, true)
       document.addEventListener('keydown', keydownListener, true)
       return () => {
-        document.removeEventListener('click', clickListener, true)
+        document.removeEventListener('mousedown', clickListener, true)
         document.removeEventListener('keydown', keydownListener, true)
       }
     }, [

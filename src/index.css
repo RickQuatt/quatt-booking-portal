@@ -5,6 +5,9 @@
   --primary-color: #26926a;
   --button-background: #f9f9f9;
 
+  --border-color: #777;
+  --border-focus-color: var(--primary-color);
+
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
