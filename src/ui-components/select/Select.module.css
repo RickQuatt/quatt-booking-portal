@@ -1,7 +1,7 @@
 
 .select {
   width: 100%;
-  min-width: 15ch;
+  /* min-width: 15ch; */
   /* max-width: 30ch; */
   border: 1px solid var(--border-color);
   border-radius: 4px;

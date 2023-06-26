@@ -18,7 +18,6 @@ import { ButtonLink } from '../ui-components/button/Button'
 import { AdminCic } from '../api-client/models'
 import { formatDate, formatDateDistance } from '../utils/formatDate'
 import { getGrafanaLink, getMenderLink } from '../cic-detail/getLinks'
-import classNames from 'classnames'
 
 export function CICList({
   data
@@ -34,7 +33,7 @@ export function CICList({
 
   return (
     <div>
-      <h2>CIC List, {CICListData.length} {hasFilters ? 'filtered ' : ''}results</h2>
+      <h2 className={classes['page-title']}>CIC List, {CICListData.length} {hasFilters ? 'filtered ' : ''}results</h2>
       <table className={classes.table}>
         <thead className={classes.thead}>
           <tr className={`${classes.tr} ${classes['main-table-header']}`}>
@@ -94,7 +93,6 @@ function Td(props: React.PropsWithChildren<{
     </td>
   )
 }
-
 
 function TdText(props: React.PropsWithChildren) {
   return (

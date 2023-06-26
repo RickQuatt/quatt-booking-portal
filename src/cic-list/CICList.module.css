@@ -5,6 +5,10 @@
   --table-side-padding: 10px;
 }
 
+.page-title {
+  margin-left: var(--table-side-padding);
+}
+
 .table {
     display: grid;
     border-collapse: collapse;
@@ -18,8 +22,6 @@
 .tr {
   display: contents;
 }
-
-
 
 .th,
 .td {
@@ -63,7 +65,7 @@
 .td {
   padding-top: var(--table-item-top-bottom-padding);
   padding-bottom: var(--table-item-top-bottom-padding);
-  color: #808080;
+  color: #484848;
 }
 
 .tr:nth-child(odd) td {
