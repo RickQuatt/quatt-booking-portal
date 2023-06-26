@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import classes from './Modal.module.css'
-import { Button, ButtonProps } from '../Button/Button';
+import { Button, ButtonProps } from '../button/Button';
 
 export type ModalProps = {
   isOpen: boolean;

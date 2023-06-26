@@ -1,0 +1,13 @@
+
+.input {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  padding: 10px 15px;
+  font-size: 14px;
+}
+.input:focus-visible {
+  outline: var(--border-focus-color) auto 1px;
+}

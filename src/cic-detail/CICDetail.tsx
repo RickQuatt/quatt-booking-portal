@@ -4,17 +4,17 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import classes from "./CICDetail.module.css";
-import { AdminCic } from "../apiClient/models";
+import { AdminCic } from "../api-client/models";
 import { formatDate, formatDateDistance } from "../utils/formatDate";
-import { useApiClient } from "../apiClient/context";
-import { Button, ButtonLink } from "../Button/Button";
+import { useApiClient } from "../api-client/context";
+import { Button, ButtonLink } from "../ui-components/button/Button";
 import {
   getGrafanaLink,
   getHubspotSearchOrderLink,
   getMenderLink,
 } from "./getLinks";
 import { AdvancedSettingsModal } from "./AdvancedSettingsModal";
-import { useModalState } from "../Modal/useModalState";
+import { useModalState } from "../ui-components/modal/useModalState";
 import { FormField, FormFieldInput, FormFieldJson, FormFieldTitle, FormFieldValue, FormSection } from "./Form";
 
 interface CICDetailProps {

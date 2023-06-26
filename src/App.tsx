@@ -6,9 +6,9 @@ import { QueryClient, QueryClientProvider, useQuery } from 'react-query'
 
 import classes from './App.module.css'
 import quattSvg from './assets/quatt.svg'
-import { CICList } from './CICList/CICList';
-import { CICDetail } from './CICDetail/CICDetail';
-import { ApiClientProvider, useApiClient } from './apiClient/context';
+import { CICList } from './cic-list/CICList';
+import { CICDetail } from './cic-detail/CICDetail';
+import { ApiClientProvider, useApiClient } from './api-client/context';
 
 const queryClient = new QueryClient()
 

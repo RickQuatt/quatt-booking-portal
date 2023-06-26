@@ -14,10 +14,10 @@ import {
     WifiConnectionStatusFilter,
     filterCICList
    } from './Filters'
-import { ButtonLink } from '../Button/Button'
-import { AdminCic } from '../apiClient/models'
+import { ButtonLink } from '../ui-components/button/Button'
+import { AdminCic } from '../api-client/models'
 import { formatDate, formatDateDistance } from '../utils/formatDate'
-import { getGrafanaLink, getMenderLink } from '../CICDetail/getLinks'
+import { getGrafanaLink, getMenderLink } from '../cic-detail/getLinks'
 
 export function CICList({
   data

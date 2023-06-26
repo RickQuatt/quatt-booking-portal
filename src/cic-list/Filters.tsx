@@ -2,7 +2,9 @@ import React from 'react'
 import { debounce, omit } from 'lodash-es'
 
 import classes from './Filters.module.css'
-import { AdminCic } from '../apiClient/models';
+import { AdminCic } from '../api-client/models';
+import { Input } from '../ui-components/input/Input';
+import { Select } from '../ui-components/select/Select';
 
 export type CICFilters = 
   Partial<Omit<AdminCic, 'created_at'>>
@@ -72,7 +74,7 @@ export function TextFilter({
   }, [debouncedSetFilters])
 
   return (
-    <input
+    <Input
       type={inputType}
       onChange={onChange}
     />
@@ -104,12 +106,12 @@ export function CableConnectionStatusFilter({
   }, [setFilters])
 
   return (
-    <select onChange={onChange}>
+    <Select onChange={onChange}>
       <option value="">Any</option>
       <option value="connected">Connected</option>
       <option value="disconnected">Disconnected</option>
       <option value="not_reachable">Not reachable</option>
-    </select>
+    </Select>
   )
 }
 
@@ -129,12 +131,12 @@ export function WifiConnectionStatusFilter({
   }, [setFilters])
 
   return (
-    <select onChange={onChange}>
+    <Select onChange={onChange}>
       <option value="">Any</option>
       <option value="connected">Connected</option>
       <option value="disconnected">Disconnected</option>
       <option value="not_reachable">Not reachable</option>
-    </select>
+    </Select>
   )
 }
 
@@ -155,12 +157,12 @@ export function LTEConnectionStatusFilter({
   }, [setFilters])
 
   return (
-    <select onChange={onChange}>
+    <Select onChange={onChange}>
       <option value="">Any</option>
       <option value="connected">Connected</option>
       <option value="disconnected">Disconnected</option>
       <option value="not_reachable">Not reachable</option>
-    </select>
+    </Select>
   )
 }
 

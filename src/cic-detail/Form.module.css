@@ -1,0 +1,27 @@
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  & form {
+    display: contents;
+  }
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.form-field-title {
+  font-weight: bold;
+}
+
+.form-field-error {
+  color: var(--error-color);
+}
+
+.form-field-json {
+  overflow-x: auto;
+}

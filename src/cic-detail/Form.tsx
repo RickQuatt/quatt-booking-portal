@@ -2,6 +2,8 @@ import React from "react";
 
 import classes from "./Form.module.css";
 import { FieldError } from "react-hook-form";
+import { Input, InputProps } from "../ui-components/input/Input";
+import { Select, SelectProps } from "../ui-components/select/Select";
 
 export function FormSection({ children }: React.PropsWithChildren) {
   return <div className={classes["form-section"]}>{children}</div>;
@@ -35,14 +37,16 @@ export function FormFieldJson({ value }: FormFieldJsonProps) {
   );
 }
 
-interface FormFieldInputProps extends React.ComponentPropsWithRef<"input"> {
-  error?: FieldError;
+const FormFieldError = ({ children }: React.PropsWithChildren) => {
+  return (
+    <div className={classes["form-field-error"]}>
+      ⚠ {children}
+    </div>
+  )
 }
 
-const FormFieldError = (props: React.PropsWithChildren) => {
-  return (
-    <div className={classes["form-field-error"]} {...props} />
-  )
+interface FormFieldInputProps extends InputProps {
+  error?: FieldError;
 }
 
 export const FormFieldInput = React.forwardRef<
@@ -54,17 +58,13 @@ export const FormFieldInput = React.forwardRef<
 ) {
   return (
     <div>
-      <input
-        className={classes["form-field-input"]}
-        ref={ref}
-        {...inputProps}
-      />
+      <Input ref={ref} {...inputProps} />
       {error && <FormFieldError>{error.message}</FormFieldError>}
     </div>
   );
 });
 
-interface FormSelectProps extends React.ComponentPropsWithRef<"select"> {
+interface FormSelectProps extends SelectProps {
   error?: FieldError;
 }
 
@@ -73,16 +73,12 @@ export const FormSelectInput = React.forwardRef<
   HTMLSelectElement,
   FormSelectProps
 >(function FormSelectInput(
-  { error, children, ...selectProps },
+  { error, ...selectProps },
   ref
 ) {
   return (
     <div>
-      <div className={classes['form-select']}>
-        <select ref={ref} {...selectProps}>
-          {children}
-        </select>
-      </div>
+      <Select ref={ref} {...selectProps} />
       {error && <FormFieldError>{error.message}</FormFieldError>}
     </div>
   );

@@ -10,9 +10,9 @@ import {
   ModalContent,
   ModalHeader,
   ModalProps,
-} from "../Modal/Modal";
-import { AdminCic } from "../apiClient/models";
-import { useApiClient } from "../apiClient/context";
+} from "../ui-components/modal/Modal";
+import { AdminCic } from "../api-client/models";
+import { useApiClient } from "../api-client/context";
 import {
   FormField,
   FormFieldInput,
