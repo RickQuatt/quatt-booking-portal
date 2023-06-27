@@ -3,8 +3,10 @@
 :root {
   /* Variables */
   --primary-color: #26926a;
-  --button-background: #f9f9f9;
   --error-color: #E0401D;
+
+  --button-background: #f9f9f9;
+  --button-background-hover: #f1f1f1;
 
   --border-color: #777;
   --border-focus-color: #5E9ED6;

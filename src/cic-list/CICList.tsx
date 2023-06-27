@@ -124,7 +124,7 @@ function CICRow({ cicEntry }: { cicEntry: AdminCic }) {
         >Grafana</ButtonLink>
       </Td>
       <Td>
-        <Link href={`/${cicEntry.id}`}>
+        <Link href={`/cics/${cicEntry.id}`}>
           <ButtonLink>Detail</ButtonLink>
         </Link>
       </Td>

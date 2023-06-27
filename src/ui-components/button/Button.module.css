@@ -12,9 +12,12 @@
   /* Dark mode */
   background-color: var(--button-background);
   color: var(--primary-color);
+
+  border-color: var(--primary-color);
 }
 
 .button:hover {
+  background-color: var(--button-background-hover);
   border-color: var(--primary-color);
 }
 

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { auth, signinWithGoogle } from './firebase';
 import { User } from 'firebase/auth';
-import { Route } from 'wouter'
+import { Link, Route } from 'wouter'
 import { QueryClient, QueryClientProvider, useQuery } from 'react-query'
 
 import classes from './App.module.css'
@@ -9,6 +9,7 @@ import quattSvg from './assets/quatt.svg'
 import { CICList } from './cic-list/CICList';
 import { CICDetail } from './cic-detail/CICDetail';
 import { ApiClientProvider, useApiClient } from './api-client/context';
+import { Button, ButtonLink } from './ui-components/button/Button';
 
 const queryClient = new QueryClient()
 
@@ -33,18 +34,16 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       {(!user || !token) ? (
-        <button onClick={signinWithGoogle}>Authenticate</button>
+        <SignIn />
       ) : (
         <ApiClientProvider token={token}>
-          {/* <img
-            src={quattSvg}
-            alt="Quatt"
-            className={classes['main-logo']}
-          /> */}
           <Route path="/">
+            <Home />
+          </Route>
+          <Route path="/cics">
             <CICListRenderer />
           </Route>
-          <Route path="/:cicId">
+          <Route path="/cics/:cicId">
             {(params) => {
               return (
                 <CICDetailRenderer cicId={params.cicId} />
@@ -54,6 +53,29 @@ function App() {
         </ApiClientProvider>
       )}
     </QueryClientProvider>
+  )
+}
+
+const SignIn = () => {
+  return (
+    <div className={classes.signin}>
+        <img
+          src={quattSvg}
+          alt="Quatt"
+          className={classes['main-logo']}
+        />
+      <Button onClick={signinWithGoogle}>Authenticate</Button>
+    </div>
+  )
+}
+
+const Home = () => {
+  return (
+    <div className={classes.signin}>
+      <Link href={`/cics`}>
+        <ButtonLink>CICs</ButtonLink>
+      </Link>
+    </div>
   )
 }
 

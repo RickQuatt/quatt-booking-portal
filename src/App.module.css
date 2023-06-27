@@ -2,3 +2,12 @@
 .main-logo {
   width: 200px;
 }
+
+.signin {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  align-items: center;
+  justify-content: center;
+}
