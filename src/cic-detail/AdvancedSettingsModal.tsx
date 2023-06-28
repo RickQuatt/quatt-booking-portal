@@ -31,6 +31,9 @@ const requiredFieldText = "This field is required";
 // required for inputs of type="number"
 const transformNaN = (value: unknown) => (Number.isNaN(value) ? null : value);
 
+const orderIdValidateText = "Should have the following format: QUATTxxxx, where x is a number"
+const orderIdReg = /^(QUATT)\d{4}$/
+
 const CICAdvancedFormSchema = yup.object({
   boilerType: yup
     .string()
@@ -45,7 +48,7 @@ const CICAdvancedFormSchema = yup.object({
       "opentherm_room_temperature",
       "opentherm_without_room_temperature",
     ]),
-  orderNumber: yup.string().required(requiredFieldText),
+  orderNumber: yup.string().matches(orderIdReg, orderIdValidateText).required(requiredFieldText),
   // .nullable(requiredFieldText),
   numberOfHeatpumps: yup
     .number()
@@ -86,7 +89,7 @@ export function AdvancedSettingsModal({
   // console.log(watch("orderNumber")); // watch input value by passing the name of it
 
   const apiClient = useApiClient();
-  const onSubmit = async (data: CICAdvancedFormData) => {
+  const onSubmit = React.useCallback(async (data: CICAdvancedFormData) => {
     console.log(data);
     if (
       !window.confirm(
@@ -103,8 +106,14 @@ export function AdvancedSettingsModal({
     if (response.meta.status === 200) {
       // this sets isDirty back to false
       reset({}, { keepValues: true });
+      closeModal()
     }
-  };
+  }, [
+    apiClient,
+    cicId,
+    closeModal,
+    reset
+  ])
 
   return (
     <Modal isOpen={isOpen} closeModal={closeModal}>
