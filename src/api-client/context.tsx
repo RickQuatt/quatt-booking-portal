@@ -12,7 +12,7 @@ export const ApiClientProvider = ({ children, token }: ProviderProps) => {
   const [apiClient] = React.useState(() => {
     return new SupportDashboardApi(
       new Configuration({
-        basePath: "http://localhost:3500/api/v1",
+        basePath: import.meta.env.VITE_API_BASE_PATH as string,
         accessToken: token
       })
     )
