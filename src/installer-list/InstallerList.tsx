@@ -86,7 +86,7 @@ function InstallerRow({ data, openInstallerModal }: { data: Installer, openInsta
       <Td><TdText>{data.code}</TdText></Td>
       <Td><TdText>{data.name}</TdText></Td>
       <Td><TdText>{data.phone}</TdText></Td>
-      <Td><TdText>{data.isActive}</TdText></Td>
+      <Td><TdText>{formatIsActive(data.isActive)}</TdText></Td>
       <Td><TdText>{formatDate(data.createdAt)}</TdText></Td>
       <Td>
         <Button onClick={() => openInstallerModal({ installerId: data.id, data })}>
@@ -95,4 +95,11 @@ function InstallerRow({ data, openInstallerModal }: { data: Installer, openInsta
       </Td>
     </Tr>
   )
+}
+
+function formatIsActive(isActive: Installer['isActive']) {
+  if (isActive === undefined) {
+    return ''
+  }
+  return isActive ? 'Yes' : 'No'
 }
