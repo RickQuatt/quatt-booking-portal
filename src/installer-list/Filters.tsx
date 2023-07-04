@@ -10,7 +10,7 @@ export type InstallerFilters =
   & {
     minCreatedAt?: Installer['createdAt']
     maxCreatedAt?: Installer['createdAt']
-    isActive: string
+    isActive?: string
   }
 
 type SetFiltersFunc = (setFiltersFunc: (oldFilters: InstallerFilters) => InstallerFilters) => void
