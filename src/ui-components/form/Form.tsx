@@ -21,8 +21,9 @@ type FormFieldValueProps = {
   value?: string | number | boolean | null;
 };
 export function FormFieldValue({ value }: FormFieldValueProps) {
+  const stringValue = typeof value === 'boolean' ? String(value) : value
   return (
-    <span className={classes["form-field-value"]}>{value ?? "N/A"}</span>
+    <span className={classes["form-field-value"]}>{stringValue ?? "N/A"}</span>
   );
 }
 
