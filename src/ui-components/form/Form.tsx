@@ -2,8 +2,8 @@ import React from "react";
 
 import classes from "./Form.module.css";
 import { FieldError } from "react-hook-form";
-import { Input, InputProps } from "../ui-components/input/Input";
-import { Select, SelectProps } from "../ui-components/select/Select";
+import { Input, InputProps } from "../input/Input";
+import { Select, SelectProps } from "../select/Select";
 
 export function FormSection({ children }: React.PropsWithChildren) {
   return <div className={classes["form-section"]}>{children}</div>;
@@ -21,8 +21,9 @@ type FormFieldValueProps = {
   value?: string | number | boolean | null;
 };
 export function FormFieldValue({ value }: FormFieldValueProps) {
+  const stringValue = typeof value === 'boolean' ? String(value) : value
   return (
-    <span className={classes["form-field-value"]}>{value ?? "N/A"}</span>
+    <span className={classes["form-field-value"]}>{stringValue ?? "N/A"}</span>
   );
 }
 
