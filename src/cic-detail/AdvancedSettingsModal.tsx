@@ -50,18 +50,22 @@ const CICAdvancedFormSchema = yup.object({
     ]),
   orderNumber: yup.string().matches(orderIdReg, orderIdValidateText).required(requiredFieldText),
   // .nullable(requiredFieldText),
-  numberOfHeatpumps: yup
+  numberOfHeatPumps: yup
     .number()
     .transform(transformNaN)
     .required(requiredFieldText)
-    .nullable(requiredFieldText),
+    .min(1)
+    .max(2)
 });
 
+// TODO: get yup to infer the right type (the enums)? - 2023-07-14
 type CICAdvancedFormData = yup.InferType<typeof CICAdvancedFormSchema>;
-type CICAdvancedFormDataActual = Pick<
-  AdminCic,
-  "boilerType" | "thermostatType" | "orderNumber" | "numberOfHeatPumps"
->;
+type CICAdvancedFormDataActual = {
+  boilerType: AdminCic['boilerType']
+  thermostatType: AdminCic['thermostatType']
+  orderNumber: NonNullable<AdminCic['orderNumber']>
+  numberOfHeatPumps: NonNullable<AdminCic['numberOfHeatPumps']>
+}
 
 export function AdvancedSettingsModal({
   isOpen,
@@ -82,7 +86,7 @@ export function AdvancedSettingsModal({
       thermostatType: cicData.thermostatType,
       orderNumber:
         cicData.orderNumber === null ? undefined : cicData.orderNumber,
-      numberOfHeatpumps: cicData.numberOfHeatPumps,
+      numberOfHeatPumps: cicData.numberOfHeatPumps === null ? undefined : cicData.numberOfHeatPumps,
     },
   });
 
@@ -90,7 +94,6 @@ export function AdvancedSettingsModal({
 
   const apiClient = useApiClient();
   const onSubmit = React.useCallback(async (data: CICAdvancedFormData) => {
-    console.log(data);
     if (
       !window.confirm(
         "Are you sure you would like to update these critical CIC settings?"
@@ -155,8 +158,8 @@ export function AdvancedSettingsModal({
               <FormFieldTitle>Number of heat pumps</FormFieldTitle>
               <FormFieldInput
                 type="number"
-                error={errors.numberOfHeatpumps}
-                {...register("numberOfHeatpumps", {
+                error={errors.numberOfHeatPumps}
+                {...register("numberOfHeatPumps", {
                   valueAsNumber: true,
                 })}
               />
