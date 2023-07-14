@@ -6,6 +6,10 @@ import { CICDetailMain } from "./CICDetailMain";
 import { CICDetailExtra } from "./CICDetailExtra";
 import { CICDetailSide } from "./CICDetailSide";
 import { CICDetailJson } from "./CICDetailJson";
+import { CICDetailNetworkConnection } from "./CICDetailNetworkConnection";
+import { CICDetailBoilerInfo } from "./CICDetailBoilerInfo";
+import { CICDetailThermostatInfo } from "./CICDetailThermostatInfo";
+import { CICDetailHouseInfo } from "./CICDetailHouseInfo";
 
 interface CICDetailProps {
   data: AdminCic;
@@ -18,6 +22,10 @@ export function CICDetail({ data }: CICDetailProps) {
     <div className={classes["detail-sections"]}>
       <div className={classes["detail-sections-left"]}>
         <CICDetailMain cicData={cicData} />
+        <CICDetailNetworkConnection cicData={cicData} />
+        <CICDetailBoilerInfo cicData={cicData} />
+        <CICDetailThermostatInfo cicData={cicData} />
+        <CICDetailHouseInfo cicData={cicData} />
         <CICDetailExtra cicData={cicData} />
         <CICDetailJson cicData={cicData} />
       </div>

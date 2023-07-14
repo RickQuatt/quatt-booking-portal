@@ -1,6 +1,7 @@
 import { AdminCic } from "../api-client/models";
 import { FormField, FormFieldJson, FormFieldTitle, FormSection } from "../ui-components/form/Form";
 import classes from "./CICDetail.module.css";
+import { CICDetailSectionHeader } from "./CICDetailSectionHeader";
 
 export function CICDetailJson({
   cicData
@@ -9,7 +10,7 @@ export function CICDetailJson({
 }) {
   return (
     <div className={classes["detail-section"]}>
-      <h3>Raw JSON</h3>
+      <CICDetailSectionHeader title="CIC raw json response" />
       <FormSection>
         <FormField>
           <FormFieldJson value={cicData} />
