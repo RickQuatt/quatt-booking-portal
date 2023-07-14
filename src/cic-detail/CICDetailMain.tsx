@@ -8,6 +8,7 @@ import { FormField, FormFieldInput, FormFieldTitle, FormFieldValue, FormSection 
 import { Button } from "../ui-components/button/Button";
 import classes from "./CICDetail.module.css";
 import { formatDateDistance } from "../utils/formatDate";
+import { CICDetailSectionHeader } from "./CICDetailSectionHeader";
 
 const requiredFieldText = "This field is required";
 // required for inputs of type="number"
@@ -88,7 +89,7 @@ export function CICDetailMain({
 
   return (
     <div className={classes["detail-section"]}>
-      <h3>CIC Details Main</h3>
+      <CICDetailSectionHeader title="CIC details main" />
       <FormSection>
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormField>
@@ -120,6 +121,14 @@ export function CICDetailMain({
           <FormField>
             <FormFieldTitle>Number of heat pumps</FormFieldTitle>
             <FormFieldValue value={cicData.numberOfHeatPumps} />
+          </FormField>
+          <FormField>
+            <FormFieldTitle>Update status</FormFieldTitle>
+            <FormFieldValue value={cicData.updateStatus} />
+          </FormField>
+          <FormField>
+            <FormFieldTitle>Update until (last update date?)</FormFieldTitle>
+            <FormFieldValue value={formatDateDistance(cicData.updateUntil)} />
           </FormField>
           <FormField>
             <FormFieldTitle>Electricity price</FormFieldTitle>

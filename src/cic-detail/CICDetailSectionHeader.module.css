@@ -1,0 +1,11 @@
+
+.detail-section-header {
+  h3 {
+    margin: 0;
+    font-size: 24px;
+  }
+
+  hr {
+    margin-bottom: 26px;
+  }
+}
