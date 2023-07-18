@@ -13,6 +13,7 @@ import { CICDetailThermostatInfo } from "./CICDetailThermostatInfo";
 import { CICDetailHouseInfo } from "./CICDetailHouseInfo";
 import { CICDetailHeatpumps } from "./CICDetailHeatpumps";
 import { ButtonLink } from "../ui-components/button/Button";
+import { CICDetailUpdateInfo } from "./CICDetailUpdateInfo";
 
 interface CICDetailProps {
   data: AdminCic;
@@ -26,6 +27,7 @@ export function CICDetail({ data }: CICDetailProps) {
       <div className={classes["detail-sections-left"]}>
         <CICDetailMain cicData={cicData} />
         <CICDetailNetworkConnection cicData={cicData} />
+        <CICDetailUpdateInfo cicData={cicData} />
         <CICDetailBoilerInfo cicData={cicData} />
         <CICDetailThermostatInfo cicData={cicData} />
         <CICDetailHeatpumps cicData={cicData} />

@@ -8,7 +8,7 @@ import { AdminCic } from "../api-client/models";
 import { FormField, FormFieldInput, FormFieldTitle, FormFieldValue, FormSection } from "../ui-components/form/Form";
 import { Button } from "../ui-components/button/Button";
 import classes from "./CICDetail.module.css";
-import { formatDateDistance } from "../utils/formatDate";
+import { formatDate, formatDateDistance } from "../utils/formatDate";
 import { CICDetailSectionHeader } from "./CICDetailSectionHeader";
 
 const requiredFieldText = "This field is required";
@@ -127,12 +127,8 @@ export function CICDetailMain({
             <FormFieldValue value={cicData.numberOfHeatPumps} />
           </FormField>
           <FormField>
-            <FormFieldTitle>Update status</FormFieldTitle>
-            <FormFieldValue value={cicData.updateStatus} />
-          </FormField>
-          <FormField>
-            <FormFieldTitle>Update until (last update date?)</FormFieldTitle>
-            <FormFieldValue value={formatDateDistance(cicData.updateUntil)} />
+            <FormFieldTitle>Created at</FormFieldTitle>
+            <FormFieldValue value={formatDate(cicData.createdAt)} />
           </FormField>
           <FormField>
             <FormFieldTitle>Electricity price</FormFieldTitle>
