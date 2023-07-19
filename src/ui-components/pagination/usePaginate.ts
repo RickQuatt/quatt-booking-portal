@@ -27,6 +27,12 @@ export function usePaginate<T>({ items, pageSize = 50, siblingCount = 1 }: {
   const changePage = React.useCallback((page: number) => {
     if (page < 1 || page > totalPageCount) return;
     doChangePage(page)
+
+    if (document.scrollingElement) {
+      document.scrollingElement.scrollIntoView({
+        behavior: 'smooth'
+      })
+    }
   }, [totalPageCount])
 
   const paginationRange = React.useMemo(() => {
