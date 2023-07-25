@@ -175,9 +175,11 @@ function CICRow({ cicEntry }: { cicEntry: AdminCic }) {
         </TdText>
       </Td>
       <Td>
-        <ButtonLink href={getMenderLink(cicEntry.id)} target="_blank">
-          Mender
-        </ButtonLink>
+        {cicEntry.menderId && (
+          <ButtonLink href={getMenderLink(cicEntry.menderId)} target="_blank">
+            Mender
+          </ButtonLink>
+        )}
       </Td>
       <Td>
         <ButtonLink href={getGrafanaLink(cicEntry.id)} target="_blank">

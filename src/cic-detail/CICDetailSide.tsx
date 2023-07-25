@@ -42,9 +42,11 @@ export function CICDetailSide({ cicData }: { cicData: AdminCic }) {
         >
           Hubspot Search Order
         </ButtonLink>
-        <ButtonLink href={getMenderLink(cicData.id)} target="_blank">
-          Mender
-        </ButtonLink>
+        {cicData.menderId && (
+          <ButtonLink href={getMenderLink(cicData.menderId)} target="_blank">
+            Mender
+          </ButtonLink>
+        )}
         <ButtonLink href={getGrafanaLink(cicData.id)} target="_blank">
           Grafana
         </ButtonLink>
