@@ -7,5 +7,5 @@ export function getGrafanaLink(id: string) {
 }
 
 export function getHubspotSearchOrderLink(orderNumber: string) {
-  return `https://app-eu1.hubspot.com/contacts/25848718/objects/0-3/views/all/list?query=${orderNumber}`;
+  return `https://app-eu1.hubspot.com/contacts/25848718/objects/0-3/views/all/list?query="${orderNumber}"`;
 }
