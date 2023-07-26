@@ -46,8 +46,10 @@
     "vite": "^4.3.9"
   },
   "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx}": [
+      "npm run lint"
+    ],
     "src/**/*": [
-      "npm run lint",
       "npm run prettier:format"
     ]
   },

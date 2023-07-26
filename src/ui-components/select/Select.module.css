@@ -12,6 +12,7 @@
   align-items: center;
   justify-content: space-between;
   position: relative;
+  color: black;
 }
 
 .select:focus-within {
@@ -41,5 +42,6 @@
   font-size: inherit;
   cursor: inherit;
   line-height: inherit;
+  color: inherit;
   outline: none;
 }
