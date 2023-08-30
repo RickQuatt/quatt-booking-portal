@@ -75,14 +75,14 @@ function AvailableWifiNetwork({
   const [isOpen, setIsOpen] = React.useState(false);
   return (
     <AccordionItem
-      title={`Available network ${index}: ${data.sSID}`}
+      title={`Available network ${index}: ${data.SSID}`}
       isOpen={isOpen}
       onChangeIsOpen={() => setIsOpen(!isOpen)}
     >
       <FormSection>
         <FormField>
           <FormFieldTitle>Status</FormFieldTitle>
-          <FormFieldValue value={data.sSID} />
+          <FormFieldValue value={data.SSID} />
         </FormField>
         <FormField>
           <FormFieldTitle>Signal</FormFieldTitle>

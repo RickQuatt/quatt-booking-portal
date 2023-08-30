@@ -1,13 +1,12 @@
 :root {
-  --table-header-top-bottom-padding: 15px;
+  --table-header-top-bottom-padding: 10px;
   --table-item-top-bottom-padding: 10px;
-  --table-side-padding: 10px;
+  --table-side-padding: 16px;
 }
 
 .table {
   display: grid;
   border-collapse: collapse;
-  min-width: 1300px;
   background: var(--box-background);
 }
 
@@ -21,6 +20,8 @@
   position: sticky;
   z-index: 1;
   top: 0;
+  font-weight: 500;
+  /* background: #f1f1f1; */
   background: var(--primary-color);
   color: white;
 }
@@ -45,7 +46,6 @@
 .th {
   text-align: left;
   font-weight: normal;
-  font-size: 1.1rem;
 }
 
 .th:last-child {

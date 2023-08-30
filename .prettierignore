@@ -1,0 +1,2 @@
+src/api-client/.openapi-generator/*
+.openapi-generator-ignore

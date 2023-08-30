@@ -1,0 +1,65 @@
+.grid {
+  width: 100%;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  grid-template-areas:
+    "health-overall cic-versions health-by-category health-by-category"
+    "health-by-kpi health-by-kpi health-by-kpi health-by-kpi"
+    "health-by-kpi health-by-kpi health-by-kpi health-by-kpi"
+    "health-by-kpi health-by-kpi health-by-kpi health-by-kpi";
+  gap: 20px;
+  padding: 20px;
+}
+
+.grid-item {
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 4px;
+  position: relative;
+}
+
+.section-health-overall {
+  grid-area: health-overall;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+
+.section-health-by-category {
+  grid-area: health-by-category;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+
+.section-health-by-kpi {
+  grid-area: health-by-kpi;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+
+.section-cic-versions {
+  grid-area: cic-versions;
+  position: relative;
+  overflow: auto;
+  font-size: 0.8em;
+}
+
+.section-installations {
+  grid-area: installations;
+  background: white;
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

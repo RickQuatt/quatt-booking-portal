@@ -68,6 +68,19 @@ models/*
 !models/AdminListInstallers200Response.ts
 !models/AdminListInstallers200ResponseFromJSON.ts
 !models/AdminListInstallers200ResponseToJSON.ts
+!models/CicHealthChecks.ts
+!models/CicHealthCheckEntry.ts
+!models/CicHealthCheckCategory.ts
+!models/CicHealthCheckStatus.ts
+!models/CicDashboardAggregate.ts
+!models/CicAggregate.ts
+!models/CicAggregateByCategory.ts
+!models/CicAggregateByKpi.ts
+!models/AdminDashboardCics200Response.ts
+!models/AdminDashboardCics200ResponseFromJSON.ts
+!models/AdminDashboardCics200ResponseToJSON.ts
+!models/CicHealthChecksByKpi.ts
+!models/CicHealthChecksByCategory.ts
 
 apis/*
 !apis/SupportDashboardApi.ts

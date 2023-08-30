@@ -12,6 +12,8 @@ import { ApiClientProvider, useApiClient } from "./api-client/context";
 import { Button, ButtonLink } from "./ui-components/button/Button";
 import { InstallerList } from "./installer-list/InstallerList";
 import { Loader } from "./ui-components/loader/Loader";
+import { CicDashboard } from "./cic-dashboard/CicDashboard";
+import { CICHealthList } from "./cic-health-list/CICHealthList";
 
 const queryClient = new QueryClient();
 
@@ -42,11 +44,17 @@ function App() {
           <Route path="/">
             <Home />
           </Route>
+          <Route path="/dashboard">
+            <CicDashboardRenderer />
+          </Route>
           <Route path="/installers">
             <InstallerListRenderer />
           </Route>
           <Route path="/cics">
             <CICListRenderer />
+          </Route>
+          <Route path="/cicHealth">
+            <CICHealthListRenderer />
           </Route>
           <Route path="/cics/:cicId">
             {(params) => {
@@ -71,14 +79,38 @@ const SignIn = () => {
 const Home = () => {
   return (
     <div className={classes.signin}>
+      <Link href={`/dashboard`}>
+        <ButtonLink>CIC Dashboard</ButtonLink>
+      </Link>
+      <Link href={`/cicHealth`}>
+        <ButtonLink>CIC health check list</ButtonLink>
+      </Link>
       <Link href={`/cics`}>
-        <ButtonLink>CICs</ButtonLink>
+        <ButtonLink>CIC list</ButtonLink>
       </Link>
       <Link href={`/installers`}>
         <ButtonLink>Installers</ButtonLink>
       </Link>
     </div>
   );
+};
+
+const CicDashboardRenderer = () => {
+  const apiClient = useApiClient();
+  const { data, status, error } = useQuery(
+    ["cicDashboard"],
+    () => {
+      return apiClient.adminDashboardCics();
+    },
+    {
+      refetchOnWindowFocus: false,
+    },
+  );
+
+  // TODO: Render a spinner and handle errors - 2023-06-19
+  if (status !== "success") return <Loader />;
+
+  return <CicDashboard data={data.result} />;
 };
 
 const CICDetailRenderer = ({ cicId }: { cicId: string }) => {
@@ -95,9 +127,15 @@ const CICDetailRenderer = ({ cicId }: { cicId: string }) => {
 
 const InstallerListRenderer = () => {
   const apiClient = useApiClient();
-  const { data, status, error, refetch } = useQuery("installerList", () => {
-    return apiClient.adminListInstallers();
-  });
+  const { data, status, error, refetch } = useQuery(
+    "installerList",
+    () => {
+      return apiClient.adminListInstallers();
+    },
+    {
+      refetchOnWindowFocus: false,
+    },
+  );
 
   // TODO: Render a spinner and handle errors - 2023-06-19
   if (status !== "success") return <Loader />;
@@ -107,14 +145,38 @@ const InstallerListRenderer = () => {
 
 const CICListRenderer = () => {
   const apiClient = useApiClient();
-  const { data, status, error } = useQuery("cicList", () => {
-    return apiClient.adminListCics();
-  });
+  const { data, status, error } = useQuery(
+    "cicList",
+    () => {
+      return apiClient.adminListCics();
+    },
+    {
+      refetchOnWindowFocus: false,
+    },
+  );
 
   // TODO: Render a spinner and handle errors - 2023-06-19
   if (status !== "success") return <Loader />;
 
   return <CICList data={data.result} />;
+};
+
+const CICHealthListRenderer = () => {
+  const apiClient = useApiClient();
+  const { data, status, error } = useQuery(
+    "cicList",
+    () => {
+      return apiClient.adminListCics();
+    },
+    {
+      refetchOnWindowFocus: false,
+    },
+  );
+
+  // TODO: Render a spinner and handle errors - 2023-06-19
+  if (status !== "success") return <Loader />;
+
+  return <CICHealthList data={data.result} />;
 };
 
 export default App;

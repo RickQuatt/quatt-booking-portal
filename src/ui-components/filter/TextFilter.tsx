@@ -19,6 +19,7 @@ export function TextFilter<T extends object>({
           return omit(filters, filterKey) as T;
         }
         const parsedValue = inputType === "number" ? Number(value) : value;
+        console.log(filterKey);
         return { ...filters, [filterKey]: parsedValue };
       });
     },

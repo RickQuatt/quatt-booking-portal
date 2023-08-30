@@ -15,6 +15,7 @@ import { CICDetailHeatpumps } from "./CICDetailHeatpumps";
 import { ButtonLink } from "../ui-components/button/Button";
 import { CICDetailUpdateInfo } from "./CICDetailUpdateInfo";
 import { CICDetailLastCommissioning } from "./CICDetailLastCommissioning";
+import { CICDetailHealthChecks } from "./CICDetailHealthChecks";
 
 interface CICDetailProps {
   data: AdminCic;
@@ -25,7 +26,10 @@ export function CICDetail({ data }: CICDetailProps) {
 
   return (
     <div className={classes["detail-sections"]}>
-      <div className={classes["detail-sections-left"]}>
+      <div className={classes["detail-sections-health"]}>
+        <CICDetailHealthChecks cicData={cicData} />
+      </div>
+      <div className={classes["detail-sections-main"]}>
         <CICDetailMain cicData={cicData} />
         <CICDetailNetworkConnection cicData={cicData} />
         <CICDetailUpdateInfo cicData={cicData} />
@@ -37,7 +41,7 @@ export function CICDetail({ data }: CICDetailProps) {
         <CICDetailLastCommissioning data={cicData.lastCommissioning} />
         <CICDetailJson cicData={cicData} />
       </div>
-      <div className={classes["detail-sections-right"]}>
+      <div className={classes["detail-sections-actions"]}>
         <CICDetailSide cicData={cicData} />
       </div>
       <BackButton />
@@ -47,7 +51,7 @@ export function CICDetail({ data }: CICDetailProps) {
 
 function BackButton() {
   return (
-    <Link href={`/cics`} className={classes["back-button"]}>
+    <Link href={`/cicHealth`} className={classes["back-button"]}>
       <ButtonLink className={classes["back-button"]}>← Back to list</ButtonLink>
     </Link>
   );

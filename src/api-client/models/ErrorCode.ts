@@ -19,6 +19,7 @@
 export const ErrorCode = {
   UserNotAuthorized: "USER_NOT_AUTHORIZED",
   UserNotFound: "USER_NOT_FOUND",
+  UserEmailNotVerified: "USER_EMAIL_NOT_VERIFIED",
   CicNotFound: "CIC_NOT_FOUND",
   CicUpdateError: "CIC_UPDATE_ERROR",
   UserClientDeleteError: "USER_CLIENT_DELETE_ERROR",

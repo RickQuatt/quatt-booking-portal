@@ -3,6 +3,12 @@
   --primary-color: #26926a;
   --error-color: #e0401d;
 
+  /* Health checks */
+  --health-check-green: rgba(75, 192, 192, 0.4);
+  --health-check-yellow: rgba(255, 159, 64, 0.4);
+  --health-check-red: rgba(255, 99, 132, 0.4);
+  --health-check-grey: rgba(154, 154, 154, 0.4);
+
   --button-background: #f9f9f9;
   --button-background-hover: #f1f1f1;
   --button-border-color: #777;

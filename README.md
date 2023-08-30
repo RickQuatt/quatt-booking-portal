@@ -22,9 +22,9 @@ In the `Quatt-cloud` repository, run the following:
 ```shell
 npx @openapitools/openapi-generator-cli generate \
   -i ./src/spec/schemas/api-v1.yaml \
-  -o PATH_TO_THIS_PROJECT_ON_YOUR_DEVICE/cloud-support-dashboard/src/api-client \
+  -o PATH_TO_THIS_PROJECT_ON_YOUR_DEVICE/src/api-client \
   -g typescript-fetch \
-  --additional-properties=supportsES6=true \
+  --additional-properties=supportsES6=true,modelPropertyNaming=original \
   --skip-validate-spec
 ```
 

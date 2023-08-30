@@ -3,7 +3,6 @@ import { Link } from "wouter";
 
 import classes from "./CICList.module.css";
 import {
-  CICFilters,
   CableConnectionStatusFilter,
   CreatedDateFilter,
   IDFilter,
@@ -12,8 +11,9 @@ import {
   OrderNumberFilter,
   SupervisoryControlModeFilter,
   WifiConnectionStatusFilter,
-  filterCICList,
-} from "./Filters";
+} from "./filters/Filters";
+import type { CICFilters } from "./filters/types";
+import { filterCICList } from "./filters/filterCICList";
 import { ButtonLink } from "../ui-components/button/Button";
 import { AdminCic, ConnectionStatus } from "../api-client/models";
 import { formatDate, formatDateDistance } from "../utils/formatDate";

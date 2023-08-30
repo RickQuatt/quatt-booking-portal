@@ -109,6 +109,12 @@ export interface HeatPump {
    * @memberof HeatPump
    */
   silentModeStatus: boolean;
+  /**
+   * Is the heat pump currently limited by cop?
+   * @type {boolean}
+   * @memberof HeatPump
+   */
+  limitedByCop: boolean;
 }
 
 /**
@@ -139,6 +145,7 @@ export function instanceOfHeatPump(value: object): boolean {
   isInstance = isInstance && "compressorFrequency" in value;
   isInstance = isInstance && "status" in value;
   isInstance = isInstance && "silentModeStatus" in value;
+  isInstance = isInstance && "limitedByCop" in value;
 
   return isInstance;
 }
@@ -170,6 +177,7 @@ export function HeatPumpFromJSONTyped(
     status: json["status"],
     _true: !exists(json, "true") ? undefined : json["true"],
     silentModeStatus: json["silentModeStatus"],
+    limitedByCop: json["limitedByCop"],
   };
 }
 
@@ -196,5 +204,6 @@ export function HeatPumpToJSON(value?: HeatPump | null): any {
     status: value.status,
     true: value._true,
     silentModeStatus: value.silentModeStatus,
+    limitedByCop: value.limitedByCop,
   };
 }

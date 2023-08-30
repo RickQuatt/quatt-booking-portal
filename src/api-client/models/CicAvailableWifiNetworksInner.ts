@@ -24,7 +24,7 @@ export interface CicAvailableWifiNetworksInner {
    * @type {string}
    * @memberof CicAvailableWifiNetworksInner
    */
-  sSID: string;
+  SSID: string;
   /**
    * Signal strength
    * @type {number}
@@ -58,7 +58,7 @@ export function instanceOfCicAvailableWifiNetworksInner(
   value: object,
 ): boolean {
   let isInstance = true;
-  isInstance = isInstance && "sSID" in value;
+  isInstance = isInstance && "SSID" in value;
   isInstance = isInstance && "signal" in value;
   isInstance = isInstance && "security" in value;
   isInstance = isInstance && "barsOutOf5" in value;
@@ -80,7 +80,7 @@ export function CicAvailableWifiNetworksInnerFromJSONTyped(
     return json;
   }
   return {
-    sSID: json["SSID"],
+    SSID: json["SSID"],
     signal: json["signal"],
     security: json["security"],
     encrypted: !exists(json, "encrypted") ? undefined : json["encrypted"],
@@ -98,7 +98,7 @@ export function CicAvailableWifiNetworksInnerToJSON(
     return null;
   }
   return {
-    SSID: value.sSID,
+    SSID: value.SSID,
     signal: value.signal,
     security: value.security,
     encrypted: value.encrypted,

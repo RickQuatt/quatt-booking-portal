@@ -15,6 +15,7 @@
 import * as runtime from "../runtime";
 import type {
   AdminCreateInstaller200Response,
+  AdminDashboardCics200Response,
   AdminGetCic200Response,
   AdminListCics200Response,
   AdminListInstallers200Response,
@@ -26,6 +27,8 @@ import type {
 import {
   AdminCreateInstaller200ResponseFromJSON,
   AdminCreateInstaller200ResponseToJSON,
+  AdminDashboardCics200ResponseFromJSON,
+  AdminDashboardCics200ResponseToJSON,
   AdminGetCic200ResponseFromJSON,
   AdminGetCic200ResponseToJSON,
   AdminListCics200ResponseFromJSON,
@@ -123,6 +126,36 @@ export class SupportDashboardApi extends runtime.BaseAPI {
 
   /**
    */
+  async adminCicDashboardOptionsRaw(
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<void>> {
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    const response = await this.request(
+      {
+        path: `/admin/cic/dashboard`,
+        method: "OPTIONS",
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    );
+
+    return new runtime.VoidApiResponse(response);
+  }
+
+  /**
+   */
+  async adminCicDashboardOptions(
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<void> {
+    await this.adminCicDashboardOptionsRaw(initOverrides);
+  }
+
+  /**
+   */
   async adminCicListOptionsRaw(
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<runtime.ApiResponse<void>> {
@@ -201,6 +234,49 @@ export class SupportDashboardApi extends runtime.BaseAPI {
       requestParameters,
       initOverrides,
     );
+    return await response.value();
+  }
+
+  /**
+   * CIC Dashboard
+   */
+  async adminDashboardCicsRaw(
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<AdminDashboardCics200Response>> {
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken;
+      const tokenString = await token("bearerAuth", []);
+
+      if (tokenString) {
+        headerParameters["Authorization"] = `Bearer ${tokenString}`;
+      }
+    }
+    const response = await this.request(
+      {
+        path: `/admin/cic/dashboard`,
+        method: "GET",
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    );
+
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      AdminDashboardCics200ResponseFromJSON(jsonValue),
+    );
+  }
+
+  /**
+   * CIC Dashboard
+   */
+  async adminDashboardCics(
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<AdminDashboardCics200Response> {
+    const response = await this.adminDashboardCicsRaw(initOverrides);
     return await response.value();
   }
 

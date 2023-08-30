@@ -1,0 +1,13 @@
+.sidebar {
+  flex: 0 0 auto;
+  width: 220px;
+  min-width: 0;
+  transition:
+    margin-left 0.2s,
+    visibility 0.2s;
+}
+
+.sidebar.closed {
+  margin-left: -220px;
+  visibility: hidden;
+}

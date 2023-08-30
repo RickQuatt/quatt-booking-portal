@@ -1,17 +1,28 @@
 .detail-sections {
-  display: flex;
-  gap: 22px;
-  justify-content: center;
   width: 100%;
   margin: 32px auto;
   margin-top: 72px;
   padding: 0 12px;
-  max-width: 1200px;
+  max-width: 1600px;
+
+  display: grid;
+  grid-template-columns: minmax(300px, 400px) minmax(400px, 600px) minmax(
+      300px,
+      400px
+    );
+  align-items: start;
+  grid-template-areas: "sections-health sections-main sections-actions";
+  gap: 22px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1100px) {
   .detail-sections {
-    flex-direction: column-reverse;
+    grid-template-areas:
+      "sections-actions"
+      "sections-health"
+      "sections-main";
+    grid-template-columns: minmax(200px, 500px);
+    justify-content: center;
   }
 }
 
@@ -19,22 +30,22 @@
   border: 1px solid var(--border-color);
   padding: 16px;
   border-radius: 5px;
-  flex: auto;
   background: var(--box-background);
 }
 
-.detail-sections-left {
+.detail-sections-health {
+  grid-area: sections-health;
+}
+
+.detail-sections-main {
+  grid-area: sections-main;
   display: flex;
   flex-direction: column;
   gap: 22px;
-  flex: auto;
-  max-width: 100%;
 }
 
-.detail-sections-right {
-  max-width: 500px;
-  flex: auto;
-  max-width: 100%;
+.detail-sections-actions {
+  grid-area: sections-actions;
 }
 
 .back-button {

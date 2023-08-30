@@ -25,6 +25,24 @@ import {
   CicAvailableWifiNetworksInnerFromJSONTyped,
   CicAvailableWifiNetworksInnerToJSON,
 } from "./CicAvailableWifiNetworksInner";
+import type { CicHealthCheckStatus } from "./CicHealthCheckStatus";
+import {
+  CicHealthCheckStatusFromJSON,
+  CicHealthCheckStatusFromJSONTyped,
+  CicHealthCheckStatusToJSON,
+} from "./CicHealthCheckStatus";
+import type { CicHealthChecksByCategory } from "./CicHealthChecksByCategory";
+import {
+  CicHealthChecksByCategoryFromJSON,
+  CicHealthChecksByCategoryFromJSONTyped,
+  CicHealthChecksByCategoryToJSON,
+} from "./CicHealthChecksByCategory";
+import type { CicHealthChecksByKpi } from "./CicHealthChecksByKpi";
+import {
+  CicHealthChecksByKpiFromJSON,
+  CicHealthChecksByKpiFromJSONTyped,
+  CicHealthChecksByKpiToJSON,
+} from "./CicHealthChecksByKpi";
 import type { CicStatus } from "./CicStatus";
 import {
   CicStatusFromJSON,
@@ -255,6 +273,18 @@ export interface AdminCic {
    */
   nightElectricityPrice: number | null;
   /**
+   * Night time start hour for double tariff (weekdays)
+   * @type {number}
+   * @memberof AdminCic
+   */
+  electricityNightTimeStartHour: number;
+  /**
+   * Night time end hour for double tariff (weekdays)
+   * @type {number}
+   * @memberof AdminCic
+   */
+  electricityNightTimeEndHour: number;
+  /**
    * Gas price
    * @type {number}
    * @memberof AdminCic
@@ -434,6 +464,24 @@ export interface AdminCic {
    * @memberof AdminCic
    */
   lastConnectionStatusUpdatedAt: Date | null;
+  /**
+   *
+   * @type {CicHealthCheckStatus}
+   * @memberof AdminCic
+   */
+  healthCheck: CicHealthCheckStatus;
+  /**
+   *
+   * @type {CicHealthChecksByKpi}
+   * @memberof AdminCic
+   */
+  healthChecksByKpi: CicHealthChecksByKpi;
+  /**
+   *
+   * @type {CicHealthChecksByCategory}
+   * @memberof AdminCic
+   */
+  healthChecksByCategory: CicHealthChecksByCategory;
 }
 
 /**
@@ -510,6 +558,8 @@ export function instanceOfAdminCic(value: object): boolean {
   isInstance = isInstance && "electricityPrice" in value;
   isInstance = isInstance && "dayElectricityPrice" in value;
   isInstance = isInstance && "nightElectricityPrice" in value;
+  isInstance = isInstance && "electricityNightTimeStartHour" in value;
+  isInstance = isInstance && "electricityNightTimeEndHour" in value;
   isInstance = isInstance && "gasPrice" in value;
   isInstance = isInstance && "usePricingToLimitHeatPump" in value;
   isInstance = isInstance && "silentMode" in value;
@@ -532,6 +582,9 @@ export function instanceOfAdminCic(value: object): boolean {
   isInstance = isInstance && "menderId" in value;
   isInstance = isInstance && "createdAt" in value;
   isInstance = isInstance && "lastConnectionStatusUpdatedAt" in value;
+  isInstance = isInstance && "healthCheck" in value;
+  isInstance = isInstance && "healthChecksByKpi" in value;
+  isInstance = isInstance && "healthChecksByCategory" in value;
 
   return isInstance;
 }
@@ -593,6 +646,8 @@ export function AdminCicFromJSONTyped(
     electricityPrice: json["electricityPrice"],
     dayElectricityPrice: json["dayElectricityPrice"],
     nightElectricityPrice: json["nightElectricityPrice"],
+    electricityNightTimeStartHour: json["electricityNightTimeStartHour"],
+    electricityNightTimeEndHour: json["electricityNightTimeEndHour"],
     gasPrice: json["gasPrice"],
     usePricingToLimitHeatPump: json["usePricingToLimitHeatPump"],
     silentMode: SilentModeFromJSON(json["silentMode"]),
@@ -649,6 +704,11 @@ export function AdminCicFromJSONTyped(
       json["lastConnectionStatusUpdatedAt"] === null
         ? null
         : new Date(json["lastConnectionStatusUpdatedAt"]),
+    healthCheck: CicHealthCheckStatusFromJSON(json["healthCheck"]),
+    healthChecksByKpi: CicHealthChecksByKpiFromJSON(json["healthChecksByKpi"]),
+    healthChecksByCategory: CicHealthChecksByCategoryFromJSON(
+      json["healthChecksByCategory"],
+    ),
   };
 }
 
@@ -700,6 +760,8 @@ export function AdminCicToJSON(value?: AdminCic | null): any {
     electricityPrice: value.electricityPrice,
     dayElectricityPrice: value.dayElectricityPrice,
     nightElectricityPrice: value.nightElectricityPrice,
+    electricityNightTimeStartHour: value.electricityNightTimeStartHour,
+    electricityNightTimeEndHour: value.electricityNightTimeEndHour,
     gasPrice: value.gasPrice,
     usePricingToLimitHeatPump: value.usePricingToLimitHeatPump,
     silentMode: SilentModeToJSON(value.silentMode),
@@ -740,5 +802,10 @@ export function AdminCicToJSON(value?: AdminCic | null): any {
       value.lastConnectionStatusUpdatedAt === null
         ? null
         : value.lastConnectionStatusUpdatedAt.toISOString(),
+    healthCheck: CicHealthCheckStatusToJSON(value.healthCheck),
+    healthChecksByKpi: CicHealthChecksByKpiToJSON(value.healthChecksByKpi),
+    healthChecksByCategory: CicHealthChecksByCategoryToJSON(
+      value.healthChecksByCategory,
+    ),
   };
 }
