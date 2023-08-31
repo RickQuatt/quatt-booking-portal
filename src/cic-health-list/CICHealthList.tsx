@@ -104,27 +104,13 @@ export function CICHealthList({ data }: { data: AdminCic[] }) {
             <Th>
               <IDFilter setFilters={setFilters} />
             </Th>
-            <Th>
-              <TdText>Settings</TdText>
-            </Th>
-            <Th>
-              <TdText>Connectivity</TdText>
-            </Th>
-            <Th>
-              <TdText>IO connectivity</TdText>
-            </Th>
-            <Th>
-              <TdText>Controller</TdText>
-            </Th>
-            <Th>
-              <TdText>Heat pump</TdText>
-            </Th>
-            <Th>
-              <TdText>CIC</TdText>
-            </Th>
-            <Th>
-              <TdText>Updates</TdText>
-            </Th>
+            <Th></Th>
+            <Th></Th>
+            <Th></Th>
+            <Th></Th>
+            <Th></Th>
+            <Th></Th>
+            <Th></Th>
           </Tr>
         </THead>
         <TBody>

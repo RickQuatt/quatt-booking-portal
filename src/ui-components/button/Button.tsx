@@ -17,7 +17,11 @@ export const Button = ({
     <button
       {...restProps}
       type={type}
-      className={classNames(classes.button, color && classes[color])}
+      className={classNames(
+        classes.button,
+        color && classes[color],
+        restProps.className,
+      )}
     />
   );
 };

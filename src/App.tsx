@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { auth, signinWithGoogle } from "./firebase";
 import { User } from "firebase/auth";
-import { Link, Route } from "wouter";
+import { Link, Redirect, Route } from "wouter";
 import { QueryClient, QueryClientProvider, useQuery } from "react-query";
 
 import classes from "./App.module.css";
@@ -14,6 +14,7 @@ import { InstallerList } from "./installer-list/InstallerList";
 import { Loader } from "./ui-components/loader/Loader";
 import { CicDashboard } from "./cic-dashboard/CicDashboard";
 import { CICHealthList } from "./cic-health-list/CICHealthList";
+import { Sidebar } from "./sidebar/Sidebar";
 
 const queryClient = new QueryClient();
 
@@ -35,35 +36,38 @@ function App() {
 
   if (loading) return null;
 
-  return (
-    <QueryClientProvider client={queryClient}>
-      {!user || !token ? (
-        <SignIn />
-      ) : (
-        <ApiClientProvider token={token}>
-          <Route path="/">
-            <Home />
-          </Route>
-          <Route path="/dashboard">
-            <CicDashboardRenderer />
-          </Route>
-          <Route path="/installers">
-            <InstallerListRenderer />
-          </Route>
-          <Route path="/cics">
-            <CICListRenderer />
-          </Route>
-          <Route path="/cicHealth">
-            <CICHealthListRenderer />
-          </Route>
-          <Route path="/cics/:cicId">
-            {(params) => {
-              return <CICDetailRenderer cicId={params.cicId} />;
-            }}
-          </Route>
-        </ApiClientProvider>
-      )}
-    </QueryClientProvider>
+  return !user || !token ? (
+    <SignIn />
+  ) : (
+    <div className={classes["main-container"]}>
+      <Sidebar />
+      <div className={classes["main-content"]}>
+        <QueryClientProvider client={queryClient}>
+          <ApiClientProvider token={token}>
+            <Route path="/">
+              <Redirect to="/dashboard" replace />
+            </Route>
+            <Route path="/dashboard">
+              <CicDashboardRenderer />
+            </Route>
+            <Route path="/installers">
+              <InstallerListRenderer />
+            </Route>
+            <Route path="/cics">
+              <CICListRenderer />
+            </Route>
+            <Route path="/cicHealth">
+              <CICHealthListRenderer />
+            </Route>
+            <Route path="/cics/:cicId">
+              {(params) => {
+                return <CICDetailRenderer cicId={params.cicId} />;
+              }}
+            </Route>
+          </ApiClientProvider>
+        </QueryClientProvider>
+      </div>
+    </div>
   );
 }
 
@@ -72,25 +76,6 @@ const SignIn = () => {
     <div className={classes.signin}>
       <img src={quattSvg} alt="Quatt" className={classes["main-logo"]} />
       <Button onClick={signinWithGoogle}>Authenticate</Button>
-    </div>
-  );
-};
-
-const Home = () => {
-  return (
-    <div className={classes.signin}>
-      <Link href={`/dashboard`}>
-        <ButtonLink>CIC Dashboard</ButtonLink>
-      </Link>
-      <Link href={`/cicHealth`}>
-        <ButtonLink>CIC health check list</ButtonLink>
-      </Link>
-      <Link href={`/cics`}>
-        <ButtonLink>CIC list</ButtonLink>
-      </Link>
-      <Link href={`/installers`}>
-        <ButtonLink>Installers</ButtonLink>
-      </Link>
     </div>
   );
 };
