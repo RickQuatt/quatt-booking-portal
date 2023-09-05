@@ -38,6 +38,10 @@ export function CICDetailThermostatInfo({ cicData }: { cicData: AdminCic }) {
           <FormFieldValue value={cicData.thermostatRoomTemperature} />
         </FormField>
         <FormField>
+          <FormFieldTitle>Thermostat room temperature set point</FormFieldTitle>
+          <FormFieldValue value={cicData.thermostatRoomTemperatureSetPoint} />
+        </FormField>
+        <FormField>
           <FormFieldTitle>
             Thermostat control temperature set point
           </FormFieldTitle>
