@@ -15,6 +15,7 @@ import { HealthCheckCircle } from "../cic-health-list/HealthCheckCircle";
 export function CICDetailHealthChecks({ cicData }: { cicData: AdminCic }) {
   const rows = React.useMemo(() => {
     return getEntries(cicData.healthChecksByKpi).map(([kpi, value]) => {
+      if (value === undefined) return null;
       return (
         <FormField key={kpi}>
           <FormFieldTitle>{kpiToLabel[kpi]}</FormFieldTitle>
