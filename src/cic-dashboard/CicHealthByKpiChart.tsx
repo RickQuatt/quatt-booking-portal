@@ -80,6 +80,7 @@ export function CicHealthByKpiChart({
     const labels = kpis.map((key) => kpiToLabel[key]);
     const datasets = getValues(data).reduce(
       (acc, data) => {
+        if (data === undefined) return acc;
         acc.correct.push(data.correct);
         acc.warning.push(data.warning);
         acc.error.push(data.error);
