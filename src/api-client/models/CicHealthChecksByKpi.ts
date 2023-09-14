@@ -31,12 +31,6 @@ export interface CicHealthChecksByKpi {
    * @type {CicHealthCheckEntry}
    * @memberof CicHealthChecksByKpi
    */
-  registeredCicId: CicHealthCheckEntry;
-  /**
-   *
-   * @type {CicHealthCheckEntry}
-   * @memberof CicHealthChecksByKpi
-   */
   validSettings: CicHealthCheckEntry;
   /**
    *
@@ -147,7 +141,6 @@ export interface CicHealthChecksByKpi {
  */
 export function instanceOfCicHealthChecksByKpi(value: object): boolean {
   let isInstance = true;
-  isInstance = isInstance && "registeredCicId" in value;
   isInstance = isInstance && "validSettings" in value;
   isInstance = isInstance && "isConnectedAWS" in value;
   isInstance = isInstance && "isConnectedInternet" in value;
@@ -182,7 +175,6 @@ export function CicHealthChecksByKpiFromJSONTyped(
     return json;
   }
   return {
-    registeredCicId: CicHealthCheckEntryFromJSON(json["registeredCicId"]),
     validSettings: CicHealthCheckEntryFromJSON(json["validSettings"]),
     isConnectedAWS: CicHealthCheckEntryFromJSON(json["isConnectedAWS"]),
     isConnectedInternet: CicHealthCheckEntryFromJSON(
@@ -224,7 +216,6 @@ export function CicHealthChecksByKpiToJSON(
     return null;
   }
   return {
-    registeredCicId: CicHealthCheckEntryToJSON(value.registeredCicId),
     validSettings: CicHealthCheckEntryToJSON(value.validSettings),
     isConnectedAWS: CicHealthCheckEntryToJSON(value.isConnectedAWS),
     isConnectedInternet: CicHealthCheckEntryToJSON(value.isConnectedInternet),
