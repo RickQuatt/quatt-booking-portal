@@ -114,7 +114,7 @@ export interface HeatPump {
    * @type {boolean}
    * @memberof HeatPump
    */
-  limitedByCop: boolean;
+  limitedByCop: boolean | null;
 }
 
 /**

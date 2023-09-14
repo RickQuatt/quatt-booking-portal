@@ -376,6 +376,12 @@ export interface AdminCic {
   wifiEnabled: boolean;
   /**
    *
+   * @type {Date}
+   * @memberof AdminCic
+   */
+  insightsStartAt: Date | null;
+  /**
+   *
    * @type {string}
    * @memberof AdminCic
    */
@@ -568,6 +574,7 @@ export function instanceOfAdminCic(value: object): boolean {
   isInstance = isInstance && "zipCode" in value;
   isInstance = isInstance && "orderNumber" in value;
   isInstance = isInstance && "wifiEnabled" in value;
+  isInstance = isInstance && "insightsStartAt" in value;
   isInstance = isInstance && "addressStreet" in value;
   isInstance = isInstance && "heatDeliverySystems" in value;
   isInstance = isInstance && "thermostatType" in value;
@@ -677,6 +684,10 @@ export function AdminCicFromJSONTyped(
     zipCode: json["zipCode"],
     orderNumber: json["orderNumber"],
     wifiEnabled: json["wifiEnabled"],
+    insightsStartAt:
+      json["insightsStartAt"] === null
+        ? null
+        : new Date(json["insightsStartAt"]),
     addressStreet: json["addressStreet"],
     addressNumber: !exists(json, "addressNumber")
       ? undefined
@@ -777,6 +788,10 @@ export function AdminCicToJSON(value?: AdminCic | null): any {
     zipCode: value.zipCode,
     orderNumber: value.orderNumber,
     wifiEnabled: value.wifiEnabled,
+    insightsStartAt:
+      value.insightsStartAt === null
+        ? null
+        : value.insightsStartAt.toISOString(),
     addressStreet: value.addressStreet,
     addressNumber: value.addressNumber,
     heatDeliverySystems:

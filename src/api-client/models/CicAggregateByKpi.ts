@@ -31,12 +31,6 @@ export interface CicAggregateByKpi {
    * @type {CicAggregate}
    * @memberof CicAggregateByKpi
    */
-  registeredCicId: CicAggregate;
-  /**
-   *
-   * @type {CicAggregate}
-   * @memberof CicAggregateByKpi
-   */
   validSettings: CicAggregate;
   /**
    *
@@ -147,7 +141,6 @@ export interface CicAggregateByKpi {
  */
 export function instanceOfCicAggregateByKpi(value: object): boolean {
   let isInstance = true;
-  isInstance = isInstance && "registeredCicId" in value;
   isInstance = isInstance && "validSettings" in value;
   isInstance = isInstance && "isConnectedAWS" in value;
   isInstance = isInstance && "isConnectedInternet" in value;
@@ -182,7 +175,6 @@ export function CicAggregateByKpiFromJSONTyped(
     return json;
   }
   return {
-    registeredCicId: CicAggregateFromJSON(json["registeredCicId"]),
     validSettings: CicAggregateFromJSON(json["validSettings"]),
     isConnectedAWS: CicAggregateFromJSON(json["isConnectedAWS"]),
     isConnectedInternet: CicAggregateFromJSON(json["isConnectedInternet"]),
@@ -218,7 +210,6 @@ export function CicAggregateByKpiToJSON(value?: CicAggregateByKpi | null): any {
     return null;
   }
   return {
-    registeredCicId: CicAggregateToJSON(value.registeredCicId),
     validSettings: CicAggregateToJSON(value.validSettings),
     isConnectedAWS: CicAggregateToJSON(value.isConnectedAWS),
     isConnectedInternet: CicAggregateToJSON(value.isConnectedInternet),
