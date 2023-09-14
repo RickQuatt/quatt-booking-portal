@@ -23,7 +23,7 @@ import type {
   CreateUpdateInstaller,
   ErrorResponse,
   UpdateAdminCic,
-} from "../models";
+} from "../models/index";
 import {
   AdminCreateInstaller200ResponseFromJSON,
   AdminCreateInstaller200ResponseToJSON,
@@ -43,7 +43,7 @@ import {
   ErrorResponseToJSON,
   UpdateAdminCicFromJSON,
   UpdateAdminCicToJSON,
-} from "../models";
+} from "../models/index";
 
 export interface AdminCicCicIdOptionsRequest {
   cicId: string;

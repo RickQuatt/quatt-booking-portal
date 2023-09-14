@@ -20,6 +20,8 @@ export const ErrorCode = {
   UserNotAuthorized: "USER_NOT_AUTHORIZED",
   UserNotFound: "USER_NOT_FOUND",
   UserEmailNotVerified: "USER_EMAIL_NOT_VERIFIED",
+  UserNoReferral: "USER_NO_REFERRAL",
+  UserDuplicateReferral: "USER_DUPLICATE_REFERRAL",
   CicNotFound: "CIC_NOT_FOUND",
   CicUpdateError: "CIC_UPDATE_ERROR",
   UserClientDeleteError: "USER_CLIENT_DELETE_ERROR",
@@ -56,9 +58,10 @@ export const ErrorCode = {
     "MISSING_MAXIMUM_HEATING_OUTDOOR_TEMPERATURE",
   HubspotDealNotFound: "HUBSPOT_DEAL_NOT_FOUND",
   ExternalApiError: "EXTERNAL_API_ERROR",
-  InstallationNotFound: "INSTALLATION_NOT_FOUND",
   NotPossibleWith1HeatPump: "NOT_POSSIBLE_WITH_1_HEAT_PUMP",
   CicNeedsUpdate: "CIC_NEEDS_UPDATE",
+  MissingInstallationId: "MISSING_INSTALLATION_ID",
+  InstallationInsightsNotAvailable: "INSTALLATION_INSIGHTS_NOT_AVAILABLE",
 } as const;
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];
 
