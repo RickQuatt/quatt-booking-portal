@@ -17,16 +17,9 @@ If you have the Quatt-cloud mobile API running locally, you can do the following
 
 ## Generating the API client
 
-In the `Quatt-cloud` repository, run the following:
+Run the `generate-api-client.sh` script with the first parameter being the relative path to the Quatt cloud repository.
 
-```shell
-npx @openapitools/openapi-generator-cli generate \
-  -i ./src/spec/schemas/api-v1.yaml \
-  -o PATH_TO_THIS_PROJECT_ON_YOUR_DEVICE/src/api-client \
-  -g typescript-fetch \
-  --additional-properties=supportsES6=true,modelPropertyNaming=original \
-  --skip-validate-spec
-```
+Eg. `./generate-api-client.sh ../Quatt-cloud`
 
 This will generate the API client in `src/api-client`. If there are unresolved imports in the `src/apiClient/SupportDashboardApi.ts` or elsewhere, then you must add these missing files to `src/apiClient/.openapi-generator-ignore` to make sure that file is not ignored.
 
