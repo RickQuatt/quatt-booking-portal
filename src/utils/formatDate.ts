@@ -6,6 +6,12 @@ export function formatDate(date: Date | null) {
   return date.toISOString().split("T")[0];
 }
 
+// format date as 2023-05-23 00:00:00 and remove T
+export function formatDateTime(date: Date | null) {
+  if (!date) return null;
+  return date.toISOString().replace("T", " ").split(".")[0];
+}
+
 // as in "x minutes ago"
 export function formatDateDistance(date: Date | null) {
   if (!date) return null;
