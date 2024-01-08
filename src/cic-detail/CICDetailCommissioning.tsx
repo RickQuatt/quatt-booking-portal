@@ -11,7 +11,13 @@ import { Accordion, AccordionItem } from "../ui-components/accordion/Accordion";
 import { formatDateTime } from "../utils/formatDate";
 import React from "react";
 
-export function CICDetailCommissioning({ cicData }: { cicData: AdminCic }) {
+interface CICDetailCommissioningProps {
+  cicData: AdminCic;
+}
+
+export function CICDetailCommissioning({
+  cicData,
+}: CICDetailCommissioningProps) {
   return (
     <div className={classes["detail-section"]}>
       <CICDetailSectionHeader title="Commissioning  details" />
