@@ -8,13 +8,10 @@ import {
 import classes from "./CICDetail.module.css";
 import { CICDetailSectionHeader } from "./CICDetailSectionHeader";
 import { Accordion, AccordionItem } from "../ui-components/accordion/Accordion";
-import { useState } from "react";
 import { formatDateTime } from "../utils/formatDate";
+import React from "react";
 
 export function CICDetailCommissioning({ cicData }: { cicData: AdminCic }) {
-  const [isOpen, setIsOpen] = useState(false);
-  // console.log(cicData.commissioningHistory[0]);
-
   return (
     <div className={classes["detail-section"]}>
       <CICDetailSectionHeader title="Commissioning  details" />
@@ -23,17 +20,28 @@ export function CICDetailCommissioning({ cicData }: { cicData: AdminCic }) {
           <FormFieldTitle>Date of commissionings</FormFieldTitle>
           <Accordion>
             {cicData.commissioningHistory.map((commissioning) => (
-              <AccordionItem
-                title={formatDateTime(commissioning.createdAt) || "No date"}
-                isOpen={isOpen}
-                onChangeIsOpen={() => setIsOpen(!isOpen)}
-              >
-                <FormFieldJson value={commissioning} />
-              </AccordionItem>
+              <CICDetailCommissioningItem commissioning={commissioning} />
             ))}
           </Accordion>
         </FormField>
       </FormSection>
     </div>
+  );
+}
+
+function CICDetailCommissioningItem({
+  commissioning,
+}: {
+  commissioning: AdminCic["commissioningHistory"][0];
+}) {
+  const [isOpen, setIsOpen] = React.useState(false);
+  return (
+    <AccordionItem
+      title={formatDateTime(commissioning.createdAt) || "No date"}
+      isOpen={isOpen}
+      onChangeIsOpen={() => setIsOpen(!isOpen)}
+    >
+      <FormFieldJson value={commissioning} />
+    </AccordionItem>
   );
 }
