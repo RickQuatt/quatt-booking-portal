@@ -10,7 +10,7 @@ import {
 } from "../ui-components/table/Table";
 import classes from "./CICDetail.module.css";
 import { CICDetailSectionHeader } from "./CICDetailSectionHeader";
-import { formatDate } from "../utils/formatDate";
+import { formatDateTime } from "../utils/formatDate";
 
 export function CICDetailState({ cicData }: { cicData: AdminCic }) {
   return (
@@ -33,7 +33,7 @@ export function CICDetailState({ cicData }: { cicData: AdminCic }) {
               {cicData.stateHistory.map((state) => (
                 <Tr>
                   <Td>
-                    <TdText>{formatDate(state.startAt)}</TdText>
+                    <TdText>{formatDateTime(state.startAt)}</TdText>
                   </Td>
                   <Td>
                     <TdText>{state.status}</TdText>
