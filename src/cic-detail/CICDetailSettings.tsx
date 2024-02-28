@@ -22,7 +22,7 @@ export function CICDetailSettings({ cicData }: CICDetailProps) {
       <CICDetailSectionHeader title="Settings history" />
       <FormSection>
         <FormField>
-          <FormFieldTitle>Date of created setting</FormFieldTitle>
+          <FormFieldTitle>Date of updated setting</FormFieldTitle>
           <div className={classes["detail-section-commissioning"]}>
             <Accordion>
               {cicData.settingsUpdates.map((setting) => (
@@ -48,7 +48,13 @@ function CICDetailSettingsItem({
   return (
     <AccordionItem
       title={formatDateTime(settingsUpdate.createdAt) || "No date"}
-      additionalInfo={`Updated by: ${settingsUpdate.fullname}`}
+      additionalInfo={
+        <>
+          <div>Updated by: {settingsUpdate.fullname}</div>
+          <div>Is Confirmed: {settingsUpdate.isUnconfirmed ? "❌" : "✅"}</div>
+        </>
+      }
+      // additionalInfo={`Updated by: ${settingsUpdate.fullname}`}
       isOpen={isOpen}
       onChangeIsOpen={() => setIsOpen(!isOpen)}
     >

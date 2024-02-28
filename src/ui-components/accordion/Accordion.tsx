@@ -2,6 +2,7 @@ import classes from "./Accordion.module.css";
 
 import CaretRight from "../../assets/icons/caret-right.svg";
 import classNames from "classnames";
+import React from "react";
 
 interface AccordionProps extends React.PropsWithChildren {}
 
@@ -11,7 +12,7 @@ export function Accordion(props: AccordionProps) {
 
 interface AccordionItemProps extends React.PropsWithChildren {
   title: string;
-  additionalInfo?: string | null;
+  additionalInfo?: React.ReactNode;
   isOpen?: boolean;
   onChangeIsOpen?: () => void;
 }
@@ -32,7 +33,7 @@ export function AccordionItem({
           {additionalInfo && (
             <>
               <br />
-              <div>{additionalInfo}</div>
+              {additionalInfo}
             </>
           )}
         </div>
