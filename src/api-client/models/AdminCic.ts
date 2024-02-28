@@ -49,6 +49,12 @@ import {
   CicHealthChecksByKpiFromJSONTyped,
   CicHealthChecksByKpiToJSON,
 } from "./CicHealthChecksByKpi";
+import type { CicSettingsUpdate } from "./CicSettingsUpdate";
+import {
+  CicSettingsUpdateFromJSON,
+  CicSettingsUpdateFromJSONTyped,
+  CicSettingsUpdateToJSON,
+} from "./CicSettingsUpdate";
 import type { CicState } from "./CicState";
 import {
   CicStateFromJSON,
@@ -417,6 +423,18 @@ export interface AdminCic {
    */
   nightMaxSoundLevel: MaxSoundLevel;
   /**
+   * Outside temperature in degrees celcius
+   * @type {number}
+   * @memberof AdminCic
+   */
+  temperatureOutside: number | null;
+  /**
+   * Water temperature in degrees celcius
+   * @type {number}
+   * @memberof AdminCic
+   */
+  waterTemperature: number | null;
+  /**
    *
    * @type {Array<HeatDeliverySystem>}
    * @memberof AdminCic
@@ -518,6 +536,12 @@ export interface AdminCic {
    * @memberof AdminCic
    */
   commissioningHistory: Array<CicCommissioning>;
+  /**
+   *
+   * @type {Array<CicSettingsUpdate>}
+   * @memberof AdminCic
+   */
+  settingsUpdates: Array<CicSettingsUpdate>;
 }
 
 /**
@@ -609,6 +633,8 @@ export function instanceOfAdminCic(value: object): boolean {
   isInstance = isInstance && "hasSoundSlider" in value;
   isInstance = isInstance && "dayMaxSoundLevel" in value;
   isInstance = isInstance && "nightMaxSoundLevel" in value;
+  isInstance = isInstance && "temperatureOutside" in value;
+  isInstance = isInstance && "waterTemperature" in value;
   isInstance = isInstance && "heatDeliverySystems" in value;
   isInstance = isInstance && "thermostatType" in value;
   isInstance = isInstance && "boilerType" in value;
@@ -626,6 +652,7 @@ export function instanceOfAdminCic(value: object): boolean {
   isInstance = isInstance && "healthChecksByCategory" in value;
   isInstance = isInstance && "stateHistory" in value;
   isInstance = isInstance && "commissioningHistory" in value;
+  isInstance = isInstance && "settingsUpdates" in value;
 
   return isInstance;
 }
@@ -726,6 +753,8 @@ export function AdminCicFromJSONTyped(
     hasSoundSlider: json["hasSoundSlider"],
     dayMaxSoundLevel: MaxSoundLevelFromJSON(json["dayMaxSoundLevel"]),
     nightMaxSoundLevel: MaxSoundLevelFromJSON(json["nightMaxSoundLevel"]),
+    temperatureOutside: json["temperatureOutside"],
+    waterTemperature: json["waterTemperature"],
     heatDeliverySystems:
       json["heatDeliverySystems"] === null
         ? null
@@ -754,6 +783,9 @@ export function AdminCicFromJSONTyped(
     stateHistory: (json["stateHistory"] as Array<any>).map(CicStateFromJSON),
     commissioningHistory: (json["commissioningHistory"] as Array<any>).map(
       CicCommissioningFromJSON,
+    ),
+    settingsUpdates: (json["settingsUpdates"] as Array<any>).map(
+      CicSettingsUpdateFromJSON,
     ),
   };
 }
@@ -831,6 +863,8 @@ export function AdminCicToJSON(value?: AdminCic | null): any {
     hasSoundSlider: value.hasSoundSlider,
     dayMaxSoundLevel: MaxSoundLevelToJSON(value.dayMaxSoundLevel),
     nightMaxSoundLevel: MaxSoundLevelToJSON(value.nightMaxSoundLevel),
+    temperatureOutside: value.temperatureOutside,
+    waterTemperature: value.waterTemperature,
     heatDeliverySystems:
       value.heatDeliverySystems === null
         ? null
@@ -859,6 +893,9 @@ export function AdminCicToJSON(value?: AdminCic | null): any {
     stateHistory: (value.stateHistory as Array<any>).map(CicStateToJSON),
     commissioningHistory: (value.commissioningHistory as Array<any>).map(
       CicCommissioningToJSON,
+    ),
+    settingsUpdates: (value.settingsUpdates as Array<any>).map(
+      CicSettingsUpdateToJSON,
     ),
   };
 }
