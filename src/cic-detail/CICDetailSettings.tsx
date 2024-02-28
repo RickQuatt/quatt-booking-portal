@@ -54,7 +54,6 @@ function CICDetailSettingsItem({
           <div>Is Confirmed: {settingsUpdate.isUnconfirmed ? "❌" : "✅"}</div>
         </>
       }
-      // additionalInfo={`Updated by: ${settingsUpdate.fullname}`}
       isOpen={isOpen}
       onChangeIsOpen={() => setIsOpen(!isOpen)}
     >
