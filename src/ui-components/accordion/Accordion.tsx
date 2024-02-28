@@ -2,6 +2,7 @@ import classes from "./Accordion.module.css";
 
 import CaretRight from "../../assets/icons/caret-right.svg";
 import classNames from "classnames";
+import React from "react";
 
 interface AccordionProps extends React.PropsWithChildren {}
 
@@ -11,12 +12,14 @@ export function Accordion(props: AccordionProps) {
 
 interface AccordionItemProps extends React.PropsWithChildren {
   title: string;
+  additionalInfo?: React.ReactNode;
   isOpen?: boolean;
   onChangeIsOpen?: () => void;
 }
 
 export function AccordionItem({
   title,
+  additionalInfo,
   isOpen = true,
   onChangeIsOpen,
   children,
@@ -25,7 +28,15 @@ export function AccordionItem({
     <div className={classes["accordion-item"]}>
       <div className={classes["accordion-item-title"]} onClick={onChangeIsOpen}>
         {">"}
-        <div>{title}</div>
+        <div>
+          {title}
+          {additionalInfo && (
+            <>
+              <br />
+              {additionalInfo}
+            </>
+          )}
+        </div>
       </div>
       <div
         className={classNames(
