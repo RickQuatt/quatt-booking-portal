@@ -5,7 +5,6 @@ import {
   FormFieldValue,
   FormSection,
 } from "../ui-components/form/Form";
-import { formatDate } from "../utils/formatDate";
 import classes from "./CICDetail.module.css";
 import { CICDetailSectionHeader } from "./CICDetailSectionHeader";
 
