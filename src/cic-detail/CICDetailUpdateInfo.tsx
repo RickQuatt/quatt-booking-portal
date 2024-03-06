@@ -31,10 +31,6 @@ export function CICDetailUpdateInfo({ cicData }: { cicData: AdminCic }) {
           <FormFieldValue value={cicData.needsUpdate} />
         </FormField>
         <FormField>
-          <FormFieldTitle>Update until</FormFieldTitle>
-          <FormFieldValue value={formatDate(cicData.updateUntil)} />
-        </FormField>
-        <FormField>
           <FormFieldTitle>Mender ID</FormFieldTitle>
           <FormFieldValue value={cicData.menderId} />
         </FormField>
