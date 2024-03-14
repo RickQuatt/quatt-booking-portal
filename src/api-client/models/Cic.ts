@@ -91,18 +91,6 @@ export interface Cic {
    * @type {string}
    * @memberof Cic
    */
-  updateStatus: CicUpdateStatusEnum;
-  /**
-   *
-   * @type {Date}
-   * @memberof Cic
-   */
-  updateUntil: Date | null;
-  /**
-   *
-   * @type {string}
-   * @memberof Cic
-   */
   boilerDemand: CicBoilerDemandEnum;
   /**
    * Amount of power in watt
@@ -171,12 +159,6 @@ export interface Cic {
    */
   thermostatControlTemperatureSetPoint: number | null;
   /**
-   * Temperature in degrees celcius of supply
-   * @type {number}
-   * @memberof Cic
-   */
-  supplyTemperature: number | null;
-  /**
    *
    * @type {CicStatus}
    * @memberof Cic
@@ -201,16 +183,6 @@ export interface Cic {
    */
   quattBuild: string | null;
 }
-
-/**
- * @export
- */
-export const CicUpdateStatusEnum = {
-  UpToDate: "up_to_date",
-  Updating: "updating",
-} as const;
-export type CicUpdateStatusEnum =
-  (typeof CicUpdateStatusEnum)[keyof typeof CicUpdateStatusEnum];
 
 /**
  * @export
@@ -243,8 +215,6 @@ export function instanceOfCic(value: object): boolean {
   isInstance = isInstance && "availableWifiNetworks" in value;
   isInstance = isInstance && "lastScannedForWifi" in value;
   isInstance = isInstance && "isScanningForWifi" in value;
-  isInstance = isInstance && "updateStatus" in value;
-  isInstance = isInstance && "updateUntil" in value;
   isInstance = isInstance && "boilerDemand" in value;
   isInstance = isInstance && "boilerPower" in value;
   isInstance = isInstance && "boilerWaterTemperatureIn" in value;
@@ -257,7 +227,6 @@ export function instanceOfCic(value: object): boolean {
   isInstance = isInstance && "showThermostatTemperatures" in value;
   isInstance = isInstance && "boilerOn" in value;
   isInstance = isInstance && "thermostatControlTemperatureSetPoint" in value;
-  isInstance = isInstance && "supplyTemperature" in value;
   isInstance = isInstance && "status" in value;
   isInstance = isInstance && "serial" in value;
   isInstance = isInstance && "numberOfHeatPumps" in value;
@@ -295,9 +264,6 @@ export function CicFromJSONTyped(json: any, ignoreDiscriminator: boolean): Cic {
         ? null
         : new Date(json["lastScannedForWifi"]),
     isScanningForWifi: json["isScanningForWifi"],
-    updateStatus: json["updateStatus"],
-    updateUntil:
-      json["updateUntil"] === null ? null : new Date(json["updateUntil"]),
     boilerDemand: json["boilerDemand"],
     boilerPower: json["boilerPower"],
     boilerWaterTemperatureIn: json["boilerWaterTemperatureIn"],
@@ -312,7 +278,6 @@ export function CicFromJSONTyped(json: any, ignoreDiscriminator: boolean): Cic {
     boilerOn: json["boilerOn"],
     thermostatControlTemperatureSetPoint:
       json["thermostatControlTemperatureSetPoint"],
-    supplyTemperature: json["supplyTemperature"],
     status: CicStatusFromJSON(json["status"]),
     serial: json["serial"],
     numberOfHeatPumps: json["numberOfHeatPumps"],
@@ -344,9 +309,6 @@ export function CicToJSON(value?: Cic | null): any {
         ? null
         : value.lastScannedForWifi.toISOString(),
     isScanningForWifi: value.isScanningForWifi,
-    updateStatus: value.updateStatus,
-    updateUntil:
-      value.updateUntil === null ? null : value.updateUntil.toISOString(),
     boilerDemand: value.boilerDemand,
     boilerPower: value.boilerPower,
     boilerWaterTemperatureIn: value.boilerWaterTemperatureIn,
@@ -360,7 +322,6 @@ export function CicToJSON(value?: Cic | null): any {
     boilerOn: value.boilerOn,
     thermostatControlTemperatureSetPoint:
       value.thermostatControlTemperatureSetPoint,
-    supplyTemperature: value.supplyTemperature,
     status: CicStatusToJSON(value.status),
     serial: value.serial,
     numberOfHeatPumps: value.numberOfHeatPumps,

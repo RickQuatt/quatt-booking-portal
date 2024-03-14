@@ -109,18 +109,6 @@ export interface MeCic {
    * @type {string}
    * @memberof MeCic
    */
-  updateStatus: MeCicUpdateStatusEnum;
-  /**
-   *
-   * @type {Date}
-   * @memberof MeCic
-   */
-  updateUntil: Date | null;
-  /**
-   *
-   * @type {string}
-   * @memberof MeCic
-   */
   boilerDemand: MeCicBoilerDemandEnum;
   /**
    * Amount of power in watt
@@ -189,12 +177,6 @@ export interface MeCic {
    */
   thermostatControlTemperatureSetPoint: number | null;
   /**
-   * Temperature in degrees celcius of supply
-   * @type {number}
-   * @memberof MeCic
-   */
-  supplyTemperature: number | null;
-  /**
    *
    * @type {CicStatus}
    * @memberof MeCic
@@ -218,6 +200,18 @@ export interface MeCic {
    * @memberof MeCic
    */
   quattBuild: string | null;
+  /**
+   * The (external) installationId - starts with INS-
+   * @type {string}
+   * @memberof MeCic
+   */
+  installationId: string;
+  /**
+   *
+   * @type {Date}
+   * @memberof MeCic
+   */
+  installedAt: Date;
   /**
    * The amount (liter) of water flowing per hour
    * @type {number}
@@ -385,16 +379,6 @@ export interface MeCic {
 /**
  * @export
  */
-export const MeCicUpdateStatusEnum = {
-  UpToDate: "up_to_date",
-  Updating: "updating",
-} as const;
-export type MeCicUpdateStatusEnum =
-  (typeof MeCicUpdateStatusEnum)[keyof typeof MeCicUpdateStatusEnum];
-
-/**
- * @export
- */
 export const MeCicBoilerDemandEnum = {
   Heat: "heat",
 } as const;
@@ -423,8 +407,6 @@ export function instanceOfMeCic(value: object): boolean {
   isInstance = isInstance && "availableWifiNetworks" in value;
   isInstance = isInstance && "lastScannedForWifi" in value;
   isInstance = isInstance && "isScanningForWifi" in value;
-  isInstance = isInstance && "updateStatus" in value;
-  isInstance = isInstance && "updateUntil" in value;
   isInstance = isInstance && "boilerDemand" in value;
   isInstance = isInstance && "boilerPower" in value;
   isInstance = isInstance && "boilerWaterTemperatureIn" in value;
@@ -437,11 +419,12 @@ export function instanceOfMeCic(value: object): boolean {
   isInstance = isInstance && "showThermostatTemperatures" in value;
   isInstance = isInstance && "boilerOn" in value;
   isInstance = isInstance && "thermostatControlTemperatureSetPoint" in value;
-  isInstance = isInstance && "supplyTemperature" in value;
   isInstance = isInstance && "status" in value;
   isInstance = isInstance && "serial" in value;
   isInstance = isInstance && "numberOfHeatPumps" in value;
   isInstance = isInstance && "quattBuild" in value;
+  isInstance = isInstance && "installationId" in value;
+  isInstance = isInstance && "installedAt" in value;
   isInstance = isInstance && "flowRate" in value;
   isInstance = isInstance && "electricityPrice" in value;
   isInstance = isInstance && "dayElectricityPrice" in value;
@@ -498,9 +481,6 @@ export function MeCicFromJSONTyped(
         ? null
         : new Date(json["lastScannedForWifi"]),
     isScanningForWifi: json["isScanningForWifi"],
-    updateStatus: json["updateStatus"],
-    updateUntil:
-      json["updateUntil"] === null ? null : new Date(json["updateUntil"]),
     boilerDemand: json["boilerDemand"],
     boilerPower: json["boilerPower"],
     boilerWaterTemperatureIn: json["boilerWaterTemperatureIn"],
@@ -515,11 +495,12 @@ export function MeCicFromJSONTyped(
     boilerOn: json["boilerOn"],
     thermostatControlTemperatureSetPoint:
       json["thermostatControlTemperatureSetPoint"],
-    supplyTemperature: json["supplyTemperature"],
     status: CicStatusFromJSON(json["status"]),
     serial: json["serial"],
     numberOfHeatPumps: json["numberOfHeatPumps"],
     quattBuild: json["quattBuild"],
+    installationId: json["installationId"],
+    installedAt: new Date(json["installedAt"]),
     flowRate: json["flowRate"],
     electricityPrice: json["electricityPrice"],
     dayElectricityPrice: json["dayElectricityPrice"],
@@ -591,9 +572,6 @@ export function MeCicToJSON(value?: MeCic | null): any {
         ? null
         : value.lastScannedForWifi.toISOString(),
     isScanningForWifi: value.isScanningForWifi,
-    updateStatus: value.updateStatus,
-    updateUntil:
-      value.updateUntil === null ? null : value.updateUntil.toISOString(),
     boilerDemand: value.boilerDemand,
     boilerPower: value.boilerPower,
     boilerWaterTemperatureIn: value.boilerWaterTemperatureIn,
@@ -607,11 +585,12 @@ export function MeCicToJSON(value?: MeCic | null): any {
     boilerOn: value.boilerOn,
     thermostatControlTemperatureSetPoint:
       value.thermostatControlTemperatureSetPoint,
-    supplyTemperature: value.supplyTemperature,
     status: CicStatusToJSON(value.status),
     serial: value.serial,
     numberOfHeatPumps: value.numberOfHeatPumps,
     quattBuild: value.quattBuild,
+    installationId: value.installationId,
+    installedAt: value.installedAt.toISOString(),
     flowRate: value.flowRate,
     electricityPrice: value.electricityPrice,
     dayElectricityPrice: value.dayElectricityPrice,

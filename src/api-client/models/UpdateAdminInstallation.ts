@@ -19,12 +19,6 @@ import {
   BoilerTypeFromJSONTyped,
   BoilerTypeToJSON,
 } from "./BoilerType";
-import type { CicStatus } from "./CicStatus";
-import {
-  CicStatusFromJSON,
-  CicStatusFromJSONTyped,
-  CicStatusToJSON,
-} from "./CicStatus";
 import type { MaxSoundLevel } from "./MaxSoundLevel";
 import {
   MaxSoundLevelFromJSON,
@@ -47,144 +41,106 @@ import {
 /**
  *
  * @export
- * @interface UpdateAdminCic
+ * @interface UpdateAdminInstallation
  */
-export interface UpdateAdminCic {
+export interface UpdateAdminInstallation {
   /**
    *
-   * @type {string}
-   * @memberof UpdateAdminCic
-   */
-  wifiSSID?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof UpdateAdminCic
-   */
-  wifiPassword?: string;
-  /**
-   * Electricity price for single tariff
    * @type {number}
-   * @memberof UpdateAdminCic
+   * @memberof UpdateAdminInstallation
    */
   electricityPrice?: number | null;
   /**
-   * Day electricity price for double tariff
+   *
    * @type {number}
-   * @memberof UpdateAdminCic
+   * @memberof UpdateAdminInstallation
    */
   dayElectricityPrice?: number | null;
   /**
-   * Night electricity price for double tariff
+   *
    * @type {number}
-   * @memberof UpdateAdminCic
+   * @memberof UpdateAdminInstallation
    */
   nightElectricityPrice?: number | null;
   /**
-   * Gas price
+   *
    * @type {number}
-   * @memberof UpdateAdminCic
+   * @memberof UpdateAdminInstallation
    */
-  gasPrice?: number | null;
-  /**
-   * When false, send default prices to not limit the heat pump
-   * @type {boolean}
-   * @memberof UpdateAdminCic
-   */
-  usePricingToLimitHeatPump?: boolean;
-  /**
-   *
-   * @type {SilentMode}
-   * @memberof UpdateAdminCic
-   */
-  silentMode?: SilentMode;
-  /**
-   * Name of the CIC (max 100 characters) for the user
-   * @type {string}
-   * @memberof UpdateAdminCic
-   */
-  name?: string | null;
-  /**
-   *
-   * @type {MaxSoundLevel}
-   * @memberof UpdateAdminCic
-   */
-  dayMaxSoundLevel?: MaxSoundLevel;
-  /**
-   *
-   * @type {MaxSoundLevel}
-   * @memberof UpdateAdminCic
-   */
-  nightMaxSoundLevel?: MaxSoundLevel;
-  /**
-   *
-   * @type {CicStatus}
-   * @memberof UpdateAdminCic
-   */
-  status?: CicStatus;
+  gasPrice?: number;
   /**
    * Rated maximum house power in watt
    * @type {number}
-   * @memberof UpdateAdminCic
+   * @memberof UpdateAdminInstallation
    */
   ratedMaximumHousePower?: number | null;
   /**
    * Temperature in degrees celcius
    * @type {number}
-   * @memberof UpdateAdminCic
+   * @memberof UpdateAdminInstallation
    */
   maximumHeatingOutdoorTemperature?: number | null;
   /**
    *
-   * @type {string}
-   * @memberof UpdateAdminCic
+   * @type {MaxSoundLevel}
+   * @memberof UpdateAdminInstallation
    */
-  orderNumber?: string | null;
+  dayMaxSoundLevel?: MaxSoundLevel;
+  /**
+   *
+   * @type {MaxSoundLevel}
+   * @memberof UpdateAdminInstallation
+   */
+  nightMaxSoundLevel?: MaxSoundLevel;
+  /**
+   *
+   * @type {SilentMode}
+   * @memberof UpdateAdminInstallation
+   */
+  silentMode?: SilentMode;
   /**
    *
    * @type {BoilerType}
-   * @memberof UpdateAdminCic
+   * @memberof UpdateAdminInstallation
    */
   boilerType?: BoilerType | null;
   /**
    *
    * @type {ThermostatType}
-   * @memberof UpdateAdminCic
+   * @memberof UpdateAdminInstallation
    */
   thermostatType?: ThermostatType | null;
   /**
    *
    * @type {number}
-   * @memberof UpdateAdminCic
+   * @memberof UpdateAdminInstallation
    */
   numberOfHeatPumps?: number;
 }
 
 /**
- * Check if a given object implements the UpdateAdminCic interface.
+ * Check if a given object implements the UpdateAdminInstallation interface.
  */
-export function instanceOfUpdateAdminCic(value: object): boolean {
+export function instanceOfUpdateAdminInstallation(value: object): boolean {
   let isInstance = true;
 
   return isInstance;
 }
 
-export function UpdateAdminCicFromJSON(json: any): UpdateAdminCic {
-  return UpdateAdminCicFromJSONTyped(json, false);
+export function UpdateAdminInstallationFromJSON(
+  json: any,
+): UpdateAdminInstallation {
+  return UpdateAdminInstallationFromJSONTyped(json, false);
 }
 
-export function UpdateAdminCicFromJSONTyped(
+export function UpdateAdminInstallationFromJSONTyped(
   json: any,
   ignoreDiscriminator: boolean,
-): UpdateAdminCic {
+): UpdateAdminInstallation {
   if (json === undefined || json === null) {
     return json;
   }
   return {
-    wifiSSID: !exists(json, "wifiSSID") ? undefined : json["wifiSSID"],
-    wifiPassword: !exists(json, "wifiPassword")
-      ? undefined
-      : json["wifiPassword"],
     electricityPrice: !exists(json, "electricityPrice")
       ? undefined
       : json["electricityPrice"],
@@ -195,22 +151,6 @@ export function UpdateAdminCicFromJSONTyped(
       ? undefined
       : json["nightElectricityPrice"],
     gasPrice: !exists(json, "gasPrice") ? undefined : json["gasPrice"],
-    usePricingToLimitHeatPump: !exists(json, "usePricingToLimitHeatPump")
-      ? undefined
-      : json["usePricingToLimitHeatPump"],
-    silentMode: !exists(json, "silentMode")
-      ? undefined
-      : SilentModeFromJSON(json["silentMode"]),
-    name: !exists(json, "name") ? undefined : json["name"],
-    dayMaxSoundLevel: !exists(json, "dayMaxSoundLevel")
-      ? undefined
-      : MaxSoundLevelFromJSON(json["dayMaxSoundLevel"]),
-    nightMaxSoundLevel: !exists(json, "nightMaxSoundLevel")
-      ? undefined
-      : MaxSoundLevelFromJSON(json["nightMaxSoundLevel"]),
-    status: !exists(json, "status")
-      ? undefined
-      : CicStatusFromJSON(json["status"]),
     ratedMaximumHousePower: !exists(json, "ratedMaximumHousePower")
       ? undefined
       : json["ratedMaximumHousePower"],
@@ -220,7 +160,15 @@ export function UpdateAdminCicFromJSONTyped(
     )
       ? undefined
       : json["maximumHeatingOutdoorTemperature"],
-    orderNumber: !exists(json, "orderNumber") ? undefined : json["orderNumber"],
+    dayMaxSoundLevel: !exists(json, "dayMaxSoundLevel")
+      ? undefined
+      : MaxSoundLevelFromJSON(json["dayMaxSoundLevel"]),
+    nightMaxSoundLevel: !exists(json, "nightMaxSoundLevel")
+      ? undefined
+      : MaxSoundLevelFromJSON(json["nightMaxSoundLevel"]),
+    silentMode: !exists(json, "silentMode")
+      ? undefined
+      : SilentModeFromJSON(json["silentMode"]),
     boilerType: !exists(json, "boilerType")
       ? undefined
       : BoilerTypeFromJSON(json["boilerType"]),
@@ -233,7 +181,9 @@ export function UpdateAdminCicFromJSONTyped(
   };
 }
 
-export function UpdateAdminCicToJSON(value?: UpdateAdminCic | null): any {
+export function UpdateAdminInstallationToJSON(
+  value?: UpdateAdminInstallation | null,
+): any {
   if (value === undefined) {
     return undefined;
   }
@@ -241,21 +191,15 @@ export function UpdateAdminCicToJSON(value?: UpdateAdminCic | null): any {
     return null;
   }
   return {
-    wifiSSID: value.wifiSSID,
-    wifiPassword: value.wifiPassword,
     electricityPrice: value.electricityPrice,
     dayElectricityPrice: value.dayElectricityPrice,
     nightElectricityPrice: value.nightElectricityPrice,
     gasPrice: value.gasPrice,
-    usePricingToLimitHeatPump: value.usePricingToLimitHeatPump,
-    silentMode: SilentModeToJSON(value.silentMode),
-    name: value.name,
-    dayMaxSoundLevel: MaxSoundLevelToJSON(value.dayMaxSoundLevel),
-    nightMaxSoundLevel: MaxSoundLevelToJSON(value.nightMaxSoundLevel),
-    status: CicStatusToJSON(value.status),
     ratedMaximumHousePower: value.ratedMaximumHousePower,
     maximumHeatingOutdoorTemperature: value.maximumHeatingOutdoorTemperature,
-    orderNumber: value.orderNumber,
+    dayMaxSoundLevel: MaxSoundLevelToJSON(value.dayMaxSoundLevel),
+    nightMaxSoundLevel: MaxSoundLevelToJSON(value.nightMaxSoundLevel),
+    silentMode: SilentModeToJSON(value.silentMode),
     boilerType: BoilerTypeToJSON(value.boilerType),
     thermostatType: ThermostatTypeToJSON(value.thermostatType),
     numberOfHeatPumps: value.numberOfHeatPumps,
