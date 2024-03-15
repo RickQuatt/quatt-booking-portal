@@ -55,6 +55,18 @@ export interface CicState {
    * @memberof CicState
    */
   startAt: Date;
+  /**
+   *
+   * @type {Date}
+   * @memberof CicState
+   */
+  createdAt: Date;
+  /**
+   *
+   * @type {Date}
+   * @memberof CicState
+   */
+  updatedAt: Date;
 }
 
 /**
@@ -79,6 +91,8 @@ export function instanceOfCicState(value: object): boolean {
   isInstance = isInstance && "cicId" in value;
   isInstance = isInstance && "status" in value;
   isInstance = isInstance && "startAt" in value;
+  isInstance = isInstance && "createdAt" in value;
+  isInstance = isInstance && "updatedAt" in value;
 
   return isInstance;
 }
@@ -105,6 +119,8 @@ export function CicStateFromJSONTyped(
       : json["installationId"],
     status: json["status"],
     startAt: new Date(json["startAt"]),
+    createdAt: new Date(json["createdAt"]),
+    updatedAt: new Date(json["updatedAt"]),
   };
 }
 
@@ -122,5 +138,7 @@ export function CicStateToJSON(value?: CicState | null): any {
     installationId: value.installationId,
     status: value.status,
     startAt: value.startAt.toISOString(),
+    createdAt: value.createdAt.toISOString(),
+    updatedAt: value.updatedAt.toISOString(),
   };
 }

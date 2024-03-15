@@ -133,18 +133,6 @@ export interface InstallerCic {
    * @type {string}
    * @memberof InstallerCic
    */
-  updateStatus: InstallerCicUpdateStatusEnum;
-  /**
-   *
-   * @type {Date}
-   * @memberof InstallerCic
-   */
-  updateUntil: Date | null;
-  /**
-   *
-   * @type {string}
-   * @memberof InstallerCic
-   */
   boilerDemand: InstallerCicBoilerDemandEnum;
   /**
    * Amount of power in watt
@@ -213,12 +201,6 @@ export interface InstallerCic {
    */
   thermostatControlTemperatureSetPoint: number | null;
   /**
-   * Temperature in degrees celcius of supply
-   * @type {number}
-   * @memberof InstallerCic
-   */
-  supplyTemperature: number | null;
-  /**
    *
    * @type {CicStatus}
    * @memberof InstallerCic
@@ -242,6 +224,18 @@ export interface InstallerCic {
    * @memberof InstallerCic
    */
   quattBuild: string | null;
+  /**
+   * The (external) installationId - starts with INS-
+   * @type {string}
+   * @memberof InstallerCic
+   */
+  installationId: string;
+  /**
+   *
+   * @type {Date}
+   * @memberof InstallerCic
+   */
+  installedAt: Date;
   /**
    * The amount (liter) of water flowing per hour
    * @type {number}
@@ -463,16 +457,6 @@ export interface InstallerCic {
 /**
  * @export
  */
-export const InstallerCicUpdateStatusEnum = {
-  UpToDate: "up_to_date",
-  Updating: "updating",
-} as const;
-export type InstallerCicUpdateStatusEnum =
-  (typeof InstallerCicUpdateStatusEnum)[keyof typeof InstallerCicUpdateStatusEnum];
-
-/**
- * @export
- */
 export const InstallerCicBoilerDemandEnum = {
   Heat: "heat",
 } as const;
@@ -512,8 +496,6 @@ export function instanceOfInstallerCic(value: object): boolean {
   isInstance = isInstance && "availableWifiNetworks" in value;
   isInstance = isInstance && "lastScannedForWifi" in value;
   isInstance = isInstance && "isScanningForWifi" in value;
-  isInstance = isInstance && "updateStatus" in value;
-  isInstance = isInstance && "updateUntil" in value;
   isInstance = isInstance && "boilerDemand" in value;
   isInstance = isInstance && "boilerPower" in value;
   isInstance = isInstance && "boilerWaterTemperatureIn" in value;
@@ -526,11 +508,12 @@ export function instanceOfInstallerCic(value: object): boolean {
   isInstance = isInstance && "showThermostatTemperatures" in value;
   isInstance = isInstance && "boilerOn" in value;
   isInstance = isInstance && "thermostatControlTemperatureSetPoint" in value;
-  isInstance = isInstance && "supplyTemperature" in value;
   isInstance = isInstance && "status" in value;
   isInstance = isInstance && "serial" in value;
   isInstance = isInstance && "numberOfHeatPumps" in value;
   isInstance = isInstance && "quattBuild" in value;
+  isInstance = isInstance && "installationId" in value;
+  isInstance = isInstance && "installedAt" in value;
   isInstance = isInstance && "flowRate" in value;
   isInstance = isInstance && "electricityPrice" in value;
   isInstance = isInstance && "dayElectricityPrice" in value;
@@ -596,9 +579,6 @@ export function InstallerCicFromJSONTyped(
         ? null
         : new Date(json["lastScannedForWifi"]),
     isScanningForWifi: json["isScanningForWifi"],
-    updateStatus: json["updateStatus"],
-    updateUntil:
-      json["updateUntil"] === null ? null : new Date(json["updateUntil"]),
     boilerDemand: json["boilerDemand"],
     boilerPower: json["boilerPower"],
     boilerWaterTemperatureIn: json["boilerWaterTemperatureIn"],
@@ -613,11 +593,12 @@ export function InstallerCicFromJSONTyped(
     boilerOn: json["boilerOn"],
     thermostatControlTemperatureSetPoint:
       json["thermostatControlTemperatureSetPoint"],
-    supplyTemperature: json["supplyTemperature"],
     status: CicStatusFromJSON(json["status"]),
     serial: json["serial"],
     numberOfHeatPumps: json["numberOfHeatPumps"],
     quattBuild: json["quattBuild"],
+    installationId: json["installationId"],
+    installedAt: new Date(json["installedAt"]),
     flowRate: json["flowRate"],
     electricityPrice: json["electricityPrice"],
     dayElectricityPrice: json["dayElectricityPrice"],
@@ -703,9 +684,6 @@ export function InstallerCicToJSON(value?: InstallerCic | null): any {
         ? null
         : value.lastScannedForWifi.toISOString(),
     isScanningForWifi: value.isScanningForWifi,
-    updateStatus: value.updateStatus,
-    updateUntil:
-      value.updateUntil === null ? null : value.updateUntil.toISOString(),
     boilerDemand: value.boilerDemand,
     boilerPower: value.boilerPower,
     boilerWaterTemperatureIn: value.boilerWaterTemperatureIn,
@@ -719,11 +697,12 @@ export function InstallerCicToJSON(value?: InstallerCic | null): any {
     boilerOn: value.boilerOn,
     thermostatControlTemperatureSetPoint:
       value.thermostatControlTemperatureSetPoint,
-    supplyTemperature: value.supplyTemperature,
     status: CicStatusToJSON(value.status),
     serial: value.serial,
     numberOfHeatPumps: value.numberOfHeatPumps,
     quattBuild: value.quattBuild,
+    installationId: value.installationId,
+    installedAt: value.installedAt.toISOString(),
     flowRate: value.flowRate,
     electricityPrice: value.electricityPrice,
     dayElectricityPrice: value.dayElectricityPrice,
