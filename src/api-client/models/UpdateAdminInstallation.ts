@@ -67,7 +67,7 @@ export interface UpdateAdminInstallation {
    * @type {number}
    * @memberof UpdateAdminInstallation
    */
-  gasPrice?: number;
+  gasPrice?: number | null;
   /**
    * Rated maximum house power in watt
    * @type {number}
