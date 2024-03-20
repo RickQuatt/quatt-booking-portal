@@ -266,6 +266,12 @@ export interface Installation {
    * @memberof Installation
    */
   menderId: string | null;
+  /**
+   *
+   * @type {boolean}
+   * @memberof Installation
+   */
+  hasSoundSlider: boolean;
 }
 
 /**
@@ -308,6 +314,7 @@ export function instanceOfInstallation(value: object): boolean {
   isInstance = isInstance && "quattBuild" in value;
   isInstance = isInstance && "lastConnectionStatusUpdatedAt" in value;
   isInstance = isInstance && "menderId" in value;
+  isInstance = isInstance && "hasSoundSlider" in value;
 
   return isInstance;
 }
@@ -371,6 +378,7 @@ export function InstallationFromJSONTyped(
         ? null
         : new Date(json["lastConnectionStatusUpdatedAt"]),
     menderId: json["menderId"],
+    hasSoundSlider: json["hasSoundSlider"],
   };
 }
 
@@ -429,5 +437,6 @@ export function InstallationToJSON(value?: Installation | null): any {
         ? null
         : value.lastConnectionStatusUpdatedAt.toISOString(),
     menderId: value.menderId,
+    hasSoundSlider: value.hasSoundSlider,
   };
 }

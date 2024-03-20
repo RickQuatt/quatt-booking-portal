@@ -286,6 +286,12 @@ export interface AdminInstallationDetail {
   menderId: string | null;
   /**
    *
+   * @type {boolean}
+   * @memberof AdminInstallationDetail
+   */
+  hasSoundSlider: boolean;
+  /**
+   *
    * @type {Array<CicState>}
    * @memberof AdminInstallationDetail
    */
@@ -344,6 +350,7 @@ export function instanceOfAdminInstallationDetail(value: object): boolean {
   isInstance = isInstance && "quattBuild" in value;
   isInstance = isInstance && "lastConnectionStatusUpdatedAt" in value;
   isInstance = isInstance && "menderId" in value;
+  isInstance = isInstance && "hasSoundSlider" in value;
   isInstance = isInstance && "cicState" in value;
   isInstance = isInstance && "cicCommissioning" in value;
   isInstance = isInstance && "settingsUpdates" in value;
@@ -412,6 +419,7 @@ export function AdminInstallationDetailFromJSONTyped(
         ? null
         : new Date(json["lastConnectionStatusUpdatedAt"]),
     menderId: json["menderId"],
+    hasSoundSlider: json["hasSoundSlider"],
     cicState: (json["cicState"] as Array<any>).map(CicStateFromJSON),
     cicCommissioning: (json["cicCommissioning"] as Array<any>).map(
       CicCommissioningFromJSON,
@@ -479,6 +487,7 @@ export function AdminInstallationDetailToJSON(
         ? null
         : value.lastConnectionStatusUpdatedAt.toISOString(),
     menderId: value.menderId,
+    hasSoundSlider: value.hasSoundSlider,
     cicState: (value.cicState as Array<any>).map(CicStateToJSON),
     cicCommissioning: (value.cicCommissioning as Array<any>).map(
       CicCommissioningToJSON,
