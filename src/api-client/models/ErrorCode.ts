@@ -77,6 +77,9 @@ export const ErrorCode = {
   InstallationNotFound: "INSTALLATION_NOT_FOUND",
   InstallationUpdateError: "INSTALLATION_UPDATE_ERROR",
   InstallationWithNoActiveCic: "INSTALLATION_WITH_NO_ACTIVE_CIC",
+  HubspotApiError: "HUBSPOT_API_ERROR",
+  ZuperApiError: "ZUPER_API_ERROR",
+  OrderNumberNotFound: "ORDER_NUMBER_NOT_FOUND",
 } as const;
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];
 

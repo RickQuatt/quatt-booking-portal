@@ -55,24 +55,7 @@ export interface Tariff {
    * @memberof Tariff
    */
   id?: string;
-  /**
-   * IF the tariff is past, current or future
-   * @type {string}
-   * @memberof Tariff
-   */
-  tariffTimeType?: TariffTariffTimeTypeEnum;
 }
-
-/**
- * @export
- */
-export const TariffTariffTimeTypeEnum = {
-  Past: "past",
-  Current: "current",
-  Future: "future",
-} as const;
-export type TariffTariffTimeTypeEnum =
-  (typeof TariffTariffTimeTypeEnum)[keyof typeof TariffTariffTimeTypeEnum];
 
 /**
  * Check if a given object implements the Tariff interface.
@@ -109,9 +92,6 @@ export function TariffFromJSONTyped(
     gasPrice: json["gasPrice"],
     validFrom: new Date(json["validFrom"]),
     id: !exists(json, "id") ? undefined : json["id"],
-    tariffTimeType: !exists(json, "tariffTimeType")
-      ? undefined
-      : json["tariffTimeType"],
   };
 }
 
@@ -129,6 +109,5 @@ export function TariffToJSON(value?: Tariff | null): any {
     gasPrice: value.gasPrice,
     validFrom: value.validFrom.toISOString().substring(0, 10),
     id: value.id,
-    tariffTimeType: value.tariffTimeType,
   };
 }

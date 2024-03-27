@@ -18,6 +18,8 @@ import type {
   AdminDashboardCics200Response,
   AdminGetCic200Response,
   AdminGetInstallation200Response,
+  AdminGetInstallationTickets200Response,
+  AdminGetInstallationTicketsZuper200Response,
   AdminInstallationsList200Response,
   AdminListCics200Response,
   AdminListInstallers200Response,
@@ -36,6 +38,10 @@ import {
   AdminGetCic200ResponseToJSON,
   AdminGetInstallation200ResponseFromJSON,
   AdminGetInstallation200ResponseToJSON,
+  AdminGetInstallationTickets200ResponseFromJSON,
+  AdminGetInstallationTickets200ResponseToJSON,
+  AdminGetInstallationTicketsZuper200ResponseFromJSON,
+  AdminGetInstallationTicketsZuper200ResponseToJSON,
   AdminInstallationsList200ResponseFromJSON,
   AdminInstallationsList200ResponseToJSON,
   AdminListCics200ResponseFromJSON,
@@ -74,11 +80,27 @@ export interface AdminGetInstallationRequest {
   installationId: string;
 }
 
+export interface AdminGetInstallationTicketsRequest {
+  installationId: string;
+}
+
+export interface AdminGetInstallationTicketsZuperRequest {
+  installationId: string;
+}
+
 export interface AdminGetInstallerRequest {
   installerId: string;
 }
 
+export interface AdminInstallationInstallationIdHubspotOptionsRequest {
+  installationId: string;
+}
+
 export interface AdminInstallationInstallationIdOptionsRequest {
+  installationId: string;
+}
+
+export interface AdminInstallationInstallationIdZuperOptionsRequest {
   installationId: string;
 }
 
@@ -486,6 +508,128 @@ export class SupportDashboardApi extends runtime.BaseAPI {
   }
 
   /**
+   * Get installation tickets from hubspot
+   */
+  async adminGetInstallationTicketsRaw(
+    requestParameters: AdminGetInstallationTicketsRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<AdminGetInstallationTickets200Response>> {
+    if (
+      requestParameters.installationId === null ||
+      requestParameters.installationId === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "installationId",
+        "Required parameter requestParameters.installationId was null or undefined when calling adminGetInstallationTickets.",
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken;
+      const tokenString = await token("bearerAuth", []);
+
+      if (tokenString) {
+        headerParameters["Authorization"] = `Bearer ${tokenString}`;
+      }
+    }
+    const response = await this.request(
+      {
+        path: `/admin/installation/{installationId}/hubspot`.replace(
+          `{${"installationId"}}`,
+          encodeURIComponent(String(requestParameters.installationId)),
+        ),
+        method: "GET",
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    );
+
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      AdminGetInstallationTickets200ResponseFromJSON(jsonValue),
+    );
+  }
+
+  /**
+   * Get installation tickets from hubspot
+   */
+  async adminGetInstallationTickets(
+    requestParameters: AdminGetInstallationTicketsRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<AdminGetInstallationTickets200Response> {
+    const response = await this.adminGetInstallationTicketsRaw(
+      requestParameters,
+      initOverrides,
+    );
+    return await response.value();
+  }
+
+  /**
+   * Get installation tickets from zuper
+   */
+  async adminGetInstallationTicketsZuperRaw(
+    requestParameters: AdminGetInstallationTicketsZuperRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<AdminGetInstallationTicketsZuper200Response>> {
+    if (
+      requestParameters.installationId === null ||
+      requestParameters.installationId === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "installationId",
+        "Required parameter requestParameters.installationId was null or undefined when calling adminGetInstallationTicketsZuper.",
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken;
+      const tokenString = await token("bearerAuth", []);
+
+      if (tokenString) {
+        headerParameters["Authorization"] = `Bearer ${tokenString}`;
+      }
+    }
+    const response = await this.request(
+      {
+        path: `/admin/installation/{installationId}/zuper`.replace(
+          `{${"installationId"}}`,
+          encodeURIComponent(String(requestParameters.installationId)),
+        ),
+        method: "GET",
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    );
+
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      AdminGetInstallationTicketsZuper200ResponseFromJSON(jsonValue),
+    );
+  }
+
+  /**
+   * Get installation tickets from zuper
+   */
+  async adminGetInstallationTicketsZuper(
+    requestParameters: AdminGetInstallationTicketsZuperRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<AdminGetInstallationTicketsZuper200Response> {
+    const response = await this.adminGetInstallationTicketsZuperRaw(
+      requestParameters,
+      initOverrides,
+    );
+    return await response.value();
+  }
+
+  /**
    * Get installer
    */
   async adminGetInstallerRaw(
@@ -548,6 +692,54 @@ export class SupportDashboardApi extends runtime.BaseAPI {
 
   /**
    */
+  async adminInstallationInstallationIdHubspotOptionsRaw(
+    requestParameters: AdminInstallationInstallationIdHubspotOptionsRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<void>> {
+    if (
+      requestParameters.installationId === null ||
+      requestParameters.installationId === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "installationId",
+        "Required parameter requestParameters.installationId was null or undefined when calling adminInstallationInstallationIdHubspotOptions.",
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    const response = await this.request(
+      {
+        path: `/admin/installation/{installationId}/hubspot`.replace(
+          `{${"installationId"}}`,
+          encodeURIComponent(String(requestParameters.installationId)),
+        ),
+        method: "OPTIONS",
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    );
+
+    return new runtime.VoidApiResponse(response);
+  }
+
+  /**
+   */
+  async adminInstallationInstallationIdHubspotOptions(
+    requestParameters: AdminInstallationInstallationIdHubspotOptionsRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<void> {
+    await this.adminInstallationInstallationIdHubspotOptionsRaw(
+      requestParameters,
+      initOverrides,
+    );
+  }
+
+  /**
+   */
   async adminInstallationInstallationIdOptionsRaw(
     requestParameters: AdminInstallationInstallationIdOptionsRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -589,6 +781,54 @@ export class SupportDashboardApi extends runtime.BaseAPI {
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<void> {
     await this.adminInstallationInstallationIdOptionsRaw(
+      requestParameters,
+      initOverrides,
+    );
+  }
+
+  /**
+   */
+  async adminInstallationInstallationIdZuperOptionsRaw(
+    requestParameters: AdminInstallationInstallationIdZuperOptionsRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<void>> {
+    if (
+      requestParameters.installationId === null ||
+      requestParameters.installationId === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "installationId",
+        "Required parameter requestParameters.installationId was null or undefined when calling adminInstallationInstallationIdZuperOptions.",
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    const response = await this.request(
+      {
+        path: `/admin/installation/{installationId}/zuper`.replace(
+          `{${"installationId"}}`,
+          encodeURIComponent(String(requestParameters.installationId)),
+        ),
+        method: "OPTIONS",
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    );
+
+    return new runtime.VoidApiResponse(response);
+  }
+
+  /**
+   */
+  async adminInstallationInstallationIdZuperOptions(
+    requestParameters: AdminInstallationInstallationIdZuperOptionsRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<void> {
+    await this.adminInstallationInstallationIdZuperOptionsRaw(
       requestParameters,
       initOverrides,
     );

@@ -132,6 +132,13 @@ models/*
 !models/UpdateInstallerCic.ts
 !models/UpdateMeCic.ts
 !models/UpdateMeUser.ts
+!models/AdminGetInstallationTickets200Response.ts
+!models/AdminGetInstallationTicketsZuper200Response.ts
+!models/GetAllTariffs200ResponseResult.ts
+!models/ServiceJob.ts
+!models/Ticket.ts
+!models/TicketHsPipelineStage.ts
+!models/TicketHubspotOwnerId.ts
 
 apis/*
 !apis/SupportDashboardApi.ts
