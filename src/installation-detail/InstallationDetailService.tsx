@@ -5,6 +5,7 @@ import { DetailSectionHeader } from "../cic-detail/CICDetailSectionHeader";
 import React, { useEffect } from "react";
 import getService, { GetServiceData } from "../api-client/zuper";
 import { formatDateTimeString } from "../utils/formatDate";
+import zuperLogo from "../../images/ZuperPro.webp";
 
 interface CICDetailProps {
   installation: AdminInstallationDetail;
@@ -19,7 +20,7 @@ export function InstallationDetailService({ installation }: CICDetailProps) {
 
   return (
     <div className={classes["detail-section"]}>
-      <DetailSectionHeader logo="/images/ZuperPro.webp" title="Services" />
+      <DetailSectionHeader logo={zuperLogo} title="Services" />
       <FormSection>
         <FormField>
           {service &&
