@@ -17,7 +17,7 @@ export function DetailSectionHeader({
         borderBottom: "1px solid #737373",
       }}
     >
-      {logo && <img src={logo} alt="Logo" style={{ height: "36px" }} />}
+      {logo && <img src={logo} alt="Logo" style={{ height: "28px" }} />}
       <h3>{title}</h3>
     </div>
   );
