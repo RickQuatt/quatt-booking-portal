@@ -48,7 +48,7 @@ export interface ServiceJob {
    * @type {Date}
    * @memberof ServiceJob
    */
-  actual_end_time: Date;
+  updated_at: Date;
 }
 
 /**
@@ -60,7 +60,7 @@ export function instanceOfServiceJob(value: object): boolean {
   isInstance = isInstance && "job_title" in value;
   isInstance = isInstance && "installer" in value;
   isInstance = isInstance && "status_name" in value;
-  isInstance = isInstance && "actual_end_time" in value;
+  isInstance = isInstance && "updated_at" in value;
 
   return isInstance;
 }
@@ -81,7 +81,7 @@ export function ServiceJobFromJSONTyped(
     job_title: json["job_title"],
     installer: json["installer"],
     status_name: json["status_name"],
-    actual_end_time: new Date(json["actual_end_time"]),
+    updated_at: new Date(json["updated_at"]),
   };
 }
 
@@ -97,6 +97,6 @@ export function ServiceJobToJSON(value?: ServiceJob | null): any {
     job_title: value.job_title,
     installer: value.installer,
     status_name: value.status_name,
-    actual_end_time: value.actual_end_time.toISOString(),
+    updated_at: value.updated_at.toISOString(),
   };
 }
