@@ -56,6 +56,18 @@ export interface Ticket {
    * @memberof Ticket
    */
   hubspot_owner_id: TicketHubspotOwnerId;
+  /**
+   *
+   * @type {number}
+   * @memberof Ticket
+   */
+  hs_object_id: number;
+  /**
+   *
+   * @type {Date}
+   * @memberof Ticket
+   */
+  hs_lastactivitydate: Date;
 }
 
 /**
@@ -67,6 +79,8 @@ export function instanceOfTicket(value: object): boolean {
   isInstance = isInstance && "hs_pipeline_stage" in value;
   isInstance = isInstance && "subject" in value;
   isInstance = isInstance && "hubspot_owner_id" in value;
+  isInstance = isInstance && "hs_object_id" in value;
+  isInstance = isInstance && "hs_lastactivitydate" in value;
 
   return isInstance;
 }
@@ -87,6 +101,8 @@ export function TicketFromJSONTyped(
     hs_pipeline_stage: TicketHsPipelineStageFromJSON(json["hs_pipeline_stage"]),
     subject: json["subject"],
     hubspot_owner_id: TicketHubspotOwnerIdFromJSON(json["hubspot_owner_id"]),
+    hs_object_id: json["hs_object_id"],
+    hs_lastactivitydate: new Date(json["hs_lastactivitydate"]),
   };
 }
 
@@ -102,5 +118,7 @@ export function TicketToJSON(value?: Ticket | null): any {
     hs_pipeline_stage: TicketHsPipelineStageToJSON(value.hs_pipeline_stage),
     subject: value.subject,
     hubspot_owner_id: TicketHubspotOwnerIdToJSON(value.hubspot_owner_id),
+    hs_object_id: value.hs_object_id,
+    hs_lastactivitydate: value.hs_lastactivitydate.toISOString(),
   };
 }
