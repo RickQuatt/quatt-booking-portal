@@ -48,7 +48,6 @@ models/ErrorResponseResult.ts
 models/FinishIdentificationTestRequest.ts
 models/FlowRateTestStatus.ts
 models/GetAllTariffs200Response.ts
-models/GetAllTariffs200ResponseResult.ts
 models/GetInsights200Response.ts
 models/GetInsights200ResponseResult.ts
 models/GetInsights200ResponseResultGraphInner.ts
@@ -85,6 +84,7 @@ models/SilentMode.ts
 models/StartHeatPumpTestRequest.ts
 models/StopIdentificationTestRequest.ts
 models/Tariff.ts
+models/TarrifsResult.ts
 models/ThermostatType.ts
 models/Ticket.ts
 models/TicketHsPipelineStage.ts

@@ -22,6 +22,7 @@ export const ErrorCode = {
   UserEmailNotVerified: "USER_EMAIL_NOT_VERIFIED",
   UserNoReferral: "USER_NO_REFERRAL",
   UserDuplicateReferral: "USER_DUPLICATE_REFERRAL",
+  UserHasNoPairedCic: "USER_HAS_NO_PAIRED_CIC",
   CicNotFound: "CIC_NOT_FOUND",
   CicUpdateError: "CIC_UPDATE_ERROR",
   UserClientDeleteError: "USER_CLIENT_DELETE_ERROR",

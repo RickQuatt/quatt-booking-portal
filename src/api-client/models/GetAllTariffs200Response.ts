@@ -13,18 +13,18 @@
  */
 
 import { exists, mapValues } from "../runtime";
-import type { GetAllTariffs200ResponseResult } from "./GetAllTariffs200ResponseResult";
-import {
-  GetAllTariffs200ResponseResultFromJSON,
-  GetAllTariffs200ResponseResultFromJSONTyped,
-  GetAllTariffs200ResponseResultToJSON,
-} from "./GetAllTariffs200ResponseResult";
 import type { ResponseMeta } from "./ResponseMeta";
 import {
   ResponseMetaFromJSON,
   ResponseMetaFromJSONTyped,
   ResponseMetaToJSON,
 } from "./ResponseMeta";
+import type { TarrifsResult } from "./TarrifsResult";
+import {
+  TarrifsResultFromJSON,
+  TarrifsResultFromJSONTyped,
+  TarrifsResultToJSON,
+} from "./TarrifsResult";
 
 /**
  *
@@ -40,10 +40,10 @@ export interface GetAllTariffs200Response {
   meta: ResponseMeta;
   /**
    *
-   * @type {GetAllTariffs200ResponseResult}
+   * @type {TarrifsResult}
    * @memberof GetAllTariffs200Response
    */
-  result: GetAllTariffs200ResponseResult;
+  result: TarrifsResult;
 }
 
 /**
@@ -72,7 +72,7 @@ export function GetAllTariffs200ResponseFromJSONTyped(
   }
   return {
     meta: ResponseMetaFromJSON(json["meta"]),
-    result: GetAllTariffs200ResponseResultFromJSON(json["result"]),
+    result: TarrifsResultFromJSON(json["result"]),
   };
 }
 
@@ -87,6 +87,6 @@ export function GetAllTariffs200ResponseToJSON(
   }
   return {
     meta: ResponseMetaToJSON(value.meta),
-    result: GetAllTariffs200ResponseResultToJSON(value.result),
+    result: TarrifsResultToJSON(value.result),
   };
 }
