@@ -142,6 +142,7 @@ models/*
 !models/AdminGetInstallationClickhouseData200Response.ts
 !models/ClickhouseData.ts
 !models/ClickhouseDataModeReparation.ts
+!models/TarrifsResult.ts
 
 apis/*
 !apis/SupportDashboardApi.ts
