@@ -25,6 +25,8 @@ import type {
   AdminListCics200Response,
   AdminListInstallers200Response,
   CompleteCommissioning200Response,
+  CreateTariff200Response,
+  CreateTariffRequest,
   CreateUpdateInstaller,
   ErrorResponse,
   GetAllTariffs200Response,
@@ -54,6 +56,10 @@ import {
   AdminListInstallers200ResponseToJSON,
   CompleteCommissioning200ResponseFromJSON,
   CompleteCommissioning200ResponseToJSON,
+  CreateTariff200ResponseFromJSON,
+  CreateTariff200ResponseToJSON,
+  CreateTariffRequestFromJSON,
+  CreateTariffRequestToJSON,
   CreateUpdateInstallerFromJSON,
   CreateUpdateInstallerToJSON,
   ErrorResponseFromJSON,
@@ -70,8 +76,18 @@ export interface AdminCicCicIdOptionsRequest {
   cicId: string;
 }
 
+export interface AdminCreateInstallationTariffRequest {
+  installationId: string;
+  createTariffRequest?: CreateTariffRequest;
+}
+
 export interface AdminCreateInstallerRequest {
   createUpdateInstaller?: CreateUpdateInstaller;
+}
+
+export interface AdminDeleteInstallationTariffRequest {
+  installationId: string;
+  tariffId: string;
 }
 
 export interface AdminDeleteInstallerRequest {
@@ -138,6 +154,12 @@ export interface AdminUpdateCicRequest {
 export interface AdminUpdateInstallationRequest {
   installationId: string;
   updateAdminInstallation?: UpdateAdminInstallation;
+}
+
+export interface AdminUpdateInstallationTariffRequest {
+  installationId: string;
+  tariffId: string;
+  createTariffRequest?: CreateTariffRequest;
 }
 
 export interface AdminUpdateInstallerRequest {
@@ -255,6 +277,70 @@ export class SupportDashboardApi extends runtime.BaseAPI {
   }
 
   /**
+   * Add new tariff for specificed date and installation
+   */
+  async adminCreateInstallationTariffRaw(
+    requestParameters: AdminCreateInstallationTariffRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<CreateTariff200Response>> {
+    if (
+      requestParameters.installationId === null ||
+      requestParameters.installationId === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "installationId",
+        "Required parameter requestParameters.installationId was null or undefined when calling adminCreateInstallationTariff.",
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    headerParameters["Content-Type"] = "application/json";
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken;
+      const tokenString = await token("bearerAuth", []);
+
+      if (tokenString) {
+        headerParameters["Authorization"] = `Bearer ${tokenString}`;
+      }
+    }
+    const response = await this.request(
+      {
+        path: `/admin/installation/{installationId}/tariff`.replace(
+          `{${"installationId"}}`,
+          encodeURIComponent(String(requestParameters.installationId)),
+        ),
+        method: "POST",
+        headers: headerParameters,
+        query: queryParameters,
+        body: CreateTariffRequestToJSON(requestParameters.createTariffRequest),
+      },
+      initOverrides,
+    );
+
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      CreateTariff200ResponseFromJSON(jsonValue),
+    );
+  }
+
+  /**
+   * Add new tariff for specificed date and installation
+   */
+  async adminCreateInstallationTariff(
+    requestParameters: AdminCreateInstallationTariffRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<CreateTariff200Response> {
+    const response = await this.adminCreateInstallationTariffRaw(
+      requestParameters,
+      initOverrides,
+    );
+    return await response.value();
+  }
+
+  /**
    * Create installer
    */
   async adminCreateInstallerRaw(
@@ -348,6 +434,79 @@ export class SupportDashboardApi extends runtime.BaseAPI {
   ): Promise<AdminDashboardCics200Response> {
     const response = await this.adminDashboardCicsRaw(initOverrides);
     return await response.value();
+  }
+
+  /**
+   * Delete a tariff for a given installation
+   */
+  async adminDeleteInstallationTariffRaw(
+    requestParameters: AdminDeleteInstallationTariffRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<void>> {
+    if (
+      requestParameters.installationId === null ||
+      requestParameters.installationId === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "installationId",
+        "Required parameter requestParameters.installationId was null or undefined when calling adminDeleteInstallationTariff.",
+      );
+    }
+
+    if (
+      requestParameters.tariffId === null ||
+      requestParameters.tariffId === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "tariffId",
+        "Required parameter requestParameters.tariffId was null or undefined when calling adminDeleteInstallationTariff.",
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken;
+      const tokenString = await token("bearerAuth", []);
+
+      if (tokenString) {
+        headerParameters["Authorization"] = `Bearer ${tokenString}`;
+      }
+    }
+    const response = await this.request(
+      {
+        path: `/admin/installation/{installationId}/tariff/{tariffId}`
+          .replace(
+            `{${"installationId"}}`,
+            encodeURIComponent(String(requestParameters.installationId)),
+          )
+          .replace(
+            `{${"tariffId"}}`,
+            encodeURIComponent(String(requestParameters.tariffId)),
+          ),
+        method: "DELETE",
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    );
+
+    return new runtime.VoidApiResponse(response);
+  }
+
+  /**
+   * Delete a tariff for a given installation
+   */
+  async adminDeleteInstallationTariff(
+    requestParameters: AdminDeleteInstallationTariffRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<void> {
+    await this.adminDeleteInstallationTariffRaw(
+      requestParameters,
+      initOverrides,
+    );
   }
 
   /**
@@ -1501,6 +1660,85 @@ export class SupportDashboardApi extends runtime.BaseAPI {
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<AdminGetInstallation200Response> {
     const response = await this.adminUpdateInstallationRaw(
+      requestParameters,
+      initOverrides,
+    );
+    return await response.value();
+  }
+
+  /**
+   * Update a tariff for a given installation
+   */
+  async adminUpdateInstallationTariffRaw(
+    requestParameters: AdminUpdateInstallationTariffRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<CreateTariff200Response>> {
+    if (
+      requestParameters.installationId === null ||
+      requestParameters.installationId === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "installationId",
+        "Required parameter requestParameters.installationId was null or undefined when calling adminUpdateInstallationTariff.",
+      );
+    }
+
+    if (
+      requestParameters.tariffId === null ||
+      requestParameters.tariffId === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "tariffId",
+        "Required parameter requestParameters.tariffId was null or undefined when calling adminUpdateInstallationTariff.",
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    headerParameters["Content-Type"] = "application/json";
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken;
+      const tokenString = await token("bearerAuth", []);
+
+      if (tokenString) {
+        headerParameters["Authorization"] = `Bearer ${tokenString}`;
+      }
+    }
+    const response = await this.request(
+      {
+        path: `/admin/installation/{installationId}/tariff/{tariffId}`
+          .replace(
+            `{${"installationId"}}`,
+            encodeURIComponent(String(requestParameters.installationId)),
+          )
+          .replace(
+            `{${"tariffId"}}`,
+            encodeURIComponent(String(requestParameters.tariffId)),
+          ),
+        method: "PUT",
+        headers: headerParameters,
+        query: queryParameters,
+        body: CreateTariffRequestToJSON(requestParameters.createTariffRequest),
+      },
+      initOverrides,
+    );
+
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      CreateTariff200ResponseFromJSON(jsonValue),
+    );
+  }
+
+  /**
+   * Update a tariff for a given installation
+   */
+  async adminUpdateInstallationTariff(
+    requestParameters: AdminUpdateInstallationTariffRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<CreateTariff200Response> {
+    const response = await this.adminUpdateInstallationTariffRaw(
       requestParameters,
       initOverrides,
     );
