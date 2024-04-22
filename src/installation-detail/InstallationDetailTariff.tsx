@@ -69,7 +69,6 @@ export function InstallationDetailTariff({
                     <InstallationDetailTariffItem
                       tariff={tariff}
                       onClick={() => {
-                        console.log("tariff", tariff);
                         setTariffData(tariff);
                         openTariffsModal();
                       }}
