@@ -79,17 +79,15 @@ export function TariffsModal({
   useEffect(() => {
     reset(defaultValues);
 
-    return () => {
-      reset();
-    };
-  }, [reset, defaultValues]);
-
-  useEffect(() => {
     if (tariffData) {
       setTariffType(selectedTariff);
       setStartDate(tariffData.validFrom);
     }
-  }, [selectedTariff, tariffData]);
+
+    return () => {
+      reset();
+    };
+  }, [reset, defaultValues, selectedTariff, tariffData]);
 
   const apiClient = useApiClient();
   const onSubmit = React.useCallback(
