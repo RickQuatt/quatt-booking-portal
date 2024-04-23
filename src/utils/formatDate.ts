@@ -1,5 +1,4 @@
 import { formatDistance, format } from "date-fns";
-import { nlBE } from "date-fns/locale";
 
 // as in 2023-05-23
 export function formatDate(date: Date | null) {
@@ -10,12 +9,17 @@ export function formatDate(date: Date | null) {
 // as in 05 Apr 2024
 export function formatDateShortAsString(date: Date | null) {
   if (!date) return null;
-  return format(date, "dd MMM yyyy", { locale: nlBE });
+  return format(date, "dd MMM yyyy");
 }
 
 export function formatDateShortAsDate(date: Date | null) {
   if (!date) return null;
   return new Date(format(date, "dd MMM yyyy"));
+}
+
+export function formatAsDate(date: Date | null) {
+  if (!date) return null;
+  return new Date(format(date, "yyyy-MM-dd"));
 }
 
 export function formatDateTime(date: Date | null) {

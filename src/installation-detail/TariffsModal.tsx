@@ -28,6 +28,7 @@ import { Controller, useForm } from "react-hook-form";
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { formatAsDate } from "../utils/formatDate";
 
 interface Props extends ModalProps {
   installationId: string;
@@ -103,6 +104,10 @@ export function TariffsModal({
         return;
       }
 
+      if (!startDate) {
+        return;
+      }
+
       // If there is no tariff data, create a new tariff
       if (!tariffData) {
         const response = await apiClient.adminCreateInstallationTariff({
@@ -118,7 +123,7 @@ export function TariffsModal({
                   nightElectricityPrice: data.nightElectricityPrice,
                 }),
             gasPrice: data.gasPrice,
-            validFrom: data.validFrom,
+            validFrom: formatAsDate(startDate),
           } as CreateUpdateSingleTariff | CreateUpdateDoubleTariff,
         });
         if (response.meta.status === 200) {
@@ -145,7 +150,7 @@ export function TariffsModal({
                   nightElectricityPrice: data.nightElectricityPrice,
                 }),
             gasPrice: data.gasPrice,
-            validFrom: data.validFrom,
+            validFrom: formatAsDate(startDate),
           } as CreateUpdateSingleTariff | CreateUpdateDoubleTariff,
         });
         if (response.meta.status === 200) {
@@ -155,7 +160,15 @@ export function TariffsModal({
       }
     },
 
-    [apiClient, closeModal, reset, tariffData, installationId, tariffType],
+    [
+      apiClient,
+      closeModal,
+      reset,
+      tariffData,
+      installationId,
+      tariffType,
+      startDate,
+    ],
   );
 
   const onDelete = React.useCallback(async () => {
