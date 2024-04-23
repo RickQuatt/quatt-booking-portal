@@ -17,7 +17,11 @@ import {
   ModalConfirmButton,
   ModalDeleteButton,
 } from "../ui-components/modal/Modal";
-import { Tariff } from "../api-client/models";
+import {
+  CreateUpdateDoubleTariff,
+  CreateUpdateSingleTariff,
+  Tariff,
+} from "../api-client/models";
 import { useApiClient } from "../api-client/context";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
@@ -71,6 +75,7 @@ export function TariffsModal({
     reset,
     formState: { errors, isSubmitting, isDirty },
     control,
+    setValue,
   } = useForm<TariffFormData>({
     resolver: yupResolver(TariffFormSchema),
     defaultValues,
@@ -100,76 +105,48 @@ export function TariffsModal({
 
       // If there is no tariff data, create a new tariff
       if (!tariffData) {
-        if (tariffType === "single") {
-          const response = await apiClient.adminCreateInstallationTariff({
-            installationId: installationId,
-            createTariffRequest: {
-              tariffType: "single",
-              electricityPrice: data.electricityPrice as number,
-              gasPrice: data.gasPrice as number,
-              validFrom: new Date(
-                new Date(data.validFrom).getTime() + 2 * 60 * 60 * 1000,
-              ),
-            },
-          });
-          if (response.meta.status >= 200) {
-            reset({}, { keepValues: true });
-            closeModal();
-          }
-        } else {
-          const response = await apiClient.adminCreateInstallationTariff({
-            installationId: installationId,
-            createTariffRequest: {
-              tariffType: "double",
-              dayElectricityPrice: data.dayElectricityPrice as number,
-              nightElectricityPrice: data.nightElectricityPrice as number,
-              gasPrice: data.gasPrice as number,
-              validFrom: new Date(
-                new Date(data.validFrom).getTime() + 2 * 60 * 60 * 1000,
-              ),
-            },
-          });
-          if (response.meta.status >= 200) {
-            reset({}, { keepValues: true });
-            closeModal();
-          }
-        }
-      }
-
-      if (!tariffData?.id) {
-        return;
-      }
-
-      if (tariffType === "single") {
-        const response = await apiClient.adminUpdateInstallationTariff({
+        const response = await apiClient.adminCreateInstallationTariff({
           installationId: installationId,
-          tariffId: tariffData.id,
           createTariffRequest: {
-            tariffType: "single",
-            electricityPrice: data.electricityPrice as number,
-            gasPrice: data.gasPrice as number,
-            validFrom: new Date(
-              new Date(data.validFrom).getTime() + 2 * 60 * 60 * 1000,
-            ),
-          },
+            tariffType,
+            ...(tariffType === "single"
+              ? {
+                  electricityPrice: data.electricityPrice,
+                }
+              : {
+                  dayElectricityPrice: data.dayElectricityPrice,
+                  nightElectricityPrice: data.nightElectricityPrice,
+                }),
+            gasPrice: data.gasPrice,
+            validFrom: data.validFrom,
+          } as CreateUpdateSingleTariff | CreateUpdateDoubleTariff,
         });
         if (response.meta.status === 200) {
           reset({}, { keepValues: true });
           closeModal();
         }
       } else {
+        if (!tariffData?.id) {
+          return;
+        }
+
+        // If there is tariff data, update the existing tariff
         const response = await apiClient.adminUpdateInstallationTariff({
           installationId: installationId,
           tariffId: tariffData.id,
           createTariffRequest: {
-            tariffType: "double",
-            dayElectricityPrice: data.dayElectricityPrice as number,
-            nightElectricityPrice: data.nightElectricityPrice as number,
-            gasPrice: data.gasPrice as number,
-            validFrom: new Date(
-              new Date(data.validFrom).getTime() + 2 * 60 * 60 * 1000,
-            ),
-          },
+            tariffType,
+            ...(tariffType === "single"
+              ? {
+                  electricityPrice: data.electricityPrice,
+                }
+              : {
+                  dayElectricityPrice: data.dayElectricityPrice,
+                  nightElectricityPrice: data.nightElectricityPrice,
+                }),
+            gasPrice: data.gasPrice,
+            validFrom: data.validFrom,
+          } as CreateUpdateSingleTariff | CreateUpdateDoubleTariff,
         });
         if (response.meta.status === 200) {
           reset({}, { keepValues: true });
@@ -200,6 +177,15 @@ export function TariffsModal({
     reset({}, { keepValues: true });
     closeModal();
   }, [apiClient, closeModal, reset, installationId, tariffData]);
+
+  const emptyTariffState = () => {
+    if (tariffType === "single") {
+      setValue("dayElectricityPrice", undefined);
+      setValue("nightElectricityPrice", undefined);
+    } else {
+      setValue("electricityPrice", undefined);
+    }
+  };
 
   return (
     <Modal isOpen={isOpen} closeModal={closeModal}>
@@ -270,7 +256,6 @@ export function TariffsModal({
               <Controller
                 control={control}
                 name="validFrom"
-                // defaultValue={tariffData?.validFrom}
                 render={({ field }) => (
                   <DatePicker
                     selected={field.value || startDate}
@@ -296,7 +281,11 @@ export function TariffsModal({
               Delete
             </ModalDeleteButton>
           )}
-          <ModalConfirmButton type="submit" disabled={!isDirty || isSubmitting}>
+          <ModalConfirmButton
+            type="submit"
+            disabled={!isDirty || isSubmitting}
+            onClick={() => emptyTariffState()}
+          >
             Submit
           </ModalConfirmButton>
         </ModalActions>

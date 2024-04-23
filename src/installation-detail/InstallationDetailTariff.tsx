@@ -11,7 +11,6 @@ import { Tariff, TarrifsResult } from "../api-client/models";
 import { formatDateShortAsString } from "../utils/formatDate";
 import { useModalState } from "../ui-components/modal/useModalState";
 import { DetailSectionHeader } from "../cic-detail/CICDetailSectionHeader";
-
 interface InstallationDetailTariffProps {
   installationId: string;
   tariff?: TarrifsResult | null;
@@ -32,8 +31,6 @@ export function InstallationDetailTariff({
     setTariffData(null);
     openTariffsModal();
   };
-
-  console.log("tariff", tariff);
 
   return (
     <div className={classes["detail-section"]}>
