@@ -20,7 +20,7 @@ export function InstallationDetailExtraInformation({
       <FormSection>
         <FormField>
           <FormFieldTitle>Active CIC</FormFieldTitle>
-          <FormFieldValue value={installation.cicState[0].cicId} />
+          <FormFieldValue value={installation.activeCic} />
         </FormField>
         <FormField>
           <FormFieldTitle>Quatt build</FormFieldTitle>
