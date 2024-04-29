@@ -37,7 +37,11 @@ export function InstallationDetailExtraInformation({
         <FormField>
           <FormFieldTitle>Installation date</FormFieldTitle>
           <FormFieldValue
-            value={formatDateTimeString(installation.createdAt.toISOString())}
+            value={
+              installation.installedAt
+                ? formatDateTimeString(installation.installedAt.toISOString())
+                : "N/A"
+            }
           />
         </FormField>
       </FormSection>

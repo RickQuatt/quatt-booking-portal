@@ -27,7 +27,6 @@ export function InstallationDetailSettingsHistory({
       <DetailSectionHeader title="👀 Settings history" />
       <FormSection>
         <FormField>
-          <FormFieldTitle>Date of updated setting</FormFieldTitle>
           <div className={classes["detail-section-commissioning"]}>
             <Accordion>
               {installation.settingsUpdates.map((setting, index) => (
@@ -38,6 +37,9 @@ export function InstallationDetailSettingsHistory({
               ))}
             </Accordion>
           </div>
+          {installation.settingsUpdates.length === 0 && (
+            <div style={{ textAlign: "center" }}>No settings updates 👍</div>
+          )}
         </FormField>
       </FormSection>
     </div>
