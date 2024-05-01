@@ -42,6 +42,14 @@ export function CICDetailAdvanced({ cicData }: { cicData: AdminCic }) {
     });
   }, [apiClient, cicData.id, cicData.wifiSSID]);
 
+  const rebootCic = React.useCallback(async () => {
+    if (!window.confirm("Are you sure you would like to reboot the CIC?")) {
+      return;
+    }
+
+    await apiClient.adminRebootCIC({ cicId: cicData.id });
+  }, [apiClient, cicData.id]);
+
   return (
     <div className={classes["detail-section"]}>
       <DetailSectionHeader title="Advanced details" />
@@ -79,6 +87,7 @@ export function CICDetailAdvanced({ cicData }: { cicData: AdminCic }) {
           Advanced settings
         </Button>
         <Button onClick={resetWifiNetwork}>Forget WiFi network</Button>
+        <Button onClick={rebootCic}>Reboot CIC</Button>
       </FormSection>
     </div>
   );
