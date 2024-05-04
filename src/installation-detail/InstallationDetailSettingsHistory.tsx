@@ -5,11 +5,7 @@ import {
   AdminInstallationDetail,
   CicSettingsUpdate,
 } from "../api-client/models";
-import {
-  FormField,
-  FormFieldJson,
-  FormSection,
-} from "../ui-components/form/Form";
+import { FormField, FormSection } from "../ui-components/form/Form";
 import { Accordion, AccordionItem } from "../ui-components/accordion/Accordion";
 import { formatDateTime } from "../utils/formatDate";
 import { DetailSectionHeader } from "../cic-detail/CICDetailSectionHeader";
@@ -53,12 +49,23 @@ function InstallationDetailSettingsItem({
   settingsUpdate,
 }: InstallationDetailSettingsItemProps) {
   const [isOpen, setIsOpen] = React.useState(false);
-
   const settings = settingsUpdate.settings.toString();
-  const formatSettings = {
-    ...settingsUpdate,
-    settings: JSON.parse(settings),
-  };
+  const settinsJson = JSON.parse(settings);
+
+  const excludedKeys = ["settings"];
+  const datesKeys = ["createdAt", "updatedAt", "confirmedAt", "cancelledAt"];
+  const listOfSettings = [
+    ...Object.entries(settingsUpdate)
+      .filter(([key]) => !excludedKeys.includes(key))
+      .map(([key, value]) => [
+        key,
+        datesKeys.includes(key) ? formatDateTime(value) : value,
+      ]),
+  ];
+
+  const settingsColumn = [
+    ...Object.entries(settinsJson).filter(([key]) => key !== "settingsId"),
+  ];
 
   return (
     <AccordionItem
@@ -72,7 +79,32 @@ function InstallationDetailSettingsItem({
       isOpen={isOpen}
       onChangeIsOpen={() => setIsOpen(!isOpen)}
     >
-      <FormFieldJson value={formatSettings} />
+      <div>
+        <div className={classes["settings-history-card"]}>
+          <ul className={classes["settings-history-bullet"]}>
+            {listOfSettings.map(([key, value]) => (
+              <li key={key}>
+                <>
+                  <b>{key}:</b> {value}
+                </>
+              </li>
+            ))}
+            <li>
+              <b>settings:</b>
+            </li>
+            {settingsColumn.map(([key, value]) => (
+              <li
+                className={classes["settings-history-child-setting"]}
+                key={key}
+              >
+                <>
+                  <b>{key}:</b> {value}
+                </>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
     </AccordionItem>
   );
 }

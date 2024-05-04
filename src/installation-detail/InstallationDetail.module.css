@@ -112,3 +112,16 @@
   display: grid;
   grid-template-columns: auto auto auto;
 }
+
+.settings-history-card {
+  font-size: 0.8rem;
+}
+
+.settings-history-bullet {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.settings-history-child-setting {
+  margin-left: 16px;
+}
