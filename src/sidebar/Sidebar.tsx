@@ -38,6 +38,9 @@ export function Sidebar() {
           <Link href={`/installers`}>
             <SidebarButton>Installers</SidebarButton>
           </Link>
+          <Link href={`/installations`}>
+            <SidebarButton>Installations List</SidebarButton>
+          </Link>
         </div>
       </div>
     </>

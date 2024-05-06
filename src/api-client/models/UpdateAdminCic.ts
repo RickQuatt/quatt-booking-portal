@@ -19,6 +19,12 @@ import {
   BoilerTypeFromJSONTyped,
   BoilerTypeToJSON,
 } from "./BoilerType";
+import type { CicStatus } from "./CicStatus";
+import {
+  CicStatusFromJSON,
+  CicStatusFromJSONTyped,
+  CicStatusToJSON,
+} from "./CicStatus";
 import type { MaxSoundLevel } from "./MaxSoundLevel";
 import {
   MaxSoundLevelFromJSON,
@@ -111,6 +117,12 @@ export interface UpdateAdminCic {
    */
   nightMaxSoundLevel?: MaxSoundLevel;
   /**
+   *
+   * @type {CicStatus}
+   * @memberof UpdateAdminCic
+   */
+  status?: CicStatus;
+  /**
    * Rated maximum house power in watt
    * @type {number}
    * @memberof UpdateAdminCic
@@ -196,6 +208,9 @@ export function UpdateAdminCicFromJSONTyped(
     nightMaxSoundLevel: !exists(json, "nightMaxSoundLevel")
       ? undefined
       : MaxSoundLevelFromJSON(json["nightMaxSoundLevel"]),
+    status: !exists(json, "status")
+      ? undefined
+      : CicStatusFromJSON(json["status"]),
     ratedMaximumHousePower: !exists(json, "ratedMaximumHousePower")
       ? undefined
       : json["ratedMaximumHousePower"],
@@ -237,6 +252,7 @@ export function UpdateAdminCicToJSON(value?: UpdateAdminCic | null): any {
     name: value.name,
     dayMaxSoundLevel: MaxSoundLevelToJSON(value.dayMaxSoundLevel),
     nightMaxSoundLevel: MaxSoundLevelToJSON(value.nightMaxSoundLevel),
+    status: CicStatusToJSON(value.status),
     ratedMaximumHousePower: value.ratedMaximumHousePower,
     maximumHeatingOutdoorTemperature: value.maximumHeatingOutdoorTemperature,
     orderNumber: value.orderNumber,

@@ -8,7 +8,7 @@ import {
   FormFieldTitle,
   FormSection,
 } from "../ui-components/form/Form";
-import { CICDetailSectionHeader } from "./CICDetailSectionHeader";
+import { DetailSectionHeader } from "./CICDetailSectionHeader";
 import { Accordion, AccordionItem } from "../ui-components/accordion/Accordion";
 import { formatDateTime } from "../utils/formatDate";
 
@@ -19,7 +19,7 @@ interface CICDetailProps {
 export function CICDetailCommissioning({ cicData }: CICDetailProps) {
   return (
     <div className={classes["detail-section"]}>
-      <CICDetailSectionHeader title="Commissioning details" />
+      <DetailSectionHeader title="Commissioning details" />
       <FormSection>
         <FormField>
           <FormFieldTitle>Date of commissionings</FormFieldTitle>

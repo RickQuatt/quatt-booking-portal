@@ -1,3 +1,5 @@
+import React from "react";
+import { useApiClient } from "../api-client/context";
 import { AdminCic } from "../api-client/models";
 import { Button, ButtonLink } from "../ui-components/button/Button";
 import {
@@ -9,9 +11,9 @@ import {
 import { useModalState } from "../ui-components/modal/useModalState";
 import { AdvancedSettingsModal } from "./AdvancedSettingsModal";
 import classes from "./CICDetail.module.css";
-import { CICDetailSectionHeader } from "./CICDetailSectionHeader";
+import { DetailSectionHeader } from "./CICDetailSectionHeader";
 import {
-  getGrafanaLink,
+  getGrafanaDataPerCICLink,
   getHubspotSearchOrderLink,
   getMenderLink,
 } from "./getLinks";
@@ -23,9 +25,34 @@ export function CICDetailAdvanced({ cicData }: { cicData: AdminCic }) {
     close: closeAdvancedSettingsModal,
   } = useModalState();
 
+  const apiClient = useApiClient();
+
+  const resetWifiNetwork = React.useCallback(async () => {
+    if (
+      !window.confirm(
+        "Are you sure you would like to forget the current WiFi network?",
+      )
+    ) {
+      return;
+    }
+
+    await apiClient.adminForgetWifi({
+      cicId: cicData.id,
+      forgetWifiMeCicRequest: { ssid: cicData.wifiSSID as string },
+    });
+  }, [apiClient, cicData.id, cicData.wifiSSID]);
+
+  const rebootCic = React.useCallback(async () => {
+    if (!window.confirm("Are you sure you would like to reboot the CIC?")) {
+      return;
+    }
+
+    await apiClient.adminRebootCIC({ cicId: cicData.id });
+  }, [apiClient, cicData.id]);
+
   return (
     <div className={classes["detail-section"]}>
-      <CICDetailSectionHeader title="Advanced details" />
+      <DetailSectionHeader title="Advanced details" />
       <AdvancedSettingsModal
         isOpen={isAdvancedSettingsModalOpen}
         closeModal={closeAdvancedSettingsModal}
@@ -49,7 +76,7 @@ export function CICDetailAdvanced({ cicData }: { cicData: AdminCic }) {
             Mender
           </ButtonLink>
         )}
-        <ButtonLink href={getGrafanaLink(cicData.id)} target="_blank">
+        <ButtonLink href={getGrafanaDataPerCICLink(cicData.id)} target="_blank">
           Grafana
         </ButtonLink>
         <FormField>
@@ -59,6 +86,8 @@ export function CICDetailAdvanced({ cicData }: { cicData: AdminCic }) {
         <Button color="danger" onClick={openAdvancedSettingsModal}>
           Advanced settings
         </Button>
+        <Button onClick={resetWifiNetwork}>Forget WiFi network</Button>
+        <Button onClick={rebootCic}>Reboot CIC</Button>
       </FormSection>
     </div>
   );

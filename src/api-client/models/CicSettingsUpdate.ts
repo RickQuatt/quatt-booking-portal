@@ -13,6 +13,13 @@
  */
 
 import { exists, mapValues } from "../runtime";
+import type { UserRole } from "./UserRole";
+import {
+  UserRoleFromJSON,
+  UserRoleFromJSONTyped,
+  UserRoleToJSON,
+} from "./UserRole";
+
 /**
  *
  * @export
@@ -42,7 +49,13 @@ export interface CicSettingsUpdate {
    * @type {string}
    * @memberof CicSettingsUpdate
    */
-  fullname: string | null;
+  updatedBy: string | null;
+  /**
+   *
+   * @type {UserRole}
+   * @memberof CicSettingsUpdate
+   */
+  role: UserRole | null;
   /**
    *
    * @type {string}
@@ -118,7 +131,8 @@ export function instanceOfCicSettingsUpdate(value: object): boolean {
   isInstance = isInstance && "settingsId" in value;
   isInstance = isInstance && "cicId" in value;
   isInstance = isInstance && "userId" in value;
-  isInstance = isInstance && "fullname" in value;
+  isInstance = isInstance && "updatedBy" in value;
+  isInstance = isInstance && "role" in value;
   isInstance = isInstance && "settingsType" in value;
   isInstance = isInstance && "settings" in value;
   isInstance = isInstance && "retries" in value;
@@ -147,7 +161,8 @@ export function CicSettingsUpdateFromJSONTyped(
     settingsId: json["settingsId"],
     cicId: json["cicId"],
     userId: json["userId"],
-    fullname: json["fullname"],
+    updatedBy: json["updatedBy"],
+    role: UserRoleFromJSON(json["role"]),
     settingsType: json["settingsType"],
     settings: json["settings"],
     retries: json["retries"],
@@ -173,7 +188,8 @@ export function CicSettingsUpdateToJSON(value?: CicSettingsUpdate | null): any {
     settingsId: value.settingsId,
     cicId: value.cicId,
     userId: value.userId,
-    fullname: value.fullname,
+    updatedBy: value.updatedBy,
+    role: UserRoleToJSON(value.role),
     settingsType: value.settingsType,
     settings: value.settings,
     retries: value.retries,

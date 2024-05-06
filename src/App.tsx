@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { auth, signinWithGoogle } from "./firebase";
 import { User } from "firebase/auth";
-import { Link, Redirect, Route } from "wouter";
+import { Redirect, Route } from "wouter";
 import { QueryClient, QueryClientProvider, useQuery } from "react-query";
 
 import classes from "./App.module.css";
@@ -9,12 +9,14 @@ import quattSvg from "./assets/quatt.svg";
 import { CICList } from "./cic-list/CICList";
 import { CICDetail } from "./cic-detail/CICDetail";
 import { ApiClientProvider, useApiClient } from "./api-client/context";
-import { Button, ButtonLink } from "./ui-components/button/Button";
+import { Button } from "./ui-components/button/Button";
 import { InstallerList } from "./installer-list/InstallerList";
 import { Loader } from "./ui-components/loader/Loader";
 import { CicDashboard } from "./cic-dashboard/CicDashboard";
 import { CICHealthList } from "./cic-health-list/CICHealthList";
 import { Sidebar } from "./sidebar/Sidebar";
+import { InstallationList } from "./installation-list/InstallationList";
+import { InstallationDetail } from "./installation-detail/InstallationDetail";
 
 const queryClient = new QueryClient();
 
@@ -55,12 +57,24 @@ function App() {
             <Route path="/cics">
               <CICListRenderer />
             </Route>
+            <Route path="/installations">
+              <InstallationListRenderer />
+            </Route>
             <Route path="/cicHealth">
               <CICHealthListRenderer />
             </Route>
             <Route path="/cics/:cicId">
               {(params) => {
                 return <CICDetailRenderer cicId={params.cicId} />;
+              }}
+            </Route>
+            <Route path="/installations/:installationId">
+              {(params) => {
+                return (
+                  <InstallationDetailRenderer
+                    installationId={params.installationId}
+                  />
+                );
               }}
             </Route>
           </ApiClientProvider>
@@ -109,6 +123,39 @@ const CICDetailRenderer = ({ cicId }: { cicId: string }) => {
   return <CICDetail data={data.result} />;
 };
 
+const InstallationDetailRenderer = ({
+  installationId,
+}: {
+  installationId: string;
+}) => {
+  const apiClient = useApiClient();
+
+  const {
+    data: installationData,
+    status: installationStatus,
+    error,
+  } = useQuery(["installationDetail", installationId], () => {
+    return apiClient.adminGetInstallation({ installationId });
+  });
+
+  const { data: tariffData, status: tariffStatus } = useQuery(
+    ["installationTariffs", installationId],
+    () => {
+      return apiClient.adminGetInstallationTariff({ installationId });
+    },
+  );
+
+  if (installationStatus !== "success" || tariffStatus !== "success")
+    return <Loader />;
+
+  return (
+    <InstallationDetail
+      data={installationData.result}
+      tariff={tariffData.result}
+    />
+  );
+};
+
 const InstallerListRenderer = () => {
   const apiClient = useApiClient();
   const { data, status, error, refetch } = useQuery(
@@ -143,6 +190,23 @@ const CICListRenderer = () => {
   if (status !== "success") return <Loader />;
 
   return <CICList data={data.result} />;
+};
+
+const InstallationListRenderer = () => {
+  const apiClient = useApiClient();
+  const { data, status, error } = useQuery(
+    "installationList",
+    () => {
+      return apiClient.adminInstallationsList();
+    },
+    {
+      refetchOnWindowFocus: false,
+    },
+  );
+
+  if (status !== "success") return <Loader />;
+
+  return <InstallationList data={data.result} />;
 };
 
 const CICHealthListRenderer = () => {

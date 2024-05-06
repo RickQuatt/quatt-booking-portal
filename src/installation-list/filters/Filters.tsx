@@ -1,0 +1,40 @@
+import { DateRangeFilter } from "../../ui-components/filter/DateRangeFilter";
+import { TextFilter } from "../../ui-components/filter/TextFilter";
+import { InstallationFilters } from "./types";
+
+type SetFiltersFunc = (
+  setFiltersFunc: (oldFilters: InstallationFilters) => InstallationFilters,
+) => void;
+type FilterProps = { setFilters: SetFiltersFunc };
+
+export function InstallationIdFilter({ setFilters }: FilterProps) {
+  return <TextFilter setFilters={setFilters} filterKey={"externalId"} />;
+}
+
+export function OrderNumberFilter({ setFilters }: FilterProps) {
+  return <TextFilter setFilters={setFilters} filterKey={"orderNumber"} />;
+}
+
+export function ActiveCicFilter({ setFilters }: FilterProps) {
+  return <TextFilter setFilters={setFilters} filterKey={"cicId"} />;
+}
+
+export function CreatedAtFilter({ setFilters }: FilterProps) {
+  return (
+    <DateRangeFilter
+      setFilters={setFilters}
+      minFilterKey="minCreatedAt"
+      maxFilterKey="maxCreatedAt"
+    />
+  );
+}
+
+export function UpdatedAtFilter({ setFilters }: FilterProps) {
+  return (
+    <DateRangeFilter
+      setFilters={setFilters}
+      minFilterKey="minCreatedAt"
+      maxFilterKey="maxCreatedAt"
+    />
+  );
+}

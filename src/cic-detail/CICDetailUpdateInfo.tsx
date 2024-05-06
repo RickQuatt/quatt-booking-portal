@@ -6,12 +6,12 @@ import {
   FormSection,
 } from "../ui-components/form/Form";
 import classes from "./CICDetail.module.css";
-import { CICDetailSectionHeader } from "./CICDetailSectionHeader";
+import { DetailSectionHeader } from "./CICDetailSectionHeader";
 
 export function CICDetailUpdateInfo({ cicData }: { cicData: AdminCic }) {
   return (
     <div className={classes["detail-section"]}>
-      <CICDetailSectionHeader title="Update info" />
+      <DetailSectionHeader title="Update info" />
       <FormSection>
         <FormField>
           <FormFieldTitle>Quatt build</FormFieldTitle>
@@ -20,10 +20,6 @@ export function CICDetailUpdateInfo({ cicData }: { cicData: AdminCic }) {
         <FormField>
           <FormFieldTitle>Quatt build required</FormFieldTitle>
           <FormFieldValue value={cicData.quattBuildRequired} />
-        </FormField>
-        <FormField>
-          <FormFieldTitle>Update status</FormFieldTitle>
-          <FormFieldValue value={cicData.updateStatus} />
         </FormField>
         <FormField>
           <FormFieldTitle>Needs update</FormFieldTitle>
