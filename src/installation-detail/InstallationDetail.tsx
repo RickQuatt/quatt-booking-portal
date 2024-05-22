@@ -63,10 +63,13 @@ export function InstallationDetail({ data, tariff }: InstallationDetailProps) {
       <div className={classes["detail-sections-api"]}>
         <InstallationDetailTickets installationId={installationId} />
         <InstallationDetailService installationId={installationId} />
-        <InstallationDetailTariff
+        {/* TODO Uncomment when feature is live on production
+        https://linear.app/quatt/issue/SUP-122/enable-historic-tariffs-when-the-feature-is-live-on-production
+        */}
+        {/* <InstallationDetailTariff
           tariff={tariff}
           installationId={installationId}
-        />
+        /> */}
       </div>
 
       <BackButton />
