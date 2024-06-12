@@ -27,7 +27,7 @@ const options = {
       callbacks: {
         label: function (context: any) {
           const value = context.dataset.data[context.dataIndex].value;
-          return `${value}`;
+          return `${value} %`;
         },
       },
     },
@@ -53,6 +53,11 @@ export function InstallationHealthChecks({
   );
   const chResults = chData?.result;
 
+  const total = Object.values(chResults?.modeReparation || {}).reduce(
+    (acc, value) => acc + Number(value),
+    0,
+  );
+
   const chartRef = React.useRef();
   const chartData = React.useMemo(() => {
     return {
@@ -63,29 +68,44 @@ export function InstallationHealthChecks({
             {
               status: "Quatt",
               label: "Quatt",
-              value: chResults?.modeReparation?.quatt,
-              description: "hoi",
+              value: roundNumber(
+                ((chResults?.modeReparation?.quatt as number) / total) * 100,
+                0,
+              ),
             },
             {
               status: "Idle" as const,
               label: "Idle",
-              value: chResults?.modeReparation?.idle,
-              description: "",
+              value: roundNumber(
+                ((chResults?.modeReparation?.idle as number) / total) * 100,
+                0,
+              ),
             },
             {
               status: "Combo" as const,
               label: "Combo",
-              value: chResults?.modeReparation?.combo,
+              value: roundNumber(
+                ((chResults?.modeReparation?.combo as number) / total) * 100,
+                0,
+              ),
             },
             {
               status: "Boiler" as const,
               label: "Boiler",
-              value: chResults?.modeReparation?.boiler,
+              value: roundNumber(
+                ((chResults?.modeReparation?.boiler as number) / total) * 100,
+                0,
+              ),
             },
             {
               status: "AntiFreezeProtection" as const,
               label: "AntiFreezeProtection",
-              value: chResults?.modeReparation?.antiFreezeProtection,
+              value: roundNumber(
+                ((chResults?.modeReparation?.antiFreezeProtection as number) /
+                  total) *
+                  100,
+                0,
+              ),
             },
           ],
           backgroundColor: [
@@ -98,7 +118,7 @@ export function InstallationHealthChecks({
         },
       ],
     };
-  }, [chResults]);
+  }, [chResults, total]);
 
   const emptyModeReperation = Object.values(
     chResults?.modeReparation || {},
@@ -144,7 +164,7 @@ export function InstallationHealthChecks({
               </h2>
             </div>
             <div>
-              <h3 style={{ margin: "0" }}>Mode reparation</h3>
+              <h3 style={{ margin: "0" }}>Mode repartitiion</h3>
               {!emptyModeReperation && chResults?.modeReparation ? (
                 <div style={{ height: "100px", width: "100px" }}>
                   <Pie ref={chartRef} data={chartData} options={options} />
