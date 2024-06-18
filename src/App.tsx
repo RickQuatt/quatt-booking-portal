@@ -68,11 +68,11 @@ function App() {
                 return <CICDetailRenderer cicId={params.cicId} />;
               }}
             </Route>
-            <Route path="/installations/:installationId">
+            <Route path="/installations/:orderNumber">
               {(params) => {
                 return (
                   <InstallationDetailRenderer
-                    installationId={params.installationId}
+                    orderNumber={params.orderNumber}
                   />
                 );
               }}
@@ -124,9 +124,9 @@ const CICDetailRenderer = ({ cicId }: { cicId: string }) => {
 };
 
 const InstallationDetailRenderer = ({
-  installationId,
+  orderNumber,
 }: {
-  installationId: string;
+  orderNumber: string;
 }) => {
   const apiClient = useApiClient();
 
@@ -134,24 +134,23 @@ const InstallationDetailRenderer = ({
     data: installationData,
     status: installationStatus,
     error,
-  } = useQuery(["installationDetail", installationId], () => {
-    return apiClient.adminGetInstallation({ installationId });
+  } = useQuery(["installationDetail", orderNumber], () => {
+    return apiClient.adminGetInstallation({ orderNumber });
   });
 
-  const { data: tariffData, status: tariffStatus } = useQuery(
-    ["installationTariffs", installationId],
-    () => {
-      return apiClient.adminGetInstallationTariff({ installationId });
-    },
-  );
+  // const { data: tariffData, status: tariffStatus } = useQuery(
+  //   ["installationTariffs", installationId],
+  //   () => {
+  //     return apiClient.adminGetInstallationTariff({ installationId });
+  //   },
+  // );
 
-  if (installationStatus !== "success" || tariffStatus !== "success")
-    return <Loader />;
+  if (installationStatus !== "success") return <Loader />;
 
   return (
     <InstallationDetail
       data={installationData.result}
-      tariff={tariffData.result}
+      // tariff={tariffData.result}
     />
   );
 };

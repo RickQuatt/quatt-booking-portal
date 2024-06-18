@@ -10,7 +10,7 @@
 }
 
 .table-grid {
-  grid-template-columns: 3fr repeat(4, 1fr) 120px 120px 120px;
+  grid-template-columns: 1fr 2fr 0.5fr 0.5fr 0.5fr;
   min-width: 1300px;
   border: 1px solid #ddd;
   border-radius: 4px;

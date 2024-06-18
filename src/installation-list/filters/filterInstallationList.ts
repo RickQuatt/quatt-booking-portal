@@ -18,10 +18,6 @@ export function filterInstallationList(
         return filters.maxCreatedAt > createdDate;
       }
 
-      if (filters.externalId && filterKey === "externalId") {
-        return fuzzyMatch(installationEntry.externalId, filters.externalId);
-      }
-
       if (filters.orderNumber && filterKey === "orderNumber") {
         return fuzzyMatch(installationEntry.orderNumber, filters.orderNumber);
       }
