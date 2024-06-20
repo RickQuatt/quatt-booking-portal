@@ -1,5 +1,5 @@
 import { AdminCic } from "../../api-client/models";
-import { fuzzyMatch } from "../../ui-components/filter/utils";
+import { matchField } from "../../ui-components/filter/utils";
 import { getEntries } from "../../utils/object";
 import { CICFilters } from "./types";
 
@@ -37,11 +37,11 @@ export function filterCICList(list: AdminCic[], filters: CICFilters) {
       }
 
       if (filters.id && filterKey === "id") {
-        return fuzzyMatch(cicEntry.id, filters.id);
+        return matchField(cicEntry.id, filters.id);
       }
 
       if (filters.orderNumber && filterKey === "orderNumber") {
-        return fuzzyMatch(cicEntry.orderNumber, filters.orderNumber);
+        return matchField(cicEntry.orderNumber, filters.orderNumber);
       }
 
       if (filters.categoryFilters && filterKey === "categoryFilters") {

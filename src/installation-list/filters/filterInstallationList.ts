@@ -1,5 +1,5 @@
 import { AdminInstallationsList } from "../../api-client/models";
-import { fuzzyMatch } from "../../ui-components/filter/utils";
+import { matchField } from "../../ui-components/filter/utils";
 import { getEntries } from "../../utils/object";
 import { InstallationFilters } from "./types";
 
@@ -19,11 +19,11 @@ export function filterInstallationList(
       }
 
       if (filters.orderNumber && filterKey === "orderNumber") {
-        return fuzzyMatch(installationEntry.orderNumber, filters.orderNumber);
+        return matchField(installationEntry.orderNumber, filters.orderNumber);
       }
 
       if (filters.cicId && filterKey === "cicId") {
-        return fuzzyMatch(installationEntry.cicId, filters.cicId);
+        return matchField(installationEntry.cicId, filters.cicId);
       }
 
       return (
