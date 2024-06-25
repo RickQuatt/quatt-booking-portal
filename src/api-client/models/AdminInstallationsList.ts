@@ -24,12 +24,6 @@ export interface AdminInstallationsList {
    * @type {string}
    * @memberof AdminInstallationsList
    */
-  externalId: string;
-  /**
-   *
-   * @type {string}
-   * @memberof AdminInstallationsList
-   */
   cicId: string;
   /**
    *
@@ -37,18 +31,6 @@ export interface AdminInstallationsList {
    * @memberof AdminInstallationsList
    */
   orderNumber: string | null;
-  /**
-   *
-   * @type {string}
-   * @memberof AdminInstallationsList
-   */
-  hubspotDealId: string | null;
-  /**
-   *
-   * @type {string}
-   * @memberof AdminInstallationsList
-   */
-  menderId: string | null;
   /**
    *
    * @type {Date}
@@ -68,11 +50,8 @@ export interface AdminInstallationsList {
  */
 export function instanceOfAdminInstallationsList(value: object): boolean {
   let isInstance = true;
-  isInstance = isInstance && "externalId" in value;
   isInstance = isInstance && "cicId" in value;
   isInstance = isInstance && "orderNumber" in value;
-  isInstance = isInstance && "hubspotDealId" in value;
-  isInstance = isInstance && "menderId" in value;
   isInstance = isInstance && "createdAt" in value;
   isInstance = isInstance && "updatedAt" in value;
 
@@ -93,11 +72,8 @@ export function AdminInstallationsListFromJSONTyped(
     return json;
   }
   return {
-    externalId: json["externalId"],
     cicId: json["cicId"],
     orderNumber: json["orderNumber"],
-    hubspotDealId: json["hubspotDealId"],
-    menderId: json["menderId"],
     createdAt: new Date(json["createdAt"]),
     updatedAt: new Date(json["updatedAt"]),
   };
@@ -113,11 +89,8 @@ export function AdminInstallationsListToJSON(
     return null;
   }
   return {
-    externalId: value.externalId,
     cicId: value.cicId,
     orderNumber: value.orderNumber,
-    hubspotDealId: value.hubspotDealId,
-    menderId: value.menderId,
     createdAt: value.createdAt.toISOString(),
     updatedAt: value.updatedAt.toISOString(),
   };

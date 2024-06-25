@@ -7,10 +7,6 @@ type SetFiltersFunc = (
 ) => void;
 type FilterProps = { setFilters: SetFiltersFunc };
 
-export function InstallationIdFilter({ setFilters }: FilterProps) {
-  return <TextFilter setFilters={setFilters} filterKey={"externalId"} />;
-}
-
 export function OrderNumberFilter({ setFilters }: FilterProps) {
   return <TextFilter setFilters={setFilters} filterKey={"orderNumber"} />;
 }

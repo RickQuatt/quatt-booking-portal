@@ -3,7 +3,7 @@ import { Installer } from "../api-client/models";
 import { TextFilter } from "../ui-components/filter/TextFilter";
 import { SelectFilter } from "../ui-components/filter/SelectFilter";
 import { DateRangeFilter } from "../ui-components/filter/DateRangeFilter";
-import { fuzzyMatch, stringToBoolean } from "../ui-components/filter/utils";
+import { matchField, stringToBoolean } from "../ui-components/filter/utils";
 
 export type InstallerFilters = Partial<
   Pick<Installer, "code" | "name" | "phone">
@@ -34,15 +34,15 @@ export function filterInstallerList(
       }
 
       if (filters.code && filterKey === "code") {
-        return fuzzyMatch(cicEntry.code, filters.code);
+        return matchField(cicEntry.code, filters.code);
       }
 
       if (filters.name && filterKey === "name") {
-        return fuzzyMatch(cicEntry.name, filters.name);
+        return matchField(cicEntry.name, filters.name);
       }
 
       if (filters.phone && filterKey === "phone") {
-        return fuzzyMatch(cicEntry.phone, filters.phone);
+        return matchField(cicEntry.phone, filters.phone);
       }
 
       if (filters.isActive && filterKey === "isActive") {

@@ -139,7 +139,7 @@ export function InstallationDetailSettings({
   const onSubmit = React.useCallback(
     async (data: InstallationDetailFormData) => {
       const response = await apiClient.adminUpdateInstallation({
-        installationId: installation.externalId?.toString() as string,
+        orderNumber: installation.orderNumber?.toString() as string,
         updateAdminInstallation: data as unknown as CICAdvancedFormDataActual,
       });
       if (response.meta.status === 200) {
@@ -147,7 +147,7 @@ export function InstallationDetailSettings({
         reset({}, { keepValues: true });
       }
     },
-    [apiClient, installation.externalId, reset],
+    [apiClient, installation.orderNumber, reset],
   );
 
   return (

@@ -15,10 +15,9 @@ import { InstallationHealthChecks } from "./InstallationHealthChecks";
 
 interface InstallationDetailProps {
   data: AdminInstallationDetail;
-  tariff: TarrifsResult | null;
 }
 
-export function InstallationDetail({ data, tariff }: InstallationDetailProps) {
+export function InstallationDetail({ data }: InstallationDetailProps) {
   const installationId = data.externalId;
 
   if (!installationId) {
