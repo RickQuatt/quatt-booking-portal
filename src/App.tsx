@@ -72,7 +72,7 @@ function App() {
               {(params) => {
                 return (
                   <InstallationDetailRenderer
-                    orderNumber={params.orderNumber}
+                    orderNumber={params.orderNumber.toUpperCase()}
                   />
                 );
               }}
