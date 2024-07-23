@@ -69,13 +69,11 @@ function App() {
               }}
             </Route>
             <Route path="/installations/:orderNumber">
-              {(params) => {
-                return (
-                  <InstallationDetailRenderer
-                    orderNumber={params.orderNumber.toUpperCase()}
-                  />
-                );
-              }}
+              {(params) => (
+                <InstallationDetail
+                  orderNumber={params.orderNumber.toUpperCase()}
+                />
+              )}
             </Route>
           </ApiClientProvider>
         </QueryClientProvider>
@@ -121,38 +119,6 @@ const CICDetailRenderer = ({ cicId }: { cicId: string }) => {
   if (status !== "success") return <Loader />;
 
   return <CICDetail data={data.result} />;
-};
-
-const InstallationDetailRenderer = ({
-  orderNumber,
-}: {
-  orderNumber: string;
-}) => {
-  const apiClient = useApiClient();
-
-  const {
-    data: installationData,
-    status: installationStatus,
-    error,
-  } = useQuery(["installationDetail", orderNumber], () => {
-    return apiClient.adminGetInstallation({ orderNumber });
-  });
-
-  // const { data: tariffData, status: tariffStatus } = useQuery(
-  //   ["installationTariffs", installationId],
-  //   () => {
-  //     return apiClient.adminGetInstallationTariff({ installationId });
-  //   },
-  // );
-
-  if (installationStatus !== "success") return <Loader />;
-
-  return (
-    <InstallationDetail
-      data={installationData.result}
-      // tariff={tariffData.result}
-    />
-  );
 };
 
 const InstallerListRenderer = () => {

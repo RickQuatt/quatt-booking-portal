@@ -25,6 +25,7 @@ import type {
   AdminGetInstallationSetting200Response,
   AdminGetInstallationTickets200Response,
   AdminGetInstallationZuperJobs200Response,
+  AdminGetZuperJobsByOrderNumber200Response,
   AdminInstallationsList200Response,
   AdminListCics200Response,
   AdminListInstallers200Response,
@@ -64,6 +65,8 @@ import {
   AdminGetInstallationTickets200ResponseToJSON,
   AdminGetInstallationZuperJobs200ResponseFromJSON,
   AdminGetInstallationZuperJobs200ResponseToJSON,
+  AdminGetZuperJobsByOrderNumber200ResponseFromJSON,
+  AdminGetZuperJobsByOrderNumber200ResponseToJSON,
   AdminInstallationsList200ResponseFromJSON,
   AdminInstallationsList200ResponseToJSON,
   AdminListCics200ResponseFromJSON,
@@ -199,6 +202,10 @@ export interface AdminGetInstallerRequest {
   installerId: string;
 }
 
+export interface AdminGetZuperJobsByOrderNumberRequest {
+  orderNumber: string;
+}
+
 export interface AdminInstallationInstallationIdClickhouseOptionsRequest {
   installationId: string;
 }
@@ -236,6 +243,10 @@ export interface AdminInstallationInstallationIdZuperJobsOptionsRequest {
 }
 
 export interface AdminInstallationOrderNumberOptionsRequest {
+  orderNumber: string;
+}
+
+export interface AdminInstallationOrderNumberZuperJobsOptionsRequest {
   orderNumber: string;
 }
 
@@ -1824,6 +1835,67 @@ export class SupportDashboardApi extends runtime.BaseAPI {
   }
 
   /**
+   * Get installation & service jobs from Zuper by installation order number
+   */
+  async adminGetZuperJobsByOrderNumberRaw(
+    requestParameters: AdminGetZuperJobsByOrderNumberRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<AdminGetZuperJobsByOrderNumber200Response>> {
+    if (
+      requestParameters.orderNumber === null ||
+      requestParameters.orderNumber === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "orderNumber",
+        "Required parameter requestParameters.orderNumber was null or undefined when calling adminGetZuperJobsByOrderNumber.",
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken;
+      const tokenString = await token("bearerAuth", []);
+
+      if (tokenString) {
+        headerParameters["Authorization"] = `Bearer ${tokenString}`;
+      }
+    }
+    const response = await this.request(
+      {
+        path: `/admin/installation/{orderNumber}/zuper-jobs`.replace(
+          `{${"orderNumber"}}`,
+          encodeURIComponent(String(requestParameters.orderNumber)),
+        ),
+        method: "GET",
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    );
+
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      AdminGetZuperJobsByOrderNumber200ResponseFromJSON(jsonValue),
+    );
+  }
+
+  /**
+   * Get installation & service jobs from Zuper by installation order number
+   */
+  async adminGetZuperJobsByOrderNumber(
+    requestParameters: AdminGetZuperJobsByOrderNumberRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<AdminGetZuperJobsByOrderNumber200Response> {
+    const response = await this.adminGetZuperJobsByOrderNumberRaw(
+      requestParameters,
+      initOverrides,
+    );
+    return await response.value();
+  }
+
+  /**
    */
   async adminInstallationInstallationIdClickhouseOptionsRaw(
     requestParameters: AdminInstallationInstallationIdClickhouseOptionsRequest,
@@ -2328,6 +2400,54 @@ export class SupportDashboardApi extends runtime.BaseAPI {
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<void> {
     await this.adminInstallationOrderNumberOptionsRaw(
+      requestParameters,
+      initOverrides,
+    );
+  }
+
+  /**
+   */
+  async adminInstallationOrderNumberZuperJobsOptionsRaw(
+    requestParameters: AdminInstallationOrderNumberZuperJobsOptionsRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<void>> {
+    if (
+      requestParameters.orderNumber === null ||
+      requestParameters.orderNumber === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "orderNumber",
+        "Required parameter requestParameters.orderNumber was null or undefined when calling adminInstallationOrderNumberZuperJobsOptions.",
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    const response = await this.request(
+      {
+        path: `/admin/installation/{orderNumber}/zuper-jobs`.replace(
+          `{${"orderNumber"}}`,
+          encodeURIComponent(String(requestParameters.orderNumber)),
+        ),
+        method: "OPTIONS",
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    );
+
+    return new runtime.VoidApiResponse(response);
+  }
+
+  /**
+   */
+  async adminInstallationOrderNumberZuperJobsOptions(
+    requestParameters: AdminInstallationOrderNumberZuperJobsOptionsRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<void> {
+    await this.adminInstallationOrderNumberZuperJobsOptionsRaw(
       requestParameters,
       initOverrides,
     );

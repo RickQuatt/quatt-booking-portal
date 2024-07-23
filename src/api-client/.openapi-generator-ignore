@@ -134,6 +134,7 @@ models/*
 !models/UpdateMeUser.ts
 !models/AdminGetInstallationTickets200Response.ts
 !models/AdminGetInstallationTicketsZuper200Response.ts
+!models/AdminGetZuperJobsByOrderNumber200Response.ts
 !models/GetAllTariffs200ResponseResult.ts
 !models/ServiceJob.ts
 !models/Ticket.ts
@@ -152,6 +153,7 @@ models/*
 !models/UserRole.ts
 !models/AdminGetInstallationZuperJobs200Response.ts
 !models/ZuperJob.ts
+!models/ZuperJobs.ts
 !models/ZuperService.ts
 !models/AdminAddInstallationNote200Response.ts
 !models/AdminGetInstallationNotes200Response.ts
