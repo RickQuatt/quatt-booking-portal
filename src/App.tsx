@@ -58,7 +58,7 @@ function App() {
               <CICListRenderer />
             </Route>
             <Route path="/installations">
-              <InstallationListRenderer />
+              <InstallationList />
             </Route>
             <Route path="/cicHealth">
               <CICHealthListRenderer />
@@ -155,23 +155,6 @@ const CICListRenderer = () => {
   if (status !== "success") return <Loader />;
 
   return <CICList data={data.result} />;
-};
-
-const InstallationListRenderer = () => {
-  const apiClient = useApiClient();
-  const { data, status, error } = useQuery(
-    "installationList",
-    () => {
-      return apiClient.adminInstallationsList();
-    },
-    {
-      refetchOnWindowFocus: false,
-    },
-  );
-
-  if (status !== "success") return <Loader />;
-
-  return <InstallationList data={data.result} />;
 };
 
 const CICHealthListRenderer = () => {

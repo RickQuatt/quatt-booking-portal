@@ -242,12 +242,22 @@ export interface AdminInstallationInstallationIdZuperJobsOptionsRequest {
   installationId: string;
 }
 
+export interface AdminInstallationListOptionsRequest {
+  orderNumber?: string;
+  cicId?: string;
+}
+
 export interface AdminInstallationOrderNumberOptionsRequest {
   orderNumber: string;
 }
 
 export interface AdminInstallationOrderNumberZuperJobsOptionsRequest {
   orderNumber: string;
+}
+
+export interface AdminInstallationsListRequest {
+  orderNumber?: string;
+  cicId?: string;
 }
 
 export interface AdminRebootCICRequest {
@@ -2330,9 +2340,18 @@ export class SupportDashboardApi extends runtime.BaseAPI {
   /**
    */
   async adminInstallationListOptionsRaw(
+    requestParameters: AdminInstallationListOptionsRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<runtime.ApiResponse<void>> {
     const queryParameters: any = {};
+
+    if (requestParameters.orderNumber !== undefined) {
+      queryParameters["orderNumber"] = requestParameters.orderNumber;
+    }
+
+    if (requestParameters.cicId !== undefined) {
+      queryParameters["cicId"] = requestParameters.cicId;
+    }
 
     const headerParameters: runtime.HTTPHeaders = {};
 
@@ -2352,9 +2371,13 @@ export class SupportDashboardApi extends runtime.BaseAPI {
   /**
    */
   async adminInstallationListOptions(
+    requestParameters: AdminInstallationListOptionsRequest = {},
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<void> {
-    await this.adminInstallationListOptionsRaw(initOverrides);
+    await this.adminInstallationListOptionsRaw(
+      requestParameters,
+      initOverrides,
+    );
   }
 
   /**
@@ -2457,9 +2480,18 @@ export class SupportDashboardApi extends runtime.BaseAPI {
    * Installations list
    */
   async adminInstallationsListRaw(
+    requestParameters: AdminInstallationsListRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<runtime.ApiResponse<AdminInstallationsList200Response>> {
     const queryParameters: any = {};
+
+    if (requestParameters.orderNumber !== undefined) {
+      queryParameters["orderNumber"] = requestParameters.orderNumber;
+    }
+
+    if (requestParameters.cicId !== undefined) {
+      queryParameters["cicId"] = requestParameters.cicId;
+    }
 
     const headerParameters: runtime.HTTPHeaders = {};
 
@@ -2490,9 +2522,13 @@ export class SupportDashboardApi extends runtime.BaseAPI {
    * Installations list
    */
   async adminInstallationsList(
+    requestParameters: AdminInstallationsListRequest = {},
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<AdminInstallationsList200Response> {
-    const response = await this.adminInstallationsListRaw(initOverrides);
+    const response = await this.adminInstallationsListRaw(
+      requestParameters,
+      initOverrides,
+    );
     return await response.value();
   }
 
