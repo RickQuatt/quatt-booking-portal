@@ -89,7 +89,7 @@ export function InstallationDetail({ orderNumber }: InstallationDetailProps) {
           tariff={tariff}
           installationId={installationId}
         /> */}
-        <InstallationDetailCICQR installation={installationDetails} />
+        <InstallationDetailCICQR cicId={installationDetails.activeCic} />
       </div>
 
       <BackButton />

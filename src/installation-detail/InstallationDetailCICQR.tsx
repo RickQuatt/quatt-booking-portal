@@ -1,4 +1,3 @@
-import { AdminInstallationDetail } from "../api-client/models";
 import {
   FormField,
   FormFieldTitle,
@@ -8,20 +7,15 @@ import {
 import classes from "./InstallationDetail.module.css";
 import QRCode from "react-qr-code";
 import { DetailSectionHeader } from "../cic-detail/CICDetailSectionHeader";
-import { formatDateDistance, formatDateTimeString } from "../utils/formatDate";
 
-export function InstallationDetailCICQR({
-  installation,
-}: {
-  installation: AdminInstallationDetail;
-}) {
+export function InstallationDetailCICQR({ cicId }: { cicId: string }) {
   return (
     <div className={classes["detail-section"]}>
       <DetailSectionHeader title="📷 CIC QR" />
       <FormSection>
         <FormField>
           <FormFieldTitle>Active CIC</FormFieldTitle>
-          <FormFieldValue value={installation.activeCic} />
+          <FormFieldValue value={cicId} />
         </FormField>
         <QRCode
           size={156}
@@ -31,7 +25,7 @@ export function InstallationDetailCICQR({
             width: "80%",
             margin: "0 auto",
           }}
-          value={"https://app.quatt.io/cic/" + installation.activeCic}
+          value={"https://app.quatt.io/cic/" + cicId}
           viewBox={`0 0 256 256`}
         />
       </FormSection>
