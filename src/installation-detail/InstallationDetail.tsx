@@ -13,6 +13,7 @@ import { InstallationDetailTickets } from "./InstallationDetailTickets";
 import { InstallationDetailZuperService } from "./InstallationDetailZuperService";
 import { InstallationHealthChecks } from "./InstallationHealthChecks";
 import { InstallationDetailNotes } from "./installationDetailNotes";
+import { InstallationDetailCICQR } from "./InstallationDetailCICQR";
 
 interface InstallationDetailProps {
   data: AdminInstallationDetail;
@@ -65,6 +66,7 @@ export function InstallationDetail({ data }: InstallationDetailProps) {
           tariff={tariff}
           installationId={installationId}
         /> */}
+        <InstallationDetailCICQR installation={data} />
       </div>
 
       <BackButton />
