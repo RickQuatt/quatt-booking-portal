@@ -1,55 +1,21 @@
 import React from "react";
 
 import classes from "./InstallationDetail.module.css";
-import {
-  AdminInstallationDetail,
-  CicSettingsUpdate,
-  SettingsHeader,
-} from "../api-client/models";
+import { AdminInstallationDetail } from "../api-client/models";
 import { FormField, FormSection } from "../ui-components/form/Form";
 import { Accordion, AccordionItem } from "../ui-components/accordion/Accordion";
 import { formatDateTime } from "../utils/formatDate";
 import { DetailSectionHeader } from "../cic-detail/CICDetailSectionHeader";
 import { useApiClient } from "../api-client/context";
-import { useMutation } from "react-query";
-import { AdminGetInstallationSettingRequest } from "../api-client/apis";
+import { useQuery } from "@tanstack/react-query";
 
 interface InstallationDetailProps {
-  installationId: string;
   installation: AdminInstallationDetail;
 }
 
 export function InstallationDetailSettingsHistory({
-  installationId,
   installation,
 }: InstallationDetailProps) {
-  const apiClient = useApiClient();
-
-  const { mutateAsync, data, isLoading } = useMutation({
-    mutationFn: ({
-      installationId,
-      settingsId,
-    }: AdminGetInstallationSettingRequest) =>
-      apiClient.adminGetInstallationSetting({
-        installationId,
-        settingsId,
-      }),
-
-    onError: (error) => {
-      console.error("Error fetching settings details", error);
-    },
-  });
-
-  const settingsData = data ? data.result : null;
-
-  const getSettingsDetails = async (id: string) => {
-    const settings = await mutateAsync({
-      installationId: installationId,
-      settingsId: id,
-    });
-    return settings.result;
-  };
-
   return (
     <div className={classes["detail-section"]}>
       <DetailSectionHeader title="👀 Settings history" />
@@ -60,12 +26,11 @@ export function InstallationDetailSettingsHistory({
               {installation.settingsUpdates.map((setting, index) => (
                 <InstallationDetailSettingsItem
                   key={index}
-                  isLoading={isLoading}
-                  data={settingsData}
+                  installationId={installation.externalId}
+                  settingsId={setting.settingsId}
                   createdAt={setting.createdAt}
                   updatedBy={setting.updatedBy}
                   isUnconfirmed={setting.isUnconfirmed}
-                  onClick={() => getSettingsDetails(setting.settingsId)}
                 />
               ))}
             </Accordion>
@@ -80,26 +45,35 @@ export function InstallationDetailSettingsHistory({
 }
 
 interface InstallationDetailSettingsItemProps {
-  isLoading: boolean;
   createdAt: Date;
   updatedBy: string | null;
   isUnconfirmed: boolean;
-  onClick?: () => void;
-  data: CicSettingsUpdate | null;
+  installationId: string | null;
+  settingsId: string | null;
 }
 
 function InstallationDetailSettingsItem({
-  isLoading,
   createdAt,
   updatedBy,
   isUnconfirmed,
-  onClick,
-  data,
+  installationId,
+  settingsId,
 }: InstallationDetailSettingsItemProps) {
+  const apiClient = useApiClient();
   const [isOpen, setIsOpen] = React.useState(false);
-  const dataJson = data ?? [];
-  const settings = data?.settings.toString();
-  const settinsJson = settings ? JSON.parse(settings) : {};
+  const { data, isPending } = useQuery({
+    queryKey: ["installationSettings", installationId, settingsId],
+    queryFn: () =>
+      apiClient.adminGetInstallationSetting({
+        installationId: installationId || "",
+        settingsId: settingsId || "",
+      }),
+    enabled: isOpen && !!installationId && !!settingsId,
+  });
+
+  const dataJson = data?.result ?? [];
+  const settingsString = data?.result?.settings.toString();
+  const settings = JSON.parse(settingsString || "{}");
 
   const excludedKeys = ["settings"];
   const datesKeys = ["createdAt", "updatedAt", "confirmedAt", "cancelledAt"];
@@ -113,8 +87,12 @@ function InstallationDetailSettingsItem({
   ];
 
   const settingsColumn = [
-    ...Object.entries(settinsJson).filter(([key]) => key !== "settingsId"),
+    ...Object.entries(settings).filter(([key]) => key !== "settingsId"),
   ];
+
+  const toggleOpen = () => {
+    setIsOpen((prevValue) => !prevValue);
+  };
 
   return (
     <AccordionItem
@@ -126,12 +104,9 @@ function InstallationDetailSettingsItem({
         </>
       }
       isOpen={isOpen}
-      onChangeIsOpen={() => {
-        setIsOpen(!isOpen);
-        onClick?.();
-      }}
+      onChangeIsOpen={toggleOpen}
     >
-      {isLoading ? (
+      {isPending ? (
         <div>is Loading....</div>
       ) : (
         <div>

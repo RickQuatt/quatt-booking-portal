@@ -9,7 +9,7 @@ import {
   quattColor,
 } from "../cic-dashboard/colors";
 import { useApiClient } from "../api-client/context";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Loader } from "../ui-components/loader/Loader";
 import { roundNumber } from "../utils/number";
 
@@ -47,15 +47,19 @@ export function InstallationHealthChecks({
 }) {
   const apiClient = useApiClient();
 
-  const { data: chData, status: chStatus } = useQuery(
-    ["installationHealthCheck", orderNumber, cicId],
-    () =>
+  const {
+    data: healthCheckData,
+    isError,
+    isPending,
+  } = useQuery({
+    queryKey: ["installationHealthCheck", orderNumber, cicId],
+    queryFn: () =>
       apiClient.adminGetInstallationHealthCheck({
         orderNumber,
         cicId,
       }),
-  );
-  const chResults = chData?.result;
+  });
+  const chResults = healthCheckData?.result;
 
   const total = Object.values(chResults?.modeReparation || {}).reduce(
     (acc, value) => acc + Number(value),
@@ -130,10 +134,10 @@ export function InstallationHealthChecks({
 
   return (
     <>
-      {chStatus === "error" && (
+      {isError && (
         <div style={{ textAlign: "center" }}>No Health checks 😴</div>
       )}
-      {chStatus === "loading" ? (
+      {isPending ? (
         <Loader />
       ) : (
         <>

@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Ticket } from "../api-client/models";
 import hubspotLogo from "../../images/hubspot.svg";
 import { formatDateTime } from "../utils/formatDate";
@@ -15,14 +15,18 @@ interface CICDetailProps {
 export function InstallationDetailTickets({ installationId }: CICDetailProps) {
   const apiClient = useApiClient();
 
-  const { data: hubspotData, status: hubspotStatus } = useQuery(
-    ["installationHubspotTickets", installationId],
-    () => {
+  const {
+    data: hubspotData,
+    isError,
+    isPending,
+  } = useQuery({
+    queryKey: ["installationHubspotTickets", installationId],
+    queryFn: () => {
       return apiClient.adminGetInstallationTickets({
         installationId: installationId,
       });
     },
-  );
+  });
 
   const hubspotTickets = hubspotData?.result;
 
@@ -41,10 +45,10 @@ export function InstallationDetailTickets({ installationId }: CICDetailProps) {
       <FormSection>
         <FormField>
           <div className={classes["detail-section-api-cards"]}>
-            {hubspotStatus === "error" && (
+            {isError && (
               <div style={{ textAlign: "center" }}>No tickets 👍</div>
             )}
-            {hubspotStatus === "loading" ? (
+            {isPending ? (
               <Loader />
             ) : (
               <>

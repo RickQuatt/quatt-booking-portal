@@ -57,7 +57,6 @@ export function InstallationDetail({ orderNumber }: InstallationDetailProps) {
         />
         <InstallationDetailCicHistory installation={installationDetails} />
         <InstallationDetailCommissioningHistory
-          installationId={installationId}
           installation={installationDetails}
         />
       </div>
@@ -68,10 +67,7 @@ export function InstallationDetail({ orderNumber }: InstallationDetailProps) {
           zuperInstallationJobs={zuperJobs?.installations}
           isLoadingZuperJobs={isLoadingZuperJobs}
         />
-        <InstallationDetailSettingsHistory
-          installationId={installationId}
-          installation={installationDetails}
-        />
+        <InstallationDetailSettingsHistory installation={installationDetails} />
         <InstallationDetailSettings installation={installationDetails} />
       </div>
 
@@ -99,7 +95,7 @@ export function InstallationDetail({ orderNumber }: InstallationDetailProps) {
 
 function BackButton() {
   return (
-    <Link href={`/installations`} className={classes["back-button"]}>
+    <Link asChild href="/installations">
       <ButtonLink className={classes["back-button"]}>
         ← Back to installations
       </ButtonLink>

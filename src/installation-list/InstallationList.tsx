@@ -136,7 +136,7 @@ export function InstallationList() {
           <TdText>{formatDate(installation.updatedAt)}</TdText>
         </Td>
         <Td>
-          <Link to={installationDetailLink}>
+          <Link asChild to={installationDetailLink}>
             <ButtonLink>Details</ButtonLink>
           </Link>
         </Td>

@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useApiClient } from "../../api-client/context";
 import { prependPrefixIfMissing } from "../../utils/string";
 
@@ -18,18 +18,18 @@ export const useGetInstallationsList = (
 
   const cicIdWithPrefix = cicId ? prependPrefixIfMissing("CIC-", cicId) : cicId;
 
-  const { data, status, error } = useQuery(
-    ["installationList", { cicId, orderNumber }],
-    () =>
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["installationList", { cicId, orderNumber }],
+    queryFn: () =>
       apiClient.adminInstallationsList({
         cicId: cicIdWithPrefix,
         orderNumber: orderNumberWithPrefix ?? undefined,
       }),
-    { refetchOnWindowFocus: false, enabled: isFilterAtLeastThreeChars },
-  );
+    refetchOnWindowFocus: false,
+    enabled: isFilterAtLeastThreeChars,
+  });
 
   const installations = data?.result;
-  const isLoading = status === "loading";
 
   return { installations, isLoading, error };
 };

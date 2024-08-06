@@ -2,7 +2,11 @@ import { useState, useEffect } from "react";
 import { auth, signinWithGoogle } from "./firebase";
 import { User } from "firebase/auth";
 import { Redirect, Route } from "wouter";
-import { QueryClient, QueryClientProvider, useQuery } from "react-query";
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQuery,
+} from "@tanstack/react-query";
 
 import classes from "./App.module.css";
 import quattSvg from "./assets/quatt.svg";
@@ -93,15 +97,13 @@ const SignIn = () => {
 
 const CicDashboardRenderer = () => {
   const apiClient = useApiClient();
-  const { data, status, error } = useQuery(
-    ["cicDashboard"],
-    () => {
+  const { data, status, error } = useQuery({
+    queryKey: ["cicDashboard"],
+    queryFn: () => {
       return apiClient.adminDashboardCics();
     },
-    {
-      refetchOnWindowFocus: false,
-    },
-  );
+    refetchOnWindowFocus: false,
+  });
 
   // TODO: Render a spinner and handle errors - 2023-06-19
   if (status !== "success") return <Loader />;
@@ -111,8 +113,11 @@ const CicDashboardRenderer = () => {
 
 const CICDetailRenderer = ({ cicId }: { cicId: string }) => {
   const apiClient = useApiClient();
-  const { data, status, error } = useQuery(["cicDetail", cicId], () => {
-    return apiClient.adminGetCic({ cicId });
+  const { data, status, error } = useQuery({
+    queryKey: ["cicDetail", cicId],
+    queryFn: () => {
+      return apiClient.adminGetCic({ cicId });
+    },
   });
 
   // TODO: Render a spinner and handle errors - 2023-06-19
@@ -123,15 +128,13 @@ const CICDetailRenderer = ({ cicId }: { cicId: string }) => {
 
 const InstallerListRenderer = () => {
   const apiClient = useApiClient();
-  const { data, status, error, refetch } = useQuery(
-    "installerList",
-    () => {
+  const { data, status, error, refetch } = useQuery({
+    queryKey: ["installerList"],
+    queryFn: () => {
       return apiClient.adminListInstallers();
     },
-    {
-      refetchOnWindowFocus: false,
-    },
-  );
+    refetchOnWindowFocus: false,
+  });
 
   // TODO: Render a spinner and handle errors - 2023-06-19
   if (status !== "success") return <Loader />;
@@ -141,15 +144,13 @@ const InstallerListRenderer = () => {
 
 const CICListRenderer = () => {
   const apiClient = useApiClient();
-  const { data, status, error } = useQuery(
-    "cicList",
-    () => {
+  const { data, status, error } = useQuery({
+    queryKey: ["cicList"],
+    queryFn: () => {
       return apiClient.adminListCics();
     },
-    {
-      refetchOnWindowFocus: false,
-    },
-  );
+    refetchOnWindowFocus: false,
+  });
 
   // TODO: Render a spinner and handle errors - 2023-06-19
   if (status !== "success") return <Loader />;
@@ -159,15 +160,13 @@ const CICListRenderer = () => {
 
 const CICHealthListRenderer = () => {
   const apiClient = useApiClient();
-  const { data, status, error } = useQuery(
-    "cicList",
-    () => {
+  const { data, status, error } = useQuery({
+    queryKey: ["cicList"],
+    queryFn: () => {
       return apiClient.adminListCics();
     },
-    {
-      refetchOnWindowFocus: false,
-    },
-  );
+    refetchOnWindowFocus: false,
+  });
 
   // TODO: Render a spinner and handle errors - 2023-06-19
   if (status !== "success") return <Loader />;

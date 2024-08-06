@@ -1,17 +1,17 @@
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useApiClient } from "../../api-client/context";
 
 export const useGetZuperJobs = (orderNumber: string) => {
   const apiClient = useApiClient();
   const {
     data: zuperJobsResponse,
-    status,
+    isLoading: isLoadingZuperJobs,
     error: zuperJobsError,
-  } = useQuery(["zuperJobs", orderNumber], () =>
-    apiClient.adminGetZuperJobsByOrderNumber({ orderNumber }),
-  );
+  } = useQuery({
+    queryKey: ["zuperJobs", orderNumber],
+    queryFn: () => apiClient.adminGetZuperJobsByOrderNumber({ orderNumber }),
+  });
 
-  const isLoadingZuperJobs = status === "loading";
   const zuperJobs = zuperJobsResponse?.result;
 
   return {

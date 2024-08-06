@@ -1,5 +1,5 @@
 import React from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import { NotesModal } from "./NoteModal";
 import { Note } from "../api-client/models/Note";
@@ -31,12 +31,16 @@ export function InstallationDetailNotes({
 
   const {
     data: notesData,
-    status: notesStatus,
+    isPending,
     refetch,
-  } = useQuery(["installationNotes", installationId], () => {
-    return apiClient.adminGetInstallationNotes({
-      installationId,
-    });
+  } = useQuery({
+    queryKey: ["installationNotes", installationId],
+
+    queryFn: () => {
+      return apiClient.adminGetInstallationNotes({
+        installationId,
+      });
+    },
   });
   const notes = notesData?.result;
 
@@ -58,7 +62,7 @@ export function InstallationDetailNotes({
       <FormSection>
         <FormField>
           <div className={classes["detail-section-api-cards"]}>
-            {notesStatus === "loading" ? (
+            {isPending ? (
               <Loader />
             ) : (
               <>
