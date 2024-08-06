@@ -1,4 +1,5 @@
 import { AdminInstallationDetail } from "../api-client/models";
+import { isEmpty } from "lodash-es";
 import {
   FormField,
   FormFieldTitle,
@@ -14,45 +15,58 @@ export function InstallationDetailExtraInformation({
 }: {
   installation: AdminInstallationDetail;
 }) {
+  const {
+    activeCic,
+    quattBuild,
+    installedAt,
+    lastConnectionStatusUpdatedAt,
+    heatDeliverySystems,
+  } = installation;
+
+  const installationType =
+    installation.installationType === "hybrid"
+      ? "Quatt Hybrid"
+      : "Quatt Hybrid Duo";
+
   return (
     <div className={classes["detail-section"]}>
       <DetailSectionHeader title="🔍 Extra information" />
       <FormSection>
         <FormField>
           <FormFieldTitle>Active CIC</FormFieldTitle>
-          <FormFieldValue value={installation.activeCic} />
+          <FormFieldValue value={activeCic} />
         </FormField>
         <FormField>
           <FormFieldTitle>Quatt build</FormFieldTitle>
-          <FormFieldValue value={installation.quattBuild} />
+          <FormFieldValue value={quattBuild} />
         </FormField>
         <FormField>
           <FormFieldTitle>Last connection</FormFieldTitle>
           <FormFieldValue
-            value={formatDateDistance(
-              installation.lastConnectionStatusUpdatedAt,
-            )}
+            value={formatDateDistance(lastConnectionStatusUpdatedAt)}
           />
         </FormField>
         <FormField>
           <FormFieldTitle>Installation date</FormFieldTitle>
           <FormFieldValue
             value={
-              installation.installedAt
-                ? formatDateTimeString(installation.installedAt.toISOString())
+              installedAt
+                ? formatDateTimeString(installedAt.toISOString())
                 : "N/A"
             }
           />
         </FormField>
         <FormField>
           <FormFieldTitle>Installation type</FormFieldTitle>
-          <FormFieldValue
-            value={
-              installation.installationType === "hybrid"
-                ? "Quatt Hybrid"
-                : "Quatt Hybrid Duo"
-            }
-          />
+          <FormFieldValue value={installationType} />
+        </FormField>
+        <FormField>
+          <FormFieldTitle>Heating systems</FormFieldTitle>
+          {!isEmpty(heatDeliverySystems)
+            ? heatDeliverySystems?.map((system) => (
+                <FormFieldValue value={system} />
+              ))
+            : "No known heating systems"}
         </FormField>
       </FormSection>
     </div>
