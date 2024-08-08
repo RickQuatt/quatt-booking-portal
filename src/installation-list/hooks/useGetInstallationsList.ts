@@ -13,10 +13,12 @@ export const useGetInstallationsList = (
     cicIdOrEmptyString.length >= 3 || orderNumberOrEmptyString.length >= 3;
 
   const orderNumberWithPrefix = orderNumber
-    ? prependPrefixIfMissing("QUATT", orderNumber)
+    ? prependPrefixIfMissing("QUATT", orderNumber.trim())
     : orderNumber;
 
-  const cicIdWithPrefix = cicId ? prependPrefixIfMissing("CIC-", cicId) : cicId;
+  const cicIdWithPrefix = cicId
+    ? prependPrefixIfMissing("CIC-", cicId.trim())
+    : cicId;
 
   const {
     data,

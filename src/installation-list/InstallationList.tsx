@@ -10,7 +10,6 @@ import {
 } from "../ui-components/table/Table";
 import classes from "./InstallationList.module.css";
 import { formatDate } from "../utils/formatDate";
-import { ButtonLink } from "../ui-components/button/Button";
 import { Link } from "wouter";
 import React from "react";
 import { InstallationFilters } from "./filters/types";
@@ -35,10 +34,21 @@ export function InstallationList() {
 
   const noInstallationsFound = installations && installations.length === 0;
 
+  const isDirty = filters.cicId || filters.orderNumber;
+  const orderNumberPlaceholder = isDirty ? "" : "Enter an order number";
+  const cicIdPlaceholder = isDirty ? "" : "or a CIC id";
+
   return (
     <div className={classes.page}>
       <div className={classes["page-title-container"]}>
-        <h2 className={classes["page-title"]}>🛠️ Installations list</h2>
+        <h2 className={classes["page-title"]}>
+          🛠️ Installations
+          {!isDirty && (
+            <span className={classes["instruction-text"]}>
+              Search with an order number or a CIC id
+            </span>
+          )}
+        </h2>
         {isLoading && (
           // TODO: Remove the div wrapper and pass styles directly to the Loader component
           <div className={classes["loader-container"]}>
@@ -61,16 +71,21 @@ export function InstallationList() {
             <Th>
               <TdText>Updated at</TdText>
             </Th>
-            <Th>
-              <TdText>Details</TdText>
-            </Th>
           </Tr>
           <Tr>
             <Th>
-              <TextFilter filterKey="orderNumber" setFilters={setFilters} />
+              <TextFilter
+                filterKey="orderNumber"
+                placeholder={orderNumberPlaceholder}
+                setFilters={setFilters}
+              />
             </Th>
             <Th>
-              <TextFilter filterKey="cicId" setFilters={setFilters} />
+              <TextFilter
+                filterKey="cicId"
+                placeholder={cicIdPlaceholder}
+                setFilters={setFilters}
+              />
             </Th>
             <Th>
               <CreatedAtFilter setFilters={setFilters} />
@@ -78,7 +93,6 @@ export function InstallationList() {
             <Th>
               <UpdatedAtFilter setFilters={setFilters} />
             </Th>
-            <Th></Th>
           </Tr>
         </THead>
         <TBody>
@@ -116,13 +130,7 @@ export function InstallationList() {
     return (
       <Tr>
         <Td>
-          <TdText>
-            <span title={installation.orderNumber || ""}>
-              <Link to={installationDetailLink}>
-                {installation.orderNumber}
-              </Link>
-            </span>
-          </TdText>
+          <Link to={installationDetailLink}>{installation.orderNumber}</Link>
         </Td>
         <Td>
           <TdText>{installation.cicId}</TdText>
@@ -132,11 +140,6 @@ export function InstallationList() {
         </Td>
         <Td>
           <TdText>{formatDate(installation.updatedAt)}</TdText>
-        </Td>
-        <Td>
-          <Link asChild to={installationDetailLink}>
-            <ButtonLink>Details</ButtonLink>
-          </Link>
         </Td>
       </Tr>
     );

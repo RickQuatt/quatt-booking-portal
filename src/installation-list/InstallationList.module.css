@@ -18,8 +18,7 @@
 }
 
 .table-grid {
-  grid-template-columns: 1fr 2fr 0.5fr 0.5fr 0.5fr;
-  min-width: 1300px;
+  grid-template-columns: 1fr 2fr 0.5fr 0.5fr;
   border: 1px solid #ddd;
   border-radius: 4px;
   overflow: hidden;
@@ -27,6 +26,11 @@
 
 .loader-container {
   width: 4rem;
+}
+
+.instruction-text {
+  margin-left: 1rem;
+  color: #a5a5a5;
 }
 
 .info-text {
