@@ -210,6 +210,9 @@ export function TariffsModal({
     }
   };
 
+  const isTariffNotDeletable = tariffData?.isDeletable === false;
+  const isTariffDateNotEditable = tariffData?.isDateEditable === false;
+
   return (
     <Modal isOpen={isOpen} closeModal={closeModal}>
       <ModalHeader closeModal={closeModal}>Edit tariff data</ModalHeader>
@@ -281,7 +284,20 @@ export function TariffsModal({
                 name="validFrom"
                 render={({ field }) => (
                   <DatePicker
+                    customInput={
+                      <FormFieldInput
+                        disabled={isTariffDateNotEditable}
+                        style={{
+                          cursor: isTariffDateNotEditable
+                            ? "not-allowed"
+                            : "pointer",
+                        }}
+                        type="text"
+                        error={errors.validFrom}
+                      />
+                    }
                     selected={field.value || startDate}
+                    disabled={isTariffDateNotEditable}
                     onSelect={(date) => {
                       field.onChange(date);
                       setStartDate(date);
@@ -300,7 +316,11 @@ export function TariffsModal({
         </ModalContent>
         <ModalActions>
           {tariffData && (
-            <ModalDeleteButton color="danger" onClick={onDelete}>
+            <ModalDeleteButton
+              disabled={isTariffNotDeletable}
+              color="danger"
+              onClick={onDelete}
+            >
               Delete
             </ModalDeleteButton>
           )}
