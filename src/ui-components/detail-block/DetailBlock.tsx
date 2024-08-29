@@ -12,9 +12,18 @@ interface DetailBlockProps {
   unitSuffix?: UnitSuffix;
   fallback?: string;
   children?: React.ReactNode;
+  valueColor?: TextColor;
 }
 
 const stylesMarginZero = { margin: "0" };
+
+export const TextColor = {
+  BLACK: "black",
+  GREEN: "green",
+  RED: "red",
+} as const;
+
+export type TextColor = (typeof TextColor)[keyof typeof TextColor];
 
 function DetailBlock({
   title,
@@ -22,12 +31,15 @@ function DetailBlock({
   unitSuffix = UnitSuffix.NONE,
   children,
   fallback = "N/A",
+  valueColor = TextColor.BLACK,
 }: DetailBlockProps) {
+  const valueStyle = { margin: "0", color: valueColor };
+
   return (
     <div>
       <h3 style={stylesMarginZero}>{title}</h3>
       {value && (
-        <h2 style={stylesMarginZero}>
+        <h2 style={valueStyle}>
           {value}
           {unitSuffix}
         </h2>

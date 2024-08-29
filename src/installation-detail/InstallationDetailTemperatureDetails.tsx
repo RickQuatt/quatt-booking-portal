@@ -4,6 +4,7 @@ import DetailBlock, {
   UnitSuffix,
 } from "../ui-components/detail-block/DetailBlock";
 import { roundNumber } from "../utils/number";
+import ThresholdCheck from "../ui-components/threshold-check/ThresholdCheck";
 
 interface InstallationDetailTemperatureAndSetpointProps {
   chResults?: InstallationHealthCheck;
@@ -95,10 +96,12 @@ function InstallationDetailTemperatureDetails({
         value={setpointValue}
         unitSuffix={UnitSuffix.DEGREES_CELSIUS}
       />
-      <DetailBlock
+      <ThresholdCheck
         title="Setpoint reached"
         value={roundNumber(setpointAdherenceValue ?? undefined, 1)}
         unitSuffix={UnitSuffix.PERCENTAGE}
+        lowerThreshold={80}
+        lowerThresholdMessage="Issues with heating"
       />
     </>
   );
