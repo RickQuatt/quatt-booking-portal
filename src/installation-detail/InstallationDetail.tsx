@@ -16,6 +16,7 @@ import { useGetInstallationDetails } from "./hooks/useGetInstallationDetails";
 import { useGetZuperJobs } from "./hooks/useGetZuperJobs";
 import ErrorText from "../ui-components/error-text/ErrorText";
 import { ResponseError } from "../api-client/runtime";
+import { InstallationDetailTariff } from "./InstallationDetailTariff";
 
 interface InstallationDetailProps {
   orderNumber: string;
@@ -84,7 +85,6 @@ export function InstallationDetail({ orderNumber }: InstallationDetailProps) {
           installation={installationDetails}
         />
       </div>
-
       <div className={classes["detail-sections-insights"]}>
         <InstallationDetailAdvanced
           installation={installationDetails}
@@ -103,13 +103,7 @@ export function InstallationDetail({ orderNumber }: InstallationDetailProps) {
           zuperJobsError={zuperJobsError}
           refetch={refetchZuperJobs}
         />
-        {/* TODO Uncomment when feature is live on production
-        https://linear.app/quatt/issue/SUP-122/enable-historic-tariffs-when-the-feature-is-live-on-production
-        */}
-        {/* <InstallationDetailTariff
-          tariff={tariff}
-          installationId={installationId}
-        /> */}
+        <InstallationDetailTariff installationId={installationId} />
         <InstallationDetailCICQR cicId={installationDetails.activeCic} />
       </div>
     </div>

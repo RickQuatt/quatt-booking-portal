@@ -33,6 +33,7 @@ import { formatAsDate } from "../utils/formatDate";
 interface Props extends ModalProps {
   installationId: string;
   tariffData: Tariff | null;
+  onSuccess: () => void;
 }
 
 const TariffFormSchema = yup.object({
@@ -51,6 +52,7 @@ export function TariffsModal({
   closeModal,
   tariffData,
   installationId,
+  onSuccess,
 }: Props) {
   const selectedTariff =
     tariffData?.dayElectricityPrice && tariffData?.nightElectricityPrice
@@ -133,6 +135,7 @@ export function TariffsModal({
         if (response.meta.status === 200) {
           reset({}, { keepValues: true });
           closeModal();
+          onSuccess();
         }
         if (response.meta.status !== 200) {
           console.error("Failed to create tariff data");
@@ -156,6 +159,7 @@ export function TariffsModal({
         if (response.meta.status === 200) {
           reset({}, { keepValues: true });
           closeModal();
+          onSuccess();
         }
       }
     },
@@ -168,6 +172,7 @@ export function TariffsModal({
       installationId,
       tariffType,
       startDate,
+      onSuccess,
     ],
   );
 
@@ -182,14 +187,19 @@ export function TariffsModal({
       return;
     }
 
-    await apiClient.adminDeleteInstallationTariff({
-      installationId: installationId,
-      tariffId: tariffData.id,
-    });
+    await apiClient
+      .adminDeleteInstallationTariff({
+        installationId: installationId,
+        tariffId: tariffData.id,
+      })
+      .catch(() => {
+        window.alert("Failed to delete tariff data");
+      });
 
     reset({}, { keepValues: true });
     closeModal();
-  }, [apiClient, closeModal, reset, installationId, tariffData]);
+    onSuccess();
+  }, [apiClient, closeModal, reset, installationId, tariffData, onSuccess]);
 
   const emptyTariffState = () => {
     if (tariffType === "single") {
