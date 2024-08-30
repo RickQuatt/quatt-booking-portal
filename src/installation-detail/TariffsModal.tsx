@@ -331,7 +331,7 @@ export function TariffsModal({
                         error={errors.validFrom}
                       />
                     }
-                    selected={field.value || startDate}
+                    selected={startDate}
                     disabled={isTariffDateNotEditable}
                     onSelect={(date) => {
                       field.onChange(date);
