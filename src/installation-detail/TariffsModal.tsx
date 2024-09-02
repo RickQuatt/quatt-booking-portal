@@ -20,6 +20,7 @@ import {
 import {
   CreateUpdateDoubleTariff,
   CreateUpdateSingleTariff,
+  ErrorCode,
   Tariff,
 } from "../api-client/models";
 import { useApiClient } from "../api-client/context";
@@ -155,18 +156,23 @@ export function TariffsModal({
 
       // If there is no tariff data, create a new tariff
       if (!tariffData) {
-        const response = await apiClient.adminCreateInstallationTariff({
-          installationId: installationId,
-          createTariffRequest: tariffBody,
-        });
-        if (response.meta.status === 200) {
+        try {
+          await apiClient.adminCreateInstallationTariff({
+            installationId: installationId,
+            createTariffRequest: tariffBody,
+          });
           reset({}, { keepValues: true });
           closeModal();
           onSuccess();
-        }
-        if (response.meta.status !== 200) {
-          console.error("Failed to create tariff data");
-          return;
+        } catch (error: Error | any) {
+          if (error.response?.status === 409) {
+            window.alert("Tariff data already exists for this date");
+            return;
+          }
+          if (error.response.status !== 200) {
+            console.error("Failed to create tariff data");
+            return;
+          }
         }
       } else {
         if (!tariffData?.id) {
