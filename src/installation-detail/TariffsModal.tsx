@@ -20,7 +20,6 @@ import {
 import {
   CreateUpdateDoubleTariff,
   CreateUpdateSingleTariff,
-  ErrorCode,
   Tariff,
 } from "../api-client/models";
 import { useApiClient } from "../api-client/context";
@@ -243,12 +242,18 @@ export function TariffsModal({
     }
   };
 
+  const closeTariffsModal = () => {
+    setStartDate(undefined);
+    emptyTariffState();
+    closeModal();
+  };
+
   const isTariffNotDeletable = tariffData?.isDeletable === false;
   const isTariffDateNotEditable = tariffData?.isDateEditable === false;
 
   return (
-    <Modal isOpen={isOpen} closeModal={closeModal}>
-      <ModalHeader closeModal={closeModal}>Edit tariff data</ModalHeader>
+    <Modal isOpen={isOpen} closeModal={closeTariffsModal}>
+      <ModalHeader closeModal={closeTariffsModal}>Edit tariff data</ModalHeader>
       <form onSubmit={handleSubmit(onSubmit)}>
         <ModalContent>
           <FormSection>
