@@ -98,7 +98,7 @@ function InstallationDetailTemperatureDetails({
       />
       <ThresholdCheck
         title="Setpoint reached"
-        value={roundNumber(setpointAdherenceValue ?? undefined, 1)}
+        displayValue={roundNumber(setpointAdherenceValue ?? undefined, 1)}
         unitSuffix={UnitSuffix.PERCENTAGE}
         lowerThreshold={80}
         lowerThresholdMessage="Issues with heating"

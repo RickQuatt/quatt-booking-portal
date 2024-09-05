@@ -34,18 +34,22 @@ function DetailBlock({
   valueColor = TextColor.BLACK,
 }: DetailBlockProps) {
   const valueStyle = { margin: "0", color: valueColor };
+  const hasValue = value !== null && value !== undefined;
+  const hasFalsyChildren =
+    Array.isArray(children) && children.every((child) => !child);
+  const noChildren = !children || hasFalsyChildren;
 
   return (
     <div>
       <h3 style={stylesMarginZero}>{title}</h3>
-      {value && (
+      {hasValue && (
         <h2 style={valueStyle}>
           {value}
           {unitSuffix}
         </h2>
       )}
       {children && children}
-      {!value && !children && <h2 style={stylesMarginZero}>{fallback}</h2>}
+      {!value && noChildren && <h2 style={stylesMarginZero}>{fallback}</h2>}
     </div>
   );
 }

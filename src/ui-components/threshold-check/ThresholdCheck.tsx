@@ -1,4 +1,3 @@
-import React from "react";
 import DetailBlock, {
   UnitSuffix,
   TextColor,
@@ -6,23 +5,28 @@ import DetailBlock, {
 
 interface ThresholdCheckProps {
   title: string;
-  value?: string | number | null;
+  displayValue?: string | number | null;
+  thresholdValue?: number;
   unitSuffix?: UnitSuffix;
   lowerThreshold?: number;
   lowerThresholdMessage?: string;
   upperThreshold?: number;
   upperThresholdMessage?: string;
+  children?: React.ReactNode;
 }
 
 function ThresholdCheck({
   title,
-  value,
+  displayValue,
+  thresholdValue,
   unitSuffix = UnitSuffix.NONE,
   lowerThreshold,
   lowerThresholdMessage,
   upperThreshold,
   upperThresholdMessage,
+  children,
 }: ThresholdCheckProps) {
+  const value = thresholdValue || displayValue;
   const lowerThresholdPassed =
     lowerThreshold && typeof value === "number" && value < lowerThreshold;
   const upperThresholdPassed =
@@ -34,10 +38,11 @@ function ThresholdCheck({
   return (
     <DetailBlock
       title={title}
-      value={value}
+      value={displayValue}
       unitSuffix={unitSuffix}
       valueColor={valueColor}
     >
+      {children}
       {thresholdPassed && (
         <span style={{ color: TextColor.RED }}>{warningMessage}</span>
       )}
