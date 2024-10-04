@@ -60,35 +60,31 @@ export function InstallationDetailTariff({
     );
   }
 
-  const hasFutureTariffs =
-    tariffs.futureTariffs && tariffs.futureTariffs.length > 0;
-  const hasPastTariffs = tariffs.pastTariffs && tariffs.pastTariffs.length > 0;
+  const { currentTariff, futureTariffs, pastTariffs } = tariffs;
+  const hasFutureTariffs = futureTariffs && futureTariffs.length > 0;
+  const hasPastTariffs = pastTariffs && pastTariffs.length > 0;
 
   return (
     <div className={classes["detail-section"]}>
-      <DetailSectionHeader
-        title="💰 Tariffs"
-        onClick={() => {
-          createNewTariff();
-        }}
-      />
+      <DetailSectionHeader title="💰 Tariffs" onClick={createNewTariff} />
       <TariffsModal
         isOpen={isTariffModalOpen}
         closeModal={closeTariffsModal}
         tariffData={tariffData}
         installationId={installationId}
         onSuccess={refetchTariffs}
+        key={tariffData?.id || "new-tariff"}
       />
       <FormSection>
         <FormField>
           <div className={classes["detail-section-api-cards"]}>
-            {tariffs?.currentTariff && (
+            {currentTariff && (
               <>
                 <FormFieldTitle>Current tariff</FormFieldTitle>
                 <InstallationDetailTariffItem
-                  tariff={tariffs.currentTariff}
+                  tariff={currentTariff}
                   onClick={() => {
-                    setTariffData(tariffs.currentTariff);
+                    setTariffData(currentTariff);
                     openTariffsModal();
                   }}
                 />
@@ -98,7 +94,7 @@ export function InstallationDetailTariff({
             {hasFutureTariffs && (
               <>
                 <FormFieldTitle>Upcoming tariffs</FormFieldTitle>
-                {tariffs.futureTariffs.map((tariff, index) => (
+                {futureTariffs.map((tariff, index) => (
                   <div key={index}>
                     <InstallationDetailTariffItem
                       tariff={tariff}
@@ -115,7 +111,7 @@ export function InstallationDetailTariff({
             {hasPastTariffs && (
               <>
                 <FormFieldTitle>Past tariffs</FormFieldTitle>
-                {tariffs.pastTariffs.map((tariff, index) => (
+                {pastTariffs.map((tariff, index) => (
                   <div key={index}>
                     <InstallationDetailTariffItem
                       tariff={tariff}
@@ -129,7 +125,7 @@ export function InstallationDetailTariff({
               </>
             )}
 
-            {tariffs?.currentTariff === null && (
+            {currentTariff === null && (
               <div style={{ textAlign: "center" }}>No tariffs set 😴</div>
             )}
           </div>
@@ -146,6 +142,13 @@ function InstallationDetailTariffItem({
   tariff: Tariff;
   onClick: () => void;
 }) {
+  const {
+    dayElectricityPrice,
+    nightElectricityPrice,
+    electricityPrice,
+    gasPrice,
+  } = tariff;
+
   return (
     <div>
       <div className={classes["tariff-header"]}>
@@ -158,21 +161,19 @@ function InstallationDetailTariffItem({
         key={tariff.id}
       >
         <div className={classes["detail-section-bold"]}>
-          {tariff.dayElectricityPrice && tariff.nightElectricityPrice ? (
+          {dayElectricityPrice && nightElectricityPrice ? (
             <div className={classes["tariff-grid"]}>
-              <div>⚡️☀️ €{roundNumber(tariff.dayElectricityPrice, 2)}</div>
-              <div>⚡️🌙 €{roundNumber(tariff.nightElectricityPrice, 2)}</div>
-              <div>🔥 €{roundNumber(tariff.gasPrice, 2)}</div>
+              <div>⚡️☀️ €{roundNumber(dayElectricityPrice, 2)}</div>
+              <div>⚡️🌙 €{roundNumber(nightElectricityPrice, 2)}</div>
+              <div>🔥 €{roundNumber(gasPrice, 2)}</div>
             </div>
           ) : (
             <div className={classes["tariff-grid"]}>
               <div>
                 ⚡️ €
-                {tariff.electricityPrice
-                  ? roundNumber(tariff.electricityPrice, 2)
-                  : "n/a"}
+                {electricityPrice ? roundNumber(electricityPrice, 2) : "n/a"}
               </div>
-              <div>🔥 €{roundNumber(tariff.gasPrice, 2)}</div>
+              <div>🔥 €{roundNumber(gasPrice, 2)}</div>
             </div>
           )}
         </div>

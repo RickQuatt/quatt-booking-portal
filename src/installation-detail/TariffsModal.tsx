@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect, useCallback, useMemo } from "react";
 
 import * as yup from "yup";
 import {
@@ -20,6 +20,7 @@ import {
 import {
   CreateUpdateDoubleTariff,
   CreateUpdateSingleTariff,
+  ErrorResponse,
   Tariff,
 } from "../api-client/models";
 import { useApiClient } from "../api-client/context";
@@ -29,6 +30,7 @@ import { Controller, useForm } from "react-hook-form";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { formatAsDate } from "../utils/formatDate";
+import { ResponseError } from "../api-client/runtime";
 
 interface Props extends ModalProps {
   installationId: string;
@@ -74,6 +76,17 @@ const TariffFormSchema = yup.object({
 
 type TariffFormData = yup.InferType<typeof TariffFormSchema>;
 
+const handleRequestFailure = async (error: unknown, message: string) => {
+  if (error instanceof ResponseError) {
+    const errorData: ErrorResponse = await error.response.json();
+    alert(
+      `${message}: ${errorData.result.error} - ${errorData.result.errorCode}`,
+    );
+  } else {
+    alert(`Unkown error response: ${JSON.stringify(error)}`);
+  }
+};
+
 export function TariffsModal({
   isOpen,
   closeModal,
@@ -85,19 +98,18 @@ export function TariffsModal({
     tariffData?.dayElectricityPrice && tariffData?.nightElectricityPrice
       ? "double"
       : "single";
-  const [tariffType, setTariffType] = React.useState<string>(selectedTariff);
-  const [startDate, setStartDate] = React.useState(tariffData?.validFrom);
 
-  const defaultValues = React.useMemo(() => {
-    return {
+  const defaultValues = useMemo(
+    () => ({
       tariffType: selectedTariff,
       electricityPrice: tariffData?.electricityPrice || undefined,
       dayElectricityPrice: tariffData?.dayElectricityPrice || undefined,
       nightElectricityPrice: tariffData?.nightElectricityPrice || undefined,
       gasPrice: tariffData?.gasPrice,
       validFrom: tariffData?.validFrom,
-    };
-  }, [tariffData, selectedTariff]);
+    }),
+    [selectedTariff, tariffData],
+  );
 
   const {
     register,
@@ -105,36 +117,31 @@ export function TariffsModal({
     reset,
     formState: { errors, isSubmitting, isDirty },
     control,
-    setValue,
+    watch,
   } = useForm<TariffFormData>({
     resolver: yupResolver(TariffFormSchema),
     defaultValues,
   });
 
+  const tariffType = watch("tariffType");
+  const startDate = watch("validFrom");
+
+  const handleClose = useCallback(() => {
+    reset();
+    closeModal();
+  }, [reset, closeModal]);
+
+  const handleSubmitSuccess = useCallback(() => {
+    handleClose();
+    onSuccess();
+  }, [onSuccess, handleClose]);
+
   useEffect(() => {
     reset(defaultValues);
-
-    if (tariffData) {
-      setTariffType(selectedTariff);
-      setStartDate(tariffData.validFrom);
-    }
-
-    return () => {
-      reset();
-    };
-  }, [reset, defaultValues, selectedTariff, tariffData]);
-
-  const emptyTariffState = React.useCallback(() => {
-    if (tariffType === "single") {
-      setValue("dayElectricityPrice", undefined);
-      setValue("nightElectricityPrice", undefined);
-    } else {
-      setValue("electricityPrice", undefined);
-    }
-  }, [tariffType, setValue]);
+  }, [reset, defaultValues, tariffData]);
 
   const apiClient = useApiClient();
-  const onSubmit = React.useCallback(
+  const onSubmit = useCallback(
     async (data: TariffFormData) => {
       if (
         !window.confirm("Are you sure you would like to update the tariffs?")
@@ -169,60 +176,41 @@ export function TariffsModal({
             installationId: installationId,
             createTariffRequest: tariffBody,
           });
-          reset({}, { keepValues: false });
-          closeModal();
-          onSuccess();
-          emptyTariffState();
-          setStartDate(undefined);
-        } catch (error: Error | any) {
-          if (error.response?.status === 409) {
-            window.alert("Tariff data already exists for this date");
-            return;
-          }
-          if (error.response.status !== 200) {
-            console.error("Failed to create tariff data");
-            return;
-          }
+
+          handleSubmitSuccess();
+        } catch (error) {
+          await handleRequestFailure(error, "Failed to create a tariff");
         }
       } else {
         if (!tariffData?.id) {
           return;
         }
 
-        // If there is tariff data, update the existing tariff
-        const response = await apiClient.adminUpdateInstallationTariff({
-          installationId: installationId,
-          tariffId: tariffData.id,
-          createTariffRequest: tariffBody,
-        });
-        if (response.meta.status !== 200) {
-          console.error("Failed to update tariff data");
-          return;
-        }
-        if (response.meta.status === 200) {
-          reset({}, { keepValues: true });
-          closeModal();
-          onSuccess();
-          emptyTariffState();
-          setStartDate(undefined);
+        try {
+          // If there is tariff data, update the existing tariff
+          await apiClient.adminUpdateInstallationTariff({
+            installationId: installationId,
+            tariffId: tariffData.id,
+            createTariffRequest: tariffBody,
+          });
+
+          handleSubmitSuccess();
+        } catch (error) {
+          await handleRequestFailure(error, "Failed to update tariff data");
         }
       }
     },
-
     [
-      startDate,
-      tariffType,
-      tariffData,
       apiClient,
+      tariffData,
       installationId,
-      reset,
-      closeModal,
-      onSuccess,
-      emptyTariffState,
+      tariffType,
+      startDate,
+      handleSubmitSuccess,
     ],
   );
 
-  const onDelete = React.useCallback(async () => {
+  const onDelete = useCallback(async () => {
     if (
       !window.confirm("Are you sure you would like to delete the tariff data?")
     ) {
@@ -233,54 +221,30 @@ export function TariffsModal({
       return;
     }
 
-    await apiClient
-      .adminDeleteInstallationTariff({
+    try {
+      await apiClient.adminDeleteInstallationTariff({
         installationId: installationId,
         tariffId: tariffData.id,
-      })
-      .catch(() => {
-        window.alert("Failed to delete tariff data");
       });
 
-    reset({}, { keepValues: true });
-    closeModal();
-    onSuccess();
-    emptyTariffState();
-    setStartDate(undefined);
-  }, [
-    apiClient,
-    closeModal,
-    reset,
-    installationId,
-    tariffData,
-    onSuccess,
-    emptyTariffState,
-  ]);
-
-  const closeTariffsModal = () => {
-    setStartDate(undefined);
-    emptyTariffState();
-    closeModal();
-  };
+      handleSubmitSuccess();
+    } catch (error) {
+      await handleRequestFailure(error, "Failed to delete tariff data");
+    }
+  }, [apiClient, installationId, tariffData, handleSubmitSuccess]);
 
   const isTariffNotDeletable = tariffData?.isDeletable === false;
   const isTariffDateNotEditable = tariffData?.isDateEditable === false;
 
   return (
-    <Modal isOpen={isOpen} closeModal={closeTariffsModal}>
-      <ModalHeader closeModal={closeTariffsModal}>Edit tariff data</ModalHeader>
+    <Modal isOpen={isOpen} closeModal={handleClose}>
+      <ModalHeader closeModal={handleClose}>Edit tariff data</ModalHeader>
       <form onSubmit={handleSubmit(onSubmit)}>
         <ModalContent>
           <FormSection>
             <FormField>
               <FormFieldTitle>Tariff</FormFieldTitle>
-              <FormSelectInput
-                defaultValue={tariffType}
-                {...register("tariffType", {
-                  setValueAs: (value) => value,
-                  onChange: (e) => setTariffType(e.target.value),
-                })}
-              >
+              <FormSelectInput {...register("tariffType")}>
                 <option value="single">Single tariff</option>
                 <option value="double">Double tariff</option>
               </FormSelectInput>
@@ -361,11 +325,9 @@ export function TariffsModal({
                     disabled={isTariffDateNotEditable}
                     onSelect={(date) => {
                       field.onChange(date);
-                      setStartDate(date);
                     }}
                     onChange={(date) => {
                       date && field.onChange(date);
-                      date && setStartDate(date);
                     }}
                     dateFormat="dd MMM yyyy"
                     wrapperClassName="date-picker"
@@ -385,11 +347,7 @@ export function TariffsModal({
               Delete
             </ModalDeleteButton>
           )}
-          <ModalConfirmButton
-            type="submit"
-            disabled={!isDirty || isSubmitting}
-            onClick={() => emptyTariffState()}
-          >
+          <ModalConfirmButton type="submit" disabled={!isDirty || isSubmitting}>
             Submit
           </ModalConfirmButton>
         </ModalActions>
