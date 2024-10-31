@@ -62,6 +62,9 @@ models/*
 !models/AdminCreateInstaller200ResponseToJSON.ts
 !models/CompleteCommissioning200ResponseFromJSON.ts
 !models/CompleteCommissioning200ResponseToJSON.ts
+!models/CreateTariff409Response.ts
+!models/CreateTariff409ResponseAllOfMeta.ts
+!models/CreateTariff409ResponseAllOfResult.ts
 !models/CreateUpdateInstallerFromJSON.ts
 !models/CreateUpdateInstallerToJSON.ts
 !models/Installer.ts
@@ -115,6 +118,12 @@ models/*
 !models/GetInsights200ResponseResultGraphInner.ts
 !models/GetInstallerCic200Response.ts
 !models/GetMe200Response.ts
+!models/GetMe401Response.ts
+!models/GetMe401ResponseAllOfMeta.ts
+!models/GetMe401ResponseAllOfResult.ts
+!models/GetMe500Response.ts
+!models/GetMe500ResponseAllOfMeta.ts
+!models/GetMe500ResponseAllOfResult.ts
 !models/GetMeCic200Response.ts
 !models/GetReferral200Response.ts
 !models/InstallerCic.ts
@@ -133,6 +142,9 @@ models/*
 !models/UpdateInstallerCic.ts
 !models/UpdateMeCic.ts
 !models/UpdateMeUser.ts
+!models/UpdateUserClient404Response.ts
+!models/UpdateUserClient404ResponseAllOfMeta.ts
+!models/UpdateUserClient404ResponseAllOfResult.ts
 !models/AdminGetInstallationTickets200Response.ts
 !models/AdminGetInstallationTicketsZuper200Response.ts
 !models/AdminGetZuperJobsByOrderNumber200Response.ts

@@ -43,6 +43,9 @@ models/CicStatus.ts
 models/CompleteCommissioning200Response.ts
 models/ConnectionStatus.ts
 models/CreateTariff200Response.ts
+models/CreateTariff409Response.ts
+models/CreateTariff409ResponseAllOfMeta.ts
+models/CreateTariff409ResponseAllOfResult.ts
 models/CreateTariffRequest.ts
 models/CreateUpdateDoubleTariff.ts
 models/CreateUpdateInstaller.ts
@@ -64,6 +67,12 @@ models/GetInsights200ResponseResultRoomTemperatureGraphInner.ts
 models/GetInsights200ResponseResultWaterTemperatureGraphInner.ts
 models/GetInstallerCic200Response.ts
 models/GetMe200Response.ts
+models/GetMe401Response.ts
+models/GetMe401ResponseAllOfMeta.ts
+models/GetMe401ResponseAllOfResult.ts
+models/GetMe500Response.ts
+models/GetMe500ResponseAllOfMeta.ts
+models/GetMe500ResponseAllOfResult.ts
 models/GetMeCic200Response.ts
 models/GetReferral200Response.ts
 models/HeatDeliverySystem.ts
@@ -108,6 +117,9 @@ models/UpdateCic.ts
 models/UpdateInstallerCic.ts
 models/UpdateMeCic.ts
 models/UpdateMeUser.ts
+models/UpdateUserClient404Response.ts
+models/UpdateUserClient404ResponseAllOfMeta.ts
+models/UpdateUserClient404ResponseAllOfResult.ts
 models/UpdatedNote.ts
 models/UserRole.ts
 models/ZuperJob.ts

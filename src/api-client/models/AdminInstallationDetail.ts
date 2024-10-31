@@ -187,7 +187,7 @@ export interface AdminInstallationDetail {
    * @type {string}
    * @memberof AdminInstallationDetail
    */
-  orderNumber: string | null;
+  orderNumber: string;
   /**
    *
    * @type {string}

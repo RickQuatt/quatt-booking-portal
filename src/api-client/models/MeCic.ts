@@ -331,7 +331,7 @@ export interface MeCic {
    * @type {string}
    * @memberof MeCic
    */
-  orderNumber: string | null;
+  orderNumber: string;
   /**
    *
    * @type {boolean}

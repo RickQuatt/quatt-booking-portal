@@ -355,7 +355,7 @@ export interface InstallerCic {
    * @type {string}
    * @memberof InstallerCic
    */
-  orderNumber: string | null;
+  orderNumber: string;
   /**
    *
    * @type {boolean}

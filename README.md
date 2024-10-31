@@ -17,7 +17,11 @@ If you have the Quatt-cloud mobile API running locally, you can do the following
 
 ## Generating the API client
 
-Run the `generate-api-client.sh` script with the first parameter being the relative path to the Quatt cloud repository.
+```bash
+npm run api:generate-client
+```
+
+The npm script uses the `generate-api-client.sh` script with the first parameter being the relative path to the Quatt cloud repository, and formats with prettier to avoid diffs in the existing generated models.
 
 Eg. `./generate-api-client.sh ../Quatt-cloud`
 

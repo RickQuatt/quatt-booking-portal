@@ -385,7 +385,7 @@ export interface AdminCic {
    * @type {string}
    * @memberof AdminCic
    */
-  orderNumber: string | null;
+  orderNumber: string;
   /**
    *
    * @type {boolean}

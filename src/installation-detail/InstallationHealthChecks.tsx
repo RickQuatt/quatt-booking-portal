@@ -9,7 +9,9 @@ import {
   InternetConnectionStatuses,
   ThermostatType,
 } from "../api-client/models";
-import DetailBlock from "../ui-components/detail-block/DetailBlock";
+import DetailBlock, {
+  UnitSuffix,
+} from "../ui-components/detail-block/DetailBlock";
 import InstallationDetailTemperatureDetails from "./InstallationDetailTemperatureDetails";
 import HealthCheckText from "../ui-components/health-check-text/HealthCheckText";
 import InstallationModeReparation from "./InstallationModeReparation";
@@ -88,6 +90,13 @@ export function InstallationHealthChecks({
           <DetailBlock
             title="Supervisory control mode"
             value={chResults?.supervisoryControlMode}
+          />
+          <ThresholdCheck
+            title="Flow"
+            displayValue={roundNumber(chResults?.flowRatio ?? undefined, 1)}
+            unitSuffix={UnitSuffix.PERCENTAGE}
+            lowerThreshold={80}
+            lowerThresholdMessage="Issues with the flow"
           />
           <ThresholdCheck
             title="Pressure change"

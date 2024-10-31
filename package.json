@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "api:generate-client": "./generate-api-client.sh ../Quatt-cloud && npm run prettier:format",
     "build": "tsc && vite build",
     "build:staging": "tsc && vite build --mode staging",
     "prettier:format": "prettier --write .",

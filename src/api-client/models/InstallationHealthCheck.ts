@@ -80,6 +80,12 @@ export interface InstallationHealthCheck {
    * @memberof InstallationHealthCheck
    */
   pressureChange: number | null;
+  /**
+   *
+   * @type {number}
+   * @memberof InstallationHealthCheck
+   */
+  flowRatio: number | null;
 }
 
 /**
@@ -96,6 +102,7 @@ export function instanceOfInstallationHealthCheck(value: object): boolean {
   isInstance = isInstance && "modeReparation" in value;
   isInstance = isInstance && "supervisoryControlMode" in value;
   isInstance = isInstance && "pressureChange" in value;
+  isInstance = isInstance && "flowRatio" in value;
 
   return isInstance;
 }
@@ -126,6 +133,7 @@ export function InstallationHealthCheckFromJSONTyped(
     ),
     supervisoryControlMode: json["supervisoryControlMode"],
     pressureChange: json["pressureChange"],
+    flowRatio: json["flowRatio"],
   };
 }
 
@@ -150,5 +158,6 @@ export function InstallationHealthCheckToJSON(
     ),
     supervisoryControlMode: value.supervisoryControlMode,
     pressureChange: value.pressureChange,
+    flowRatio: value.flowRatio,
   };
 }

@@ -157,7 +157,7 @@ export interface Installation {
    * @type {string}
    * @memberof Installation
    */
-  orderNumber: string | null;
+  orderNumber: string;
   /**
    *
    * @type {string}

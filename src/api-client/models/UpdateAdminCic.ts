@@ -139,7 +139,7 @@ export interface UpdateAdminCic {
    * @type {string}
    * @memberof UpdateAdminCic
    */
-  orderNumber?: string | null;
+  orderNumber?: string;
   /**
    *
    * @type {BoilerType}
