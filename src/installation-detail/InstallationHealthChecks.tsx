@@ -5,6 +5,7 @@ import { Loader } from "../ui-components/loader/Loader";
 import ErrorText from "../ui-components/error-text/ErrorText";
 import {
   BoilerType,
+  CicHealthCheckStatus,
   DeviceConnectionStatuses,
   InternetConnectionStatuses,
   ThermostatType,
@@ -17,6 +18,7 @@ import HealthCheckText from "../ui-components/health-check-text/HealthCheckText"
 import InstallationModeReparation from "./InstallationModeReparation";
 import { roundNumber } from "../utils/number";
 import ThresholdCheck from "../ui-components/threshold-check/ThresholdCheck";
+import { useMemo } from "react";
 
 interface InstallationHealthCheckProps {
   orderNumber: string;
@@ -24,9 +26,19 @@ interface InstallationHealthCheckProps {
   thermostatType: ThermostatType | null;
   deviceConnectionStatuses: DeviceConnectionStatuses;
   internetConnectionStatuses: InternetConnectionStatuses;
-  boilerType: BoilerType | null;
+  boilerType?: BoilerType | null;
   numberOfHeatPumps: number | null;
 }
+
+const healthcheckTextByStatusForConnectivity: Record<
+  CicHealthCheckStatus,
+  string
+> = {
+  [CicHealthCheckStatus.Correct]: "Connected",
+  [CicHealthCheckStatus.Error]: "Disconnected",
+  [CicHealthCheckStatus.Warning]: "Warning",
+  [CicHealthCheckStatus.NotApplicable]: "N/A",
+};
 
 export function InstallationHealthChecks({
   orderNumber,
@@ -47,12 +59,19 @@ export function InstallationHealthChecks({
   } = useQuery({
     queryKey: ["installationHealthCheck", orderNumber, cicId],
     queryFn: () =>
-      apiClient.adminGetInstallationHealthCheck({
-        orderNumber,
+      apiClient.adminGetCicHealthCheck({
         cicId,
       }),
   });
   const chResults = healthCheckData?.result;
+
+  const healthCheckCicNumberOfRestarts = useMemo(
+    () =>
+      healthCheckData?.result?.healthchecks.find(
+        (healthcheck) => healthcheck.type === "CIC_NUMBER_OF_RESTARTS",
+      ),
+    [healthCheckData],
+  );
 
   if (isPending) {
     return <Loader />;
@@ -112,17 +131,32 @@ export function InstallationHealthChecks({
         title="Heat pump(s)"
         status={deviceConnectionStatuses.heatPumpsConnected}
         errorStatusText={heatPumpErrorText}
+        text={
+          healthcheckTextByStatusForConnectivity[
+            deviceConnectionStatuses.heatPumpsConnected
+          ]
+        }
       />
       <HealthCheckText
         title="Thermostat"
         status={deviceConnectionStatuses.thermostatConnected}
         errorStatusText="Thermostat not connected"
+        text={
+          healthcheckTextByStatusForConnectivity[
+            deviceConnectionStatuses.thermostatConnected
+          ]
+        }
       />
       {isOpenthermBoiler && (
         <HealthCheckText
           title="Boiler"
           status={deviceConnectionStatuses.openthermBoilerConnected}
           errorStatusText="Opentherm boiler not connected"
+          text={
+            healthcheckTextByStatusForConnectivity[
+              deviceConnectionStatuses.openthermBoilerConnected
+            ]
+          }
         />
       )}
       <p className={classes["sub-header"]}>Connectivity</p>
@@ -131,17 +165,44 @@ export function InstallationHealthChecks({
         status={internetConnectionStatuses.connectionToWifi}
         errorStatusText="WiFi not connected"
         notApplicableStatusText="WiFi connection status not available"
+        text={
+          healthcheckTextByStatusForConnectivity[
+            internetConnectionStatuses.connectionToWifi
+          ]
+        }
       />
       <HealthCheckText
         title="Ethernet"
         status={internetConnectionStatuses.connectionToEthernet}
         errorStatusText="Ethernet not connected"
+        text={
+          healthcheckTextByStatusForConnectivity[
+            internetConnectionStatuses.connectionToEthernet
+          ]
+        }
       />
       <HealthCheckText
         title="Internet"
         status={internetConnectionStatuses.isInternetReachable}
         errorStatusText="The CIC does not have internet access"
+        text={
+          healthcheckTextByStatusForConnectivity[
+            internetConnectionStatuses.isInternetReachable
+          ]
+        }
       />
+      {healthCheckCicNumberOfRestarts && (
+        <HealthCheckText
+          title="CIC Restarts last 24h"
+          text={healthCheckCicNumberOfRestarts.count.toString()}
+          status={
+            healthCheckCicNumberOfRestarts.status === "warning"
+              ? CicHealthCheckStatus.Warning
+              : CicHealthCheckStatus.Correct
+          }
+          errorStatusText={healthCheckCicNumberOfRestarts.message || ""}
+        />
+      )}
     </>
   );
 }
