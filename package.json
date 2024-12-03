@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "api:generate-client": "./generate-api-client.sh ../Quatt-cloud && npm run prettier:format",
     "build": "tsc && vite build",
     "build:staging": "tsc && vite build --mode staging",
     "prettier:format": "prettier --write .",
@@ -12,7 +13,8 @@
     "lint": "eslint src --ext ts,tsx",
     "preview": "vite preview",
     "tsc:watch": "tsc -w",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "check-types": "tsc --noEmit"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -61,10 +63,5 @@
     "src/**/*": [
       "npm run prettier:format"
     ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   }
 }

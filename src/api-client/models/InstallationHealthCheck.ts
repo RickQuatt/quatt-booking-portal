@@ -13,6 +13,12 @@
  */
 
 import { exists, mapValues } from "../runtime";
+import type { InstallationHealthCheckHealthchecksInner } from "./InstallationHealthCheckHealthchecksInner";
+import {
+  InstallationHealthCheckHealthchecksInnerFromJSON,
+  InstallationHealthCheckHealthchecksInnerFromJSONTyped,
+  InstallationHealthCheckHealthchecksInnerToJSON,
+} from "./InstallationHealthCheckHealthchecksInner";
 import type { InstallationHealthCheckModeReparation } from "./InstallationHealthCheckModeReparation";
 import {
   InstallationHealthCheckModeReparationFromJSON,
@@ -80,6 +86,18 @@ export interface InstallationHealthCheck {
    * @memberof InstallationHealthCheck
    */
   pressureChange: number | null;
+  /**
+   *
+   * @type {number}
+   * @memberof InstallationHealthCheck
+   */
+  flowRatio: number | null;
+  /**
+   *
+   * @type {Array<InstallationHealthCheckHealthchecksInner>}
+   * @memberof InstallationHealthCheck
+   */
+  healthchecks: Array<InstallationHealthCheckHealthchecksInner>;
 }
 
 /**
@@ -96,6 +114,8 @@ export function instanceOfInstallationHealthCheck(value: object): boolean {
   isInstance = isInstance && "modeReparation" in value;
   isInstance = isInstance && "supervisoryControlMode" in value;
   isInstance = isInstance && "pressureChange" in value;
+  isInstance = isInstance && "flowRatio" in value;
+  isInstance = isInstance && "healthchecks" in value;
 
   return isInstance;
 }
@@ -126,6 +146,10 @@ export function InstallationHealthCheckFromJSONTyped(
     ),
     supervisoryControlMode: json["supervisoryControlMode"],
     pressureChange: json["pressureChange"],
+    flowRatio: json["flowRatio"],
+    healthchecks: (json["healthchecks"] as Array<any>).map(
+      InstallationHealthCheckHealthchecksInnerFromJSON,
+    ),
   };
 }
 
@@ -150,5 +174,9 @@ export function InstallationHealthCheckToJSON(
     ),
     supervisoryControlMode: value.supervisoryControlMode,
     pressureChange: value.pressureChange,
+    flowRatio: value.flowRatio,
+    healthchecks: (value.healthchecks as Array<any>).map(
+      InstallationHealthCheckHealthchecksInnerToJSON,
+    ),
   };
 }

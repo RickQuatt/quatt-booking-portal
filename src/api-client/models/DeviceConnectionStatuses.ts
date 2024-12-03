@@ -43,12 +43,6 @@ export interface DeviceConnectionStatuses {
    * @type {CicHealthCheckStatus}
    * @memberof DeviceConnectionStatuses
    */
-  temperatureControlConnected: CicHealthCheckStatus;
-  /**
-   *
-   * @type {CicHealthCheckStatus}
-   * @memberof DeviceConnectionStatuses
-   */
   thermostatConnected: CicHealthCheckStatus;
 }
 
@@ -59,7 +53,6 @@ export function instanceOfDeviceConnectionStatuses(value: object): boolean {
   let isInstance = true;
   isInstance = isInstance && "heatPumpsConnected" in value;
   isInstance = isInstance && "openthermBoilerConnected" in value;
-  isInstance = isInstance && "temperatureControlConnected" in value;
   isInstance = isInstance && "thermostatConnected" in value;
 
   return isInstance;
@@ -85,9 +78,6 @@ export function DeviceConnectionStatusesFromJSONTyped(
     openthermBoilerConnected: CicHealthCheckStatusFromJSON(
       json["openthermBoilerConnected"],
     ),
-    temperatureControlConnected: CicHealthCheckStatusFromJSON(
-      json["temperatureControlConnected"],
-    ),
     thermostatConnected: CicHealthCheckStatusFromJSON(
       json["thermostatConnected"],
     ),
@@ -107,9 +97,6 @@ export function DeviceConnectionStatusesToJSON(
     heatPumpsConnected: CicHealthCheckStatusToJSON(value.heatPumpsConnected),
     openthermBoilerConnected: CicHealthCheckStatusToJSON(
       value.openthermBoilerConnected,
-    ),
-    temperatureControlConnected: CicHealthCheckStatusToJSON(
-      value.temperatureControlConnected,
     ),
     thermostatConnected: CicHealthCheckStatusToJSON(value.thermostatConnected),
   };
