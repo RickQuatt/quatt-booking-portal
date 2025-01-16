@@ -177,13 +177,14 @@ const InstallerListRenderer = () => {
 
 const CICListRenderer = () => {
   const apiClient = useApiClient();
-  const { data, isLoading, isError, refetch } = useQuery({
+  const { data, isLoading, isError, refetch, error } = useQuery({
     queryKey: ["cicList"],
     queryFn: () => apiClient.adminListCics(),
     refetchOnWindowFocus: false,
   });
 
   if (isError) {
+    console.log({ error });
     return <ErrorText text="Failed to fetch CICs." retry={refetch} />;
   }
 
