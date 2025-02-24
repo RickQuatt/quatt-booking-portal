@@ -24,7 +24,15 @@ import ErrorText from "../ui-components/error-text/ErrorText";
 export function InstallationList() {
   const [filters, setFilters] = React.useState<InstallationFilters>({});
   const { installations, isLoading, error, refetchInstallations } =
-    useGetInstallationsList(false, filters.cicId, filters.orderNumber);
+    useGetInstallationsList(
+      false,
+      filters.cicId,
+      filters.orderNumber,
+      filters.iuid,
+      filters.zipCode,
+      filters.houseNumber,
+      filters.houseAddition,
+    );
 
   const { paginatedItems, paginationRange, currentPage, changePage } =
     usePaginate({
@@ -39,6 +47,9 @@ export function InstallationList() {
     ? ""
     : "Enter an order number wildcard";
   const cicIdPlaceholder = isDirty ? "" : "or a CIC id wildcard";
+  const zipCodePlaceholder = isDirty ? "" : "e.g. 1111AB";
+  const houseNumberPlaceholder = isDirty ? "" : "e.g. 123";
+  const additionPlaceholder = isDirty ? "" : "e.g. 1";
 
   return (
     <div className={classes.page}>
@@ -66,6 +77,15 @@ export function InstallationList() {
               <TdText>Order number</TdText>
             </Th>
             <Th>
+              <TdText>Zip code</TdText>
+            </Th>
+            <Th>
+              <TdText>House number</TdText>
+            </Th>
+            <Th>
+              <TdText>Addition</TdText>
+            </Th>
+            <Th>
               <TdText>Active CIC</TdText>
             </Th>
             <Th>
@@ -80,6 +100,27 @@ export function InstallationList() {
               <TextFilter
                 filterKey="orderNumber"
                 placeholder={orderNumberPlaceholder}
+                setFilters={setFilters}
+              />
+            </Th>
+            <Th>
+              <TextFilter
+                filterKey="zipCode"
+                placeholder={zipCodePlaceholder}
+                setFilters={setFilters}
+              />
+            </Th>
+            <Th>
+              <TextFilter
+                filterKey="houseNumber"
+                placeholder={houseNumberPlaceholder}
+                setFilters={setFilters}
+              />
+            </Th>
+            <Th>
+              <TextFilter
+                filterKey="houseAddition"
+                placeholder={additionPlaceholder}
                 setFilters={setFilters}
               />
             </Th>
@@ -134,6 +175,15 @@ export function InstallationList() {
       <Tr>
         <Td>
           <Link to={installationDetailLink}>{installation.orderNumber}</Link>
+        </Td>
+        <Td>
+          <TdText>{installation.zipCode}</TdText>
+        </Td>
+        <Td>
+          <TdText>{installation.houseNumber}</TdText>
+        </Td>
+        <Td>
+          <TdText>{installation.houseAddition}</TdText>
         </Td>
         <Td>
           <TdText>{installation.cicId}</TdText>
