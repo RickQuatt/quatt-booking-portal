@@ -279,14 +279,6 @@ export interface AdminInstallationIuidOptionsRequest {
 export interface AdminInstallationListOptionsRequest {
   orderNumber?: string;
   cicId?: string;
-  iuid?: string;
-  zipCode?: string;
-  houseNumber?: string;
-  houseAddition?: string;
-}
-
-export interface AdminInstallationOrderNumberOptionsRequest {
-  orderNumber: string;
 }
 
 export interface AdminInstallationOrderNumberZuperJobsOptionsRequest {
@@ -296,10 +288,6 @@ export interface AdminInstallationOrderNumberZuperJobsOptionsRequest {
 export interface AdminInstallationsListRequest {
   orderNumber?: string;
   cicId?: string;
-  iuid?: string;
-  zipCode?: string;
-  houseNumber?: string;
-  houseAddition?: string;
 }
 
 export interface AdminListCicsRequest {
@@ -2655,22 +2643,6 @@ export class SupportDashboardApi extends runtime.BaseAPI {
       queryParameters["cicId"] = requestParameters.cicId;
     }
 
-    if (requestParameters.iuid !== undefined) {
-      queryParameters["iuid"] = requestParameters.iuid;
-    }
-
-    if (requestParameters.zipCode !== undefined) {
-      queryParameters["zipCode"] = requestParameters.zipCode;
-    }
-
-    if (requestParameters.houseNumber !== undefined) {
-      queryParameters["houseNumber"] = requestParameters.houseNumber;
-    }
-
-    if (requestParameters.houseAddition !== undefined) {
-      queryParameters["houseAddition"] = requestParameters.houseAddition;
-    }
-
     const headerParameters: runtime.HTTPHeaders = {};
 
     const response = await this.request(
@@ -2761,22 +2733,6 @@ export class SupportDashboardApi extends runtime.BaseAPI {
 
     if (requestParameters.cicId !== undefined) {
       queryParameters["cicId"] = requestParameters.cicId;
-    }
-
-    if (requestParameters.iuid !== undefined) {
-      queryParameters["iuid"] = requestParameters.iuid;
-    }
-
-    if (requestParameters.zipCode !== undefined) {
-      queryParameters["zipCode"] = requestParameters.zipCode;
-    }
-
-    if (requestParameters.houseNumber !== undefined) {
-      queryParameters["houseNumber"] = requestParameters.houseNumber;
-    }
-
-    if (requestParameters.houseAddition !== undefined) {
-      queryParameters["houseAddition"] = requestParameters.houseAddition;
     }
 
     const headerParameters: runtime.HTTPHeaders = {};
