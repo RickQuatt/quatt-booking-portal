@@ -43,10 +43,11 @@ export function InstallationList() {
   const noInstallationsFound = installations && installations.length === 0;
 
   const isDirty = filters.cicId || filters.orderNumber;
-  const orderNumberPlaceholder = isDirty
+  const iuidPlaceholder = isDirty ? "" : "e.g. NL-1111AB-123-1-X";
+  const orderNumberPlaceholder = isDirty ? "" : "e.g. QUATT1513202";
+  const cicIdPlaceholder = isDirty
     ? ""
-    : "Enter an order number wildcard";
-  const cicIdPlaceholder = isDirty ? "" : "or a CIC id wildcard";
+    : "e.g CIC-16762b7b-6977-4047-999e-5bf39226f7f5";
   const zipCodePlaceholder = isDirty ? "" : "e.g. 1111AB";
   const houseNumberPlaceholder = isDirty ? "" : "e.g. 123";
   const additionPlaceholder = isDirty ? "" : "e.g. 1";
@@ -74,6 +75,9 @@ export function InstallationList() {
         <THead>
           <Tr>
             <Th>
+              <TdText>IUID</TdText>
+            </Th>
+            <Th>
               <TdText>Order number</TdText>
             </Th>
             <Th>
@@ -96,6 +100,13 @@ export function InstallationList() {
             </Th>
           </Tr>
           <Tr>
+            <Th>
+              <TextFilter
+                filterKey="iuid"
+                placeholder={iuidPlaceholder}
+                setFilters={setFilters}
+              />
+            </Th>
             <Th>
               <TextFilter
                 filterKey="orderNumber"
@@ -170,11 +181,14 @@ export function InstallationList() {
   }: {
     installation: AdminInstallationsList;
   }) {
-    const installationDetailLink = `/installations/${installation.orderNumber}`;
+    const installationDetailLink = `/installations/${installation.iuid}`;
     return (
       <Tr>
         <Td>
-          <Link to={installationDetailLink}>{installation.orderNumber}</Link>
+          <Link to={installationDetailLink}>{installation.iuid}</Link>
+        </Td>
+        <Td>
+          <TdText>{installation.orderNumber}</TdText>
         </Td>
         <Td>
           <TdText>{installation.zipCode}</TdText>
