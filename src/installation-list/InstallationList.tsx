@@ -47,7 +47,7 @@ export function InstallationList() {
   const orderNumberPlaceholder = isDirty ? "" : "e.g. QUATT1513202";
   const cicIdPlaceholder = isDirty
     ? ""
-    : "e.g CIC-16762b7b-6977-4047-999e-5bf39226f7f5";
+    : "e.g. CIC-16762b7b-6977-4047-999e-5bf39226f7f5";
   const zipCodePlaceholder = isDirty ? "" : "e.g. 1111AB";
   const houseNumberPlaceholder = isDirty ? "" : "e.g. 123";
   const additionPlaceholder = isDirty ? "" : "e.g. 1";
@@ -59,8 +59,7 @@ export function InstallationList() {
           🛠️ Installations
           {!isDirty && (
             <span className={classes["instruction-text"]}>
-              Search with an order number or a CIC id (Now supports wildcard
-              search!)
+              Search for an installation.
             </span>
           )}
         </h2>
@@ -87,7 +86,7 @@ export function InstallationList() {
               <TdText>House number</TdText>
             </Th>
             <Th>
-              <TdText>Addition</TdText>
+              <TdText>House addition</TdText>
             </Th>
             <Th>
               <TdText>Active CIC</TdText>
@@ -158,7 +157,7 @@ export function InstallationList() {
       </Table>
       {noInstallationsFound && (
         <p className={classes["info-text"]}>
-          No installations found with the given order number or CIC id
+          No installations found with the given parameters
         </p>
       )}
       {!!error && (
@@ -182,6 +181,7 @@ export function InstallationList() {
     installation: AdminInstallationsList;
   }) {
     const installationDetailLink = `/installations/${installation.iuid}`;
+    const cicDetailLink = `/cics/${installation.cicId}`;
     return (
       <Tr>
         <Td>
@@ -200,7 +200,7 @@ export function InstallationList() {
           <TdText>{installation.houseAddition}</TdText>
         </Td>
         <Td>
-          <TdText>{installation.cicId}</TdText>
+          <Link to={cicDetailLink}>{installation.cicId}</Link>
         </Td>
         <Td>
           <TdText>{formatDate(installation.createdAt)}</TdText>
