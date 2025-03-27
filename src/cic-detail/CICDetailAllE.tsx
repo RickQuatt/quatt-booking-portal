@@ -18,7 +18,7 @@ const statusMap: {
 } = {
   [AllEStatusHeatBatteryStatusEnum.Charging]: "Charging",
   [AllEStatusHeatBatteryStatusEnum.Discharging]: "Discharging",
-  [AllEStatusHeatBatteryStatusEnum.False]: "Idle",
+  [AllEStatusHeatBatteryStatusEnum.Off]: "Off",
 };
 
 const batterySizeMap: {
@@ -106,7 +106,7 @@ export function CICDetailAllE({ cicData }: { cicData: AdminCic }) {
           <div className={classes["chip-wrapper"]}>
             {heatBatterySensorFailureFlags?.length === 0 ? (
               <div className={`${classes["chip"]} ${classes["chip-info"]}`}>
-                None
+                👍 None
               </div>
             ) : (
               heatBatterySensorFailureFlags?.map((flag, index) => (

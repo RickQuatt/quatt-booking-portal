@@ -116,6 +116,7 @@ export const ErrorCode = {
   NoDevicesFound: "NO_DEVICES_FOUND",
   InvalidSoundLevelForAllElectric: "INVALID_SOUND_LEVEL_FOR_ALL_ELECTRIC",
   InstallationIsNotHybrid: "INSTALLATION_IS_NOT_HYBRID",
+  OutdoorUnitsNotFound: "OUTDOOR_UNITS_NOT_FOUND",
 } as const;
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];
 
