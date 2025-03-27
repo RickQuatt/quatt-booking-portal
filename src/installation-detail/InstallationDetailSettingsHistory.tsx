@@ -68,7 +68,6 @@ export function InstallationDetailSettingsHistory({
   installation,
 }: InstallationDetailProps) {
   const { settingsUpdates } = installation;
-  console.log({ settingsUpdates });
   return (
     <div className={classes["detail-section"]}>
       <DetailSectionHeader title="👀 Settings history" />
@@ -128,7 +127,6 @@ function InstallationDetailSettingsItem({
   const settingsString = data?.result?.settings.toString();
   const settings = JSON.parse(settingsString || "{}");
 
-  console.log({ settings });
   const excludedKeys = ["settings"];
   const datesKeys = ["createdAt", "updatedAt", "confirmedAt", "cancelledAt"];
   const listOfSettings = Object.entries(dataJson)
