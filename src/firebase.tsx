@@ -5,7 +5,6 @@ const firebaseConfig = JSON.parse(
   import.meta.env.VITE_FIREBASE_CONFIG_JSON as string,
 );
 
-console.log("firebaseConfig", import.meta.env);
 export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 

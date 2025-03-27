@@ -73,7 +73,7 @@ export interface AllEStatus {
  * @export
  */
 export const AllEStatusHeatBatteryStatusEnum = {
-  False: "false",
+  Off: "off",
   Charging: "charging",
   Discharging: "discharging",
 } as const;
