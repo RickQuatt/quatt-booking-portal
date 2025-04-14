@@ -45,6 +45,8 @@ export function CICDetailAllE({
 }) {
   const { allEStatus } = cicData;
   const {
+    heatBatterySerialNumber,
+    heatChargerSerialNumber,
     heatBatteryStatus,
     isDomesticHotWaterOn,
     heatBatterySize,
@@ -181,18 +183,26 @@ export function CICDetailAllE({
 
   return (
     <div className={classes["detail-section"]}>
-      <DetailSectionHeader title="⚡ 🔋 All-E Charger & Battery" />
+      <DetailSectionHeader title="⚡ 🔋 All-E HeatCharger & HeatBattery" />
       <FormSection>
         <FormField>
-          <FormFieldTitle>Heat Battery Status</FormFieldTitle>
+          <FormFieldTitle>HeatCharger Serial Number</FormFieldTitle>
+          <FormFieldValue value={heatChargerSerialNumber} />
+        </FormField>
+        <FormField>
+          <FormFieldTitle>HeatBattery Serial Number</FormFieldTitle>
+          <FormFieldValue value={heatBatterySerialNumber} />
+        </FormField>
+        <FormField>
+          <FormFieldTitle>HeatBattery Status</FormFieldTitle>
           <FormFieldValue value={statusMap[heatBatteryStatus]} />
         </FormField>
         <FormField>
-          <FormFieldTitle>Heat Battery Size</FormFieldTitle>
+          <FormFieldTitle>HeatBattery Size</FormFieldTitle>
           <FormFieldValue value={batterySizeMap[heatBatterySize]} />
         </FormField>
         <FormField>
-          <FormFieldTitle>Heat Battery Charge Percentage</FormFieldTitle>
+          <FormFieldTitle>HeatBattery Charge Percentage</FormFieldTitle>
           <FormFieldValue value={heatBatteryPercentage} />
         </FormField>
         <FormField>
@@ -214,7 +224,7 @@ export function CICDetailAllE({
           </div>
         </FormField>
         <FormField>
-          <FormFieldTitle>Heat Battery Sensor Failure Issues</FormFieldTitle>
+          <FormFieldTitle>HeatBattery Sensor Failure Issues</FormFieldTitle>
           <div className={classes["chip-wrapper"]}>
             {heatBatterySensorFailureFlags?.length === 0 ? (
               <div className={`${classes["chip"]} ${classes["chip-info"]}`}>
@@ -233,11 +243,11 @@ export function CICDetailAllE({
           </div>
         </FormField>
         <FormField>
-          <FormFieldTitle>Heat Charger Compressor Enabled</FormFieldTitle>
+          <FormFieldTitle>HeatCharger Compressor Enabled</FormFieldTitle>
           <FormFieldValue value={heatChargerCompressorEnabled} />
         </FormField>
         <FormField>
-          <FormFieldTitle>Heat Charger Degration Reason Flags</FormFieldTitle>
+          <FormFieldTitle>HeatCharger Degration Reason Flags</FormFieldTitle>
           <div
             className={classes["chip-wrapper"]}
             style={{ marginBottom: "10px" }}
