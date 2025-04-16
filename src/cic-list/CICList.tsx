@@ -13,6 +13,7 @@ import { ButtonLink } from "../ui-components/button/Button";
 import { AdminCic, ConnectionStatus } from "../api-client/models";
 import { formatDate, formatDateDistance } from "../utils/formatDate";
 import {
+  getGrafanaAllEDashboardLink,
   getGrafanaDataPerCICLink,
   getMenderLink,
 } from "../cic-detail/getLinks";

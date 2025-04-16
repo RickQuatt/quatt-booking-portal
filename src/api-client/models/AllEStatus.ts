@@ -24,6 +24,18 @@ export interface AllEStatus {
    * @type {string}
    * @memberof AllEStatus
    */
+  heatBatterySerialNumber?: string | null;
+  /**
+   *
+   * @type {string}
+   * @memberof AllEStatus
+   */
+  heatChargerSerialNumber?: string | null;
+  /**
+   *
+   * @type {string}
+   * @memberof AllEStatus
+   */
   heatBatteryStatus: AllEStatusHeatBatteryStatusEnum;
   /**
    *
@@ -130,6 +142,12 @@ export function AllEStatusFromJSONTyped(
     return json;
   }
   return {
+    heatBatterySerialNumber: !exists(json, "heatBatterySerialNumber")
+      ? undefined
+      : json["heatBatterySerialNumber"],
+    heatChargerSerialNumber: !exists(json, "heatChargerSerialNumber")
+      ? undefined
+      : json["heatChargerSerialNumber"],
     heatBatteryStatus: json["heatBatteryStatus"],
     isHeatBatteryCharging: json["isHeatBatteryCharging"],
     isDomesticHotWaterOn: json["isDomesticHotWaterOn"],
@@ -165,6 +183,8 @@ export function AllEStatusToJSON(value?: AllEStatus | null): any {
     return null;
   }
   return {
+    heatBatterySerialNumber: value.heatBatterySerialNumber,
+    heatChargerSerialNumber: value.heatChargerSerialNumber,
     heatBatteryStatus: value.heatBatteryStatus,
     isHeatBatteryCharging: value.isHeatBatteryCharging,
     isDomesticHotWaterOn: value.isDomesticHotWaterOn,
