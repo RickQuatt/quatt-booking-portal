@@ -23,6 +23,7 @@ export * from "./AdminInstallationsList200Response";
 export * from "./AdminListCics200Response";
 export * from "./AdminListCics200ResponseResult";
 export * from "./AdminListInstallers200Response";
+export * from "./AdminRebootDeviceRequest";
 export * from "./AdminUpdateInstallationNote200Response";
 export * from "./AllEStatus";
 export * from "./AppCompatibilityGet200Response";

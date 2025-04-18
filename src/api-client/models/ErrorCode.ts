@@ -93,6 +93,7 @@ export const ErrorCode = {
   ForceCommissioningNotAvailable: "FORCE_COMMISSIONING_NOT_AVAILABLE",
   CancelCommissioningNotAvailable: "CANCEL_COMMISSIONING_NOT_AVAILABLE",
   RebootCicNotAvailable: "REBOOT_CIC_NOT_AVAILABLE",
+  RebootHeatchargerNotAvailable: "REBOOT_HEATCHARGER_NOT_AVAILABLE",
   ForgetWifiNotAvailable: "FORGET_WIFI_NOT_AVAILABLE",
   NoInstallationFoundForCic: "NO_INSTALLATION_FOUND_FOR_CIC",
   CicHasAlreadyInstallation: "CIC_HAS_ALREADY_INSTALLATION",

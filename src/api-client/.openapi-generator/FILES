@@ -22,6 +22,7 @@ models/AdminInstallationsList200Response.ts
 models/AdminListCics200Response.ts
 models/AdminListCics200ResponseResult.ts
 models/AdminListInstallers200Response.ts
+models/AdminRebootDeviceRequest.ts
 models/AdminUpdateInstallationNote200Response.ts
 models/AllEStatus.ts
 models/AppCompatibilityGet200Response.ts

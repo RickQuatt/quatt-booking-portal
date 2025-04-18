@@ -29,6 +29,7 @@ import type {
   AdminInstallationsList200Response,
   AdminListCics200Response,
   AdminListInstallers200Response,
+  AdminRebootDeviceRequest,
   AdminUpdateInstallationNote200Response,
   CompleteCommissioning200Response,
   CreateTariff200Response,
@@ -73,6 +74,8 @@ import {
   AdminListCics200ResponseToJSON,
   AdminListInstallers200ResponseFromJSON,
   AdminListInstallers200ResponseToJSON,
+  AdminRebootDeviceRequestFromJSON,
+  AdminRebootDeviceRequestToJSON,
   AdminUpdateInstallationNote200ResponseFromJSON,
   AdminUpdateInstallationNote200ResponseToJSON,
   CompleteCommissioning200ResponseFromJSON,
@@ -304,9 +307,9 @@ export interface AdminListCicsRequest {
   pageSize?: number;
 }
 
-export interface AdminRebootCICRequest {
+export interface AdminRebootDeviceOperationRequest {
   cicId: string;
-  body: object;
+  adminRebootDeviceRequest: AdminRebootDeviceRequest;
 }
 
 export interface AdminUpdateCicRequest {
@@ -334,6 +337,10 @@ export interface AdminUpdateInstallationTariffRequest {
 export interface AdminUpdateInstallerRequest {
   installerId: string;
   createUpdateInstaller: CreateUpdateInstaller;
+}
+
+export interface GetInstallationCommissioningsRequest {
+  installationId: string;
 }
 
 export interface UpdateInstallationCommissioningRequest {
@@ -3048,10 +3055,10 @@ export class SupportDashboardApi extends runtime.BaseAPI {
   }
 
   /**
-   * Reboot CIC
+   * Reboot device
    */
-  async adminRebootCICRaw(
-    requestParameters: AdminRebootCICRequest,
+  async adminRebootDeviceRaw(
+    requestParameters: AdminRebootDeviceOperationRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<runtime.ApiResponse<CompleteCommissioning200Response>> {
     if (
@@ -3060,17 +3067,17 @@ export class SupportDashboardApi extends runtime.BaseAPI {
     ) {
       throw new runtime.RequiredError(
         "cicId",
-        "Required parameter requestParameters.cicId was null or undefined when calling adminRebootCIC.",
+        "Required parameter requestParameters.cicId was null or undefined when calling adminRebootDevice.",
       );
     }
 
     if (
-      requestParameters.body === null ||
-      requestParameters.body === undefined
+      requestParameters.adminRebootDeviceRequest === null ||
+      requestParameters.adminRebootDeviceRequest === undefined
     ) {
       throw new runtime.RequiredError(
-        "body",
-        "Required parameter requestParameters.body was null or undefined when calling adminRebootCIC.",
+        "adminRebootDeviceRequest",
+        "Required parameter requestParameters.adminRebootDeviceRequest was null or undefined when calling adminRebootDevice.",
       );
     }
 
@@ -3097,7 +3104,9 @@ export class SupportDashboardApi extends runtime.BaseAPI {
         method: "POST",
         headers: headerParameters,
         query: queryParameters,
-        body: requestParameters.body as any,
+        body: AdminRebootDeviceRequestToJSON(
+          requestParameters.adminRebootDeviceRequest,
+        ),
       },
       initOverrides,
     );
@@ -3108,13 +3117,13 @@ export class SupportDashboardApi extends runtime.BaseAPI {
   }
 
   /**
-   * Reboot CIC
+   * Reboot device
    */
-  async adminRebootCIC(
-    requestParameters: AdminRebootCICRequest,
+  async adminRebootDevice(
+    requestParameters: AdminRebootDeviceOperationRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<CompleteCommissioning200Response> {
-    const response = await this.adminRebootCICRaw(
+    const response = await this.adminRebootDeviceRaw(
       requestParameters,
       initOverrides,
     );
