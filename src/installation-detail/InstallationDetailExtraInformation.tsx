@@ -35,6 +35,9 @@ export function InstallationDetailExtraInformation({
     installedAt,
     lastConnectionStatusUpdatedAt,
     heatDeliverySystems,
+    hwid,
+    odu1Type,
+    odu2Type,
   } = installation;
 
   return (
@@ -55,6 +58,20 @@ export function InstallationDetailExtraInformation({
           <FormFieldTitle>Quatt build</FormFieldTitle>
           <FormFieldValue value={quattBuild} />
         </FormField>
+        <FormField>
+          <FormFieldTitle>Hwid (CIC hardware revision id)</FormFieldTitle>
+          <FormFieldValue value={hwid} />
+        </FormField>
+        <FormField>
+          <FormFieldTitle>ODU 1 Type</FormFieldTitle>
+          <FormFieldValue value={odu1Type} />
+        </FormField>
+        {odu2Type && (
+          <FormField>
+            <FormFieldTitle>ODU 2 Type</FormFieldTitle>
+            <FormFieldValue value={odu2Type} />
+          </FormField>
+        )}
         <FormField>
           <FormFieldTitle>Last connection</FormFieldTitle>
           <FormFieldValue
