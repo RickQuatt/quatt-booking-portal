@@ -36,8 +36,10 @@ import type {
   CreateTariffRequest,
   CreateUpdateInstaller,
   CreateUpdateNote,
+  Error1,
   ForgetWifiMeCicRequest,
   GetAllTariffs200Response,
+  GetInstallationCommissionings200Response,
   GetInstallerCic200Response,
   UpdateAdminCic,
   UpdateAdminInstallation,
@@ -88,10 +90,14 @@ import {
   CreateUpdateInstallerToJSON,
   CreateUpdateNoteFromJSON,
   CreateUpdateNoteToJSON,
+  Error1FromJSON,
+  Error1ToJSON,
   ForgetWifiMeCicRequestFromJSON,
   ForgetWifiMeCicRequestToJSON,
   GetAllTariffs200ResponseFromJSON,
   GetAllTariffs200ResponseToJSON,
+  GetInstallationCommissionings200ResponseFromJSON,
+  GetInstallationCommissionings200ResponseToJSON,
   GetInstallerCic200ResponseFromJSON,
   GetInstallerCic200ResponseToJSON,
   UpdateAdminCicFromJSON,
@@ -3528,6 +3534,67 @@ export class SupportDashboardApi extends runtime.BaseAPI {
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<AdminCreateInstaller200Response> {
     const response = await this.adminUpdateInstallerRaw(
+      requestParameters,
+      initOverrides,
+    );
+    return await response.value();
+  }
+
+  /**
+   * Get list of commissionings performed for an installation
+   */
+  async getInstallationCommissioningsRaw(
+    requestParameters: GetInstallationCommissioningsRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<GetInstallationCommissionings200Response>> {
+    if (
+      requestParameters.installationId === null ||
+      requestParameters.installationId === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "installationId",
+        "Required parameter requestParameters.installationId was null or undefined when calling getInstallationCommissionings.",
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken;
+      const tokenString = await token("bearerAuth", []);
+
+      if (tokenString) {
+        headerParameters["Authorization"] = `Bearer ${tokenString}`;
+      }
+    }
+    const response = await this.request(
+      {
+        path: `/admin/installation/{installationId}/commissionings`.replace(
+          `{${"installationId"}}`,
+          encodeURIComponent(String(requestParameters.installationId)),
+        ),
+        method: "GET",
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    );
+
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      GetInstallationCommissionings200ResponseFromJSON(jsonValue),
+    );
+  }
+
+  /**
+   * Get list of commissionings performed for an installation
+   */
+  async getInstallationCommissionings(
+    requestParameters: GetInstallationCommissioningsRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<GetInstallationCommissionings200Response> {
+    const response = await this.getInstallationCommissioningsRaw(
       requestParameters,
       initOverrides,
     );
