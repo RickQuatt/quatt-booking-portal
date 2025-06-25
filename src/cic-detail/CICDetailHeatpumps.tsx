@@ -32,10 +32,28 @@ export function CICDetailHeatpumps({ cicData }: { cicData: AdminCic }) {
           />
         </FormField>
         <FormField>
+          <FormFieldTitle>HP1 pcbFirmwareVersion</FormFieldTitle>
+          <FormFieldValue
+            value={
+              cicData.heatPumps.find((e) => e.modbusSlaveId === 1)
+                ?.pcbFirmwareVersion
+            }
+          />
+        </FormField>
+        <FormField>
           <FormFieldTitle>HP2 OduType</FormFieldTitle>
           <FormFieldValue
             value={
               cicData.heatPumps.find((e) => e.modbusSlaveId === 2)?.oduType
+            }
+          />
+        </FormField>
+        <FormField>
+          <FormFieldTitle>HP2 pcbFirmwareVersion</FormFieldTitle>
+          <FormFieldValue
+            value={
+              cicData.heatPumps.find((e) => e.modbusSlaveId === 2)
+                ?.pcbFirmwareVersion
             }
           />
         </FormField>
