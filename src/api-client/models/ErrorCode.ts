@@ -157,6 +157,9 @@ export const ErrorCode = {
   CommissioningActionNotFound: "COMMISSIONING_ACTION_NOT_FOUND",
   HouseDoesNotHaveRequiredFieldsForHomeBattery:
     "HOUSE_DOES_NOT_HAVE_REQUIRED_FIELDS_FOR_HOME_BATTERY",
+  InstallationNameInvalid: "INSTALLATION_NAME_INVALID",
+  CannotRetryIdentificationNoCommissioningUnfinished:
+    "CANNOT_RETRY_IDENTIFICATION_NO_COMMISSIONING_UNFINISHED",
 } as const;
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];
 
