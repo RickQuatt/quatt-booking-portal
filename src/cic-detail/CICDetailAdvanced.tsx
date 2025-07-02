@@ -161,7 +161,7 @@ export function CICDetailAdvanced({ cicData }: { cicData: AdminCic }) {
           type: CommandType.StartLiveView,
         },
       });
-      alert("Live view command send successfully");
+      alert("Live view command sent successfully");
     } catch (error) {
       alert("Failed to start live view session.");
     }
