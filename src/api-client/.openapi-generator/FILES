@@ -30,6 +30,7 @@ models/AppCompatibilityGet200ResponseResult.ts
 models/AppSettingsGet200Response.ts
 models/AppSettingsGet200ResponseResult.ts
 models/AppSettingsGet200ResponseResultTariffCOPValidation.ts
+models/BaseCommissioningAction.ts
 models/BaseCommissioningTest.ts
 models/BoilerType.ts
 models/Cic.ts
@@ -51,6 +52,7 @@ models/CicState.ts
 models/CicStatus.ts
 models/CommandType.ts
 models/Commissioning.ts
+models/CommissioningActionType.ts
 models/CommissioningAllOfPrerequisites.ts
 models/CommissioningAllOfPrerequisitesCic.ts
 models/CommissioningAllOfPrerequisitesDevices.ts

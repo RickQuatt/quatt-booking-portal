@@ -63,6 +63,12 @@ export interface AllEStatus {
   showerMinutes: number | null;
   /**
    *
+   * @type {boolean}
+   * @memberof AllEStatus
+   */
+  showerMinutesDegraded: boolean | null;
+  /**
+   *
    * @type {number}
    * @memberof AllEStatus
    */
@@ -91,6 +97,24 @@ export interface AllEStatus {
    * @memberof AllEStatus
    */
   emergencyBackupHeaterEnabled?: boolean | null;
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof AllEStatus
+   */
+  blockedControlActions?: Array<string> | null;
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof AllEStatus
+   */
+  controlDegradationReasons?: Array<string> | null;
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof AllEStatus
+   */
+  degradedAllECounters?: Array<string> | null;
 }
 
 /**
@@ -125,6 +149,7 @@ export function instanceOfAllEStatus(value: object): boolean {
   isInstance = isInstance && "isDomesticHotWaterOn" in value;
   isInstance = isInstance && "heatBatterySize" in value;
   isInstance = isInstance && "showerMinutes" in value;
+  isInstance = isInstance && "showerMinutesDegraded" in value;
   isInstance = isInstance && "heatBatteryPercentage" in value;
 
   return isInstance;
@@ -153,6 +178,7 @@ export function AllEStatusFromJSONTyped(
     isDomesticHotWaterOn: json["isDomesticHotWaterOn"],
     heatBatterySize: json["heatBatterySize"],
     showerMinutes: json["showerMinutes"],
+    showerMinutesDegraded: json["showerMinutesDegraded"],
     heatBatteryPercentage: json["heatBatteryPercentage"],
     heatBatterySensorFailureFlags: !exists(
       json,
@@ -172,6 +198,15 @@ export function AllEStatusFromJSONTyped(
     emergencyBackupHeaterEnabled: !exists(json, "emergencyBackupHeaterEnabled")
       ? undefined
       : json["emergencyBackupHeaterEnabled"],
+    blockedControlActions: !exists(json, "blockedControlActions")
+      ? undefined
+      : json["blockedControlActions"],
+    controlDegradationReasons: !exists(json, "controlDegradationReasons")
+      ? undefined
+      : json["controlDegradationReasons"],
+    degradedAllECounters: !exists(json, "degradedAllECounters")
+      ? undefined
+      : json["degradedAllECounters"],
   };
 }
 
@@ -190,10 +225,14 @@ export function AllEStatusToJSON(value?: AllEStatus | null): any {
     isDomesticHotWaterOn: value.isDomesticHotWaterOn,
     heatBatterySize: value.heatBatterySize,
     showerMinutes: value.showerMinutes,
+    showerMinutesDegraded: value.showerMinutesDegraded,
     heatBatteryPercentage: value.heatBatteryPercentage,
     heatBatterySensorFailureFlags: value.heatBatterySensorFailureFlags,
     heatChargerDegradationReasonFlags: value.heatChargerDegradationReasonFlags,
     heatChargerCompressorEnabled: value.heatChargerCompressorEnabled,
     emergencyBackupHeaterEnabled: value.emergencyBackupHeaterEnabled,
+    blockedControlActions: value.blockedControlActions,
+    controlDegradationReasons: value.controlDegradationReasons,
+    degradedAllECounters: value.degradedAllECounters,
   };
 }
