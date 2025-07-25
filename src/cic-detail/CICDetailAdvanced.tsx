@@ -99,7 +99,7 @@ export function CICDetailAdvanced({ cicData }: { cicData: AdminCic }) {
     }
 
     try {
-      await apiClient.updateInstallationCommissioning({
+      await apiClient.updateAdminInstallationCommissioning({
         installationId: installationId,
         updateCommissioning: {
           status: UpdateCommissioningStatusEnum.Cancelled,
@@ -138,7 +138,7 @@ export function CICDetailAdvanced({ cicData }: { cicData: AdminCic }) {
           alert("Commissioning process completed successfully.");
         }
       } else {
-        await apiClient.updateInstallationCommissioning({
+        await apiClient.updateAdminInstallationCommissioning({
           installationId: installationId,
           updateCommissioning: {
             status: UpdateCommissioningStatusEnum.Success,
