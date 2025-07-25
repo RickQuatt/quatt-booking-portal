@@ -5,6 +5,8 @@ set -e
 ORIGINAL_PATH=$(pwd)
 PATH_TO_QUATT_CLOUD=$1
 
+echo "Looking for Quatt Cloud at $PATH_TO_QUATT_CLOUD"
+
 if [ -z "$PATH_TO_QUATT_CLOUD" ]
 then
   echo "Path to Quatt Cloud is empty"

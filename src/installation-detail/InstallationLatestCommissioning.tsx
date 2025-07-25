@@ -5,7 +5,7 @@ import {
   BaseCommissioningTest,
   BaseCommissioningTestStatusEnum,
   CommissioningStatusEnum,
-  GetInstallationLatestCommissioning200Response,
+  GetInstallerInstallationLatestCommissioning200Response,
 } from "../api-client/models";
 import classes from "./InstallationDetail.module.css";
 import { DetailSectionHeader } from "../cic-detail/CICDetailSectionHeader";
@@ -246,7 +246,7 @@ const refetchOnlyWhenCommissioningIsUnfinished =
   (options: { refetchIntervalSeconds: number }) =>
   (query: {
     state: {
-      data?: GetInstallationLatestCommissioning200Response;
+      data?: GetInstallerInstallationLatestCommissioning200Response;
       status: "pending" | "success" | "error";
     };
   }): number | false => {
@@ -264,9 +264,12 @@ export function InstallationLatestCommissioning({
 }: InstallationLatestCommissioningProps) {
   const apiClient = useApiClient();
   const { data, isLoading, isError, refetch, error } = useQuery({
-    queryKey: ["getInstallationLatestCommissioning", installation.externalId],
+    queryKey: [
+      "getAdminInstallationLatestCommissioning",
+      installation.externalId,
+    ],
     queryFn: async () => {
-      return apiClient.getInstallationLatestCommissioning({
+      return apiClient.getAdminInstallationLatestCommissioning({
         installationId: installation.externalId || "",
       });
     },
@@ -278,7 +281,7 @@ export function InstallationLatestCommissioning({
 
   const { isPending, mutate: forceCommissioningSuccess } = useMutation({
     mutationFn: () =>
-      apiClient.updateInstallationCommissioning({
+      apiClient.updateAdminInstallationCommissioning({
         updateCommissioning: {
           status: BaseCommissioningTestStatusEnum.Success,
           forced: true,

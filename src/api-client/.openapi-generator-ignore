@@ -217,6 +217,9 @@ models/*
 !models/HeatChargerCommissioningPrerequisiteDetails.ts
 !models/HeatChargerUpdateState.ts
 !models/GetInstallationLatestCommissioning200Response.ts
+!models/GetAdminInstallationLatestCommissioning.ts
+!models/GetAdminInstallationLatestCommissioning200.ts
+!models/GetInstallerInstallationLatestCommissioning200Response.ts
 !models/UpdateCommissioningTest.ts
 !models/SendCommandToCICRequest.ts
 !models/CommandType.ts

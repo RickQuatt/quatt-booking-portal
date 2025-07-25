@@ -156,7 +156,7 @@ export const ErrorCode = {
   DeviceNameAlreadyTaken: "DEVICE_NAME_ALREADY_TAKEN",
   CommissioningActionNotFound: "COMMISSIONING_ACTION_NOT_FOUND",
   HouseDoesNotHaveRequiredFieldsForHomeBattery:
-    "HOUSE_DOES_NOT_HAVE_REQUIRED_FIELD S_FOR_HOME_BATTERY",
+    "HOUSE_DOES_NOT_HAVE_REQUIRED_FIELDS_FOR_HOME_BATTERY",
   ThreadDeviceRequestedRoleNotSupported:
     "THREAD_DEVICE_REQUESTED_ROLE_NOT_SUPPORTED",
   InstallationNameInvalid: "INSTALLATION_NAME_INVALID",
@@ -169,6 +169,7 @@ export const ErrorCode = {
   UnsupportedMediaType: "UNSUPPORTED_MEDIA_TYPE",
   EmptyFileError: "EMPTY_FILE_ERROR",
   MissingRequiredColumns: "MISSING_REQUIRED_COLUMNS",
+  NoDynamicEnergyPricingData: "NO_DYNAMIC_ENERGY_PRICING_DATA",
   UserAlreadyPairedToHomeBattery: "USER_ALREADY_PAIRED_TO_HOME_BATTERY",
 } as const;
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];
