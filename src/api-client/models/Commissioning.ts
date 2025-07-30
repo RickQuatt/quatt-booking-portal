@@ -13,6 +13,12 @@
  */
 
 import { exists, mapValues } from "../runtime";
+import type { BaseCommissioningAction } from "./BaseCommissioningAction";
+import {
+  BaseCommissioningActionFromJSON,
+  BaseCommissioningActionFromJSONTyped,
+  BaseCommissioningActionToJSON,
+} from "./BaseCommissioningAction";
 import type { BaseCommissioningTest } from "./BaseCommissioningTest";
 import {
   BaseCommissioningTestFromJSON,
@@ -86,6 +92,12 @@ export interface Commissioning {
    * @memberof Commissioning
    */
   prerequisites?: CommissioningAllOfPrerequisites;
+  /**
+   *
+   * @type {Array<BaseCommissioningAction>}
+   * @memberof Commissioning
+   */
+  actions?: Array<BaseCommissioningAction>;
 }
 
 /**
@@ -143,6 +155,9 @@ export function CommissioningFromJSONTyped(
     prerequisites: !exists(json, "prerequisites")
       ? undefined
       : CommissioningAllOfPrerequisitesFromJSON(json["prerequisites"]),
+    actions: !exists(json, "actions")
+      ? undefined
+      : (json["actions"] as Array<any>).map(BaseCommissioningActionFromJSON),
   };
 }
 
@@ -163,5 +178,9 @@ export function CommissioningToJSON(value?: Commissioning | null): any {
     installerUuid: value.installerUuid,
     tests: (value.tests as Array<any>).map(BaseCommissioningTestToJSON),
     prerequisites: CommissioningAllOfPrerequisitesToJSON(value.prerequisites),
+    actions:
+      value.actions === undefined
+        ? undefined
+        : (value.actions as Array<any>).map(BaseCommissioningActionToJSON),
   };
 }

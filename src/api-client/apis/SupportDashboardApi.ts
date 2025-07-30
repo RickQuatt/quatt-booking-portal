@@ -40,8 +40,8 @@ import type {
   ForgetWifiMeCicRequest,
   GetAllTariffs200Response,
   GetInstallationCommissionings200Response,
-  GetInstallationLatestCommissioning200Response,
   GetInstallerCic200Response,
+  GetInstallerInstallationLatestCommissioning200Response,
   SendCommandToCICRequest,
   UpdateAdminCic,
   UpdateAdminInstallation,
@@ -101,10 +101,10 @@ import {
   GetAllTariffs200ResponseToJSON,
   GetInstallationCommissionings200ResponseFromJSON,
   GetInstallationCommissionings200ResponseToJSON,
-  GetInstallationLatestCommissioning200ResponseFromJSON,
-  GetInstallationLatestCommissioning200ResponseToJSON,
   GetInstallerCic200ResponseFromJSON,
   GetInstallerCic200ResponseToJSON,
+  GetInstallerInstallationLatestCommissioning200ResponseFromJSON,
+  GetInstallerInstallationLatestCommissioning200ResponseToJSON,
   SendCommandToCICRequestFromJSON,
   SendCommandToCICRequestToJSON,
   UpdateAdminCicFromJSON,
@@ -354,11 +354,11 @@ export interface AdminUpdateInstallerRequest {
   createUpdateInstaller: CreateUpdateInstaller;
 }
 
-export interface GetInstallationCommissioningsRequest {
+export interface GetAdminInstallationLatestCommissioningRequest {
   installationId: string;
 }
 
-export interface GetInstallationLatestCommissioningRequest {
+export interface GetInstallationCommissioningsRequest {
   installationId: string;
 }
 
@@ -367,14 +367,14 @@ export interface SendCommandToCICOperationRequest {
   sendCommandToCICRequest: SendCommandToCICRequest;
 }
 
+export interface UpdateAdminInstallationCommissioningRequest {
+  installationId: string;
+  updateCommissioning: UpdateCommissioning;
+}
+
 export interface UpdateCommissioningTestRequest {
   commissioningTestUuid: string;
   updateCommissioningTest: UpdateCommissioningTest;
-}
-
-export interface UpdateInstallationCommissioningRequest {
-  installationId: string;
-  updateCommissioning: UpdateCommissioning;
 }
 
 /**
@@ -2293,6 +2293,38 @@ export class SupportDashboardApi extends runtime.BaseAPI {
 
   /**
    */
+  async adminInstallationInstallationIdCommissioningLatestOptionsRaw(
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<void>> {
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    const response = await this.request(
+      {
+        path: `/admin/installation/{installationId}/commissioning/latest`,
+        method: "OPTIONS",
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    );
+
+    return new runtime.VoidApiResponse(response);
+  }
+
+  /**
+   */
+  async adminInstallationInstallationIdCommissioningLatestOptions(
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<void> {
+    await this.adminInstallationInstallationIdCommissioningLatestOptionsRaw(
+      initOverrides,
+    );
+  }
+
+  /**
+   */
   async adminInstallationInstallationIdHubspotOptionsRaw(
     requestParameters: AdminInstallationInstallationIdHubspotOptionsRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -3564,6 +3596,69 @@ export class SupportDashboardApi extends runtime.BaseAPI {
   }
 
   /**
+   * Get latest commissioning of an installation
+   */
+  async getAdminInstallationLatestCommissioningRaw(
+    requestParameters: GetAdminInstallationLatestCommissioningRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<
+    runtime.ApiResponse<GetInstallerInstallationLatestCommissioning200Response>
+  > {
+    if (
+      requestParameters.installationId === null ||
+      requestParameters.installationId === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "installationId",
+        "Required parameter requestParameters.installationId was null or undefined when calling getAdminInstallationLatestCommissioning.",
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken;
+      const tokenString = await token("bearerAuth", []);
+
+      if (tokenString) {
+        headerParameters["Authorization"] = `Bearer ${tokenString}`;
+      }
+    }
+    const response = await this.request(
+      {
+        path: `/admin/installation/{installationId}/commissioning/latest`.replace(
+          `{${"installationId"}}`,
+          encodeURIComponent(String(requestParameters.installationId)),
+        ),
+        method: "GET",
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    );
+
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      GetInstallerInstallationLatestCommissioning200ResponseFromJSON(jsonValue),
+    );
+  }
+
+  /**
+   * Get latest commissioning of an installation
+   */
+  async getAdminInstallationLatestCommissioning(
+    requestParameters: GetAdminInstallationLatestCommissioningRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<GetInstallerInstallationLatestCommissioning200Response> {
+    const response = await this.getAdminInstallationLatestCommissioningRaw(
+      requestParameters,
+      initOverrides,
+    );
+    return await response.value();
+  }
+
+  /**
    * Get list of commissionings performed for an installation
    */
   async getInstallationCommissioningsRaw(
@@ -3625,69 +3720,6 @@ export class SupportDashboardApi extends runtime.BaseAPI {
   }
 
   /**
-   * Get latest commissioning of an installation
-   */
-  async getInstallationLatestCommissioningRaw(
-    requestParameters: GetInstallationLatestCommissioningRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<
-    runtime.ApiResponse<GetInstallationLatestCommissioning200Response>
-  > {
-    if (
-      requestParameters.installationId === null ||
-      requestParameters.installationId === undefined
-    ) {
-      throw new runtime.RequiredError(
-        "installationId",
-        "Required parameter requestParameters.installationId was null or undefined when calling getInstallationLatestCommissioning.",
-      );
-    }
-
-    const queryParameters: any = {};
-
-    const headerParameters: runtime.HTTPHeaders = {};
-
-    if (this.configuration && this.configuration.accessToken) {
-      const token = this.configuration.accessToken;
-      const tokenString = await token("bearerAuth", []);
-
-      if (tokenString) {
-        headerParameters["Authorization"] = `Bearer ${tokenString}`;
-      }
-    }
-    const response = await this.request(
-      {
-        path: `/installer/installation/{installationId}/commissioning/latest`.replace(
-          `{${"installationId"}}`,
-          encodeURIComponent(String(requestParameters.installationId)),
-        ),
-        method: "GET",
-        headers: headerParameters,
-        query: queryParameters,
-      },
-      initOverrides,
-    );
-
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      GetInstallationLatestCommissioning200ResponseFromJSON(jsonValue),
-    );
-  }
-
-  /**
-   * Get latest commissioning of an installation
-   */
-  async getInstallationLatestCommissioning(
-    requestParameters: GetInstallationLatestCommissioningRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<GetInstallationLatestCommissioning200Response> {
-    const response = await this.getInstallationLatestCommissioningRaw(
-      requestParameters,
-      initOverrides,
-    );
-    return await response.value();
-  }
-
-  /**
    */
   async installerCommissioningTestCommissioningTestUuidOptionsRaw(
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
@@ -3715,38 +3747,6 @@ export class SupportDashboardApi extends runtime.BaseAPI {
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<void> {
     await this.installerCommissioningTestCommissioningTestUuidOptionsRaw(
-      initOverrides,
-    );
-  }
-
-  /**
-   */
-  async installerInstallationInstallationIdCommissioningLatestOptionsRaw(
-    initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<void>> {
-    const queryParameters: any = {};
-
-    const headerParameters: runtime.HTTPHeaders = {};
-
-    const response = await this.request(
-      {
-        path: `/installer/installation/{installationId}/commissioning/latest`,
-        method: "OPTIONS",
-        headers: headerParameters,
-        query: queryParameters,
-      },
-      initOverrides,
-    );
-
-    return new runtime.VoidApiResponse(response);
-  }
-
-  /**
-   */
-  async installerInstallationInstallationIdCommissioningLatestOptions(
-    initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<void> {
-    await this.installerInstallationInstallationIdCommissioningLatestOptionsRaw(
       initOverrides,
     );
   }
@@ -3854,6 +3854,77 @@ export class SupportDashboardApi extends runtime.BaseAPI {
   }
 
   /**
+   * Update latest commissioning of an installation
+   */
+  async updateAdminInstallationCommissioningRaw(
+    requestParameters: UpdateAdminInstallationCommissioningRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<void>> {
+    if (
+      requestParameters.installationId === null ||
+      requestParameters.installationId === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "installationId",
+        "Required parameter requestParameters.installationId was null or undefined when calling updateAdminInstallationCommissioning.",
+      );
+    }
+
+    if (
+      requestParameters.updateCommissioning === null ||
+      requestParameters.updateCommissioning === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "updateCommissioning",
+        "Required parameter requestParameters.updateCommissioning was null or undefined when calling updateAdminInstallationCommissioning.",
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    headerParameters["Content-Type"] = "application/json";
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken;
+      const tokenString = await token("bearerAuth", []);
+
+      if (tokenString) {
+        headerParameters["Authorization"] = `Bearer ${tokenString}`;
+      }
+    }
+    const response = await this.request(
+      {
+        path: `/admin/installation/{installationId}/commissioning/latest`.replace(
+          `{${"installationId"}}`,
+          encodeURIComponent(String(requestParameters.installationId)),
+        ),
+        method: "PATCH",
+        headers: headerParameters,
+        query: queryParameters,
+        body: UpdateCommissioningToJSON(requestParameters.updateCommissioning),
+      },
+      initOverrides,
+    );
+
+    return new runtime.VoidApiResponse(response);
+  }
+
+  /**
+   * Update latest commissioning of an installation
+   */
+  async updateAdminInstallationCommissioning(
+    requestParameters: UpdateAdminInstallationCommissioningRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<void> {
+    await this.updateAdminInstallationCommissioningRaw(
+      requestParameters,
+      initOverrides,
+    );
+  }
+
+  /**
    * Update commissioning test
    */
   async updateCommissioningTestRaw(
@@ -3921,76 +3992,5 @@ export class SupportDashboardApi extends runtime.BaseAPI {
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<void> {
     await this.updateCommissioningTestRaw(requestParameters, initOverrides);
-  }
-
-  /**
-   * Update latest commissioning of an installation
-   */
-  async updateInstallationCommissioningRaw(
-    requestParameters: UpdateInstallationCommissioningRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<void>> {
-    if (
-      requestParameters.installationId === null ||
-      requestParameters.installationId === undefined
-    ) {
-      throw new runtime.RequiredError(
-        "installationId",
-        "Required parameter requestParameters.installationId was null or undefined when calling updateInstallationCommissioning.",
-      );
-    }
-
-    if (
-      requestParameters.updateCommissioning === null ||
-      requestParameters.updateCommissioning === undefined
-    ) {
-      throw new runtime.RequiredError(
-        "updateCommissioning",
-        "Required parameter requestParameters.updateCommissioning was null or undefined when calling updateInstallationCommissioning.",
-      );
-    }
-
-    const queryParameters: any = {};
-
-    const headerParameters: runtime.HTTPHeaders = {};
-
-    headerParameters["Content-Type"] = "application/json";
-
-    if (this.configuration && this.configuration.accessToken) {
-      const token = this.configuration.accessToken;
-      const tokenString = await token("bearerAuth", []);
-
-      if (tokenString) {
-        headerParameters["Authorization"] = `Bearer ${tokenString}`;
-      }
-    }
-    const response = await this.request(
-      {
-        path: `/installer/installation/{installationId}/commissioning/latest`.replace(
-          `{${"installationId"}}`,
-          encodeURIComponent(String(requestParameters.installationId)),
-        ),
-        method: "PATCH",
-        headers: headerParameters,
-        query: queryParameters,
-        body: UpdateCommissioningToJSON(requestParameters.updateCommissioning),
-      },
-      initOverrides,
-    );
-
-    return new runtime.VoidApiResponse(response);
-  }
-
-  /**
-   * Update latest commissioning of an installation
-   */
-  async updateInstallationCommissioning(
-    requestParameters: UpdateInstallationCommissioningRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<void> {
-    await this.updateInstallationCommissioningRaw(
-      requestParameters,
-      initOverrides,
-    );
   }
 }

@@ -12,7 +12,10 @@ import {
   FormSection,
 } from "../ui-components/form/Form";
 import classes from "./CICDetail.module.css";
-import { DetailSectionHeader } from "./CICDetailSectionHeader";
+import {
+  DetailSectionHeader,
+  DetailSubSectionHeader,
+} from "./CICDetailSectionHeader";
 import { useApiClient } from "../api-client/context";
 
 const TIMEOUT_DURATION = 30000; // 30 seconds in milliseconds
@@ -56,6 +59,10 @@ export function CICDetailAllE({
     heatChargerDegradationReasonFlags,
     emergencyBackupHeaterEnabled,
     heatChargerCompressorEnabled,
+    showerMinutesDegraded,
+    blockedControlActions,
+    controlDegradationReasons,
+    degradedAllECounters,
   } = allEStatus;
 
   const [emergencyState, setEmergencyState] = useState(
@@ -183,30 +190,10 @@ export function CICDetailAllE({
 
   return (
     <div className={classes["detail-section"]}>
-      <DetailSectionHeader title="⚡ 🔋 All-E HeatCharger & HeatBattery" />
+      <DetailSectionHeader title="⚡ 🔋 All-Electric" />
       <FormSection>
         <FormField>
-          <FormFieldTitle>HeatCharger Serial Number</FormFieldTitle>
-          <FormFieldValue value={heatChargerSerialNumber} />
-        </FormField>
-        <FormField>
-          <FormFieldTitle>HeatBattery Serial Number</FormFieldTitle>
-          <FormFieldValue value={heatBatterySerialNumber} />
-        </FormField>
-        <FormField>
-          <FormFieldTitle>HeatBattery Status</FormFieldTitle>
-          <FormFieldValue value={statusMap[heatBatteryStatus]} />
-        </FormField>
-        <FormField>
-          <FormFieldTitle>HeatBattery Size</FormFieldTitle>
-          <FormFieldValue value={batterySizeMap[heatBatterySize]} />
-        </FormField>
-        <FormField>
-          <FormFieldTitle>HeatBattery Charge Percentage</FormFieldTitle>
-          <FormFieldValue value={heatBatteryPercentage} />
-        </FormField>
-        <FormField>
-          <FormFieldTitle>Shower Minutes Available</FormFieldTitle>
+          <FormFieldTitle>Available Shower Minutes</FormFieldTitle>
           <div className={classes["chip"]}>
             {typeof showerMinutes === "number"
               ? `${showerMinutes} minutes`
@@ -214,7 +201,7 @@ export function CICDetailAllE({
           </div>
         </FormField>
         <FormField>
-          <FormFieldTitle>Is Hot Water Turned On?</FormFieldTitle>
+          <FormFieldTitle>Hot Water Turned On</FormFieldTitle>
           <div className={classes["chip"]}>
             {isDomesticHotWaterOn
               ? "Yes"
@@ -224,14 +211,27 @@ export function CICDetailAllE({
           </div>
         </FormField>
         <FormField>
-          <FormFieldTitle>HeatBattery Sensor Failure Issues</FormFieldTitle>
-          <div className={classes["chip-wrapper"]}>
-            {heatBatterySensorFailureFlags?.length === 0 ? (
+          <FormFieldTitle>Shower Minutes Estimation Degraded</FormFieldTitle>
+          <div className={classes["chip"]}>
+            {showerMinutesDegraded
+              ? "Yes"
+              : typeof showerMinutesDegraded === "boolean"
+                ? "No"
+                : "N/A"}
+          </div>
+        </FormField>
+        <FormField>
+          <FormFieldTitle>Control Degradation Flags</FormFieldTitle>
+          <div
+            className={classes["chip-wrapper"]}
+            style={{ marginBottom: "10px" }}
+          >
+            {controlDegradationReasons?.length === 0 ? (
               <div className={`${classes["chip"]} ${classes["chip-info"]}`}>
                 👍 None
               </div>
             ) : (
-              heatBatterySensorFailureFlags?.map((flag, index) => (
+              controlDegradationReasons?.map((flag, index) => (
                 <div
                   key={index}
                   className={`${classes["chip"]} ${classes["chip-warn"]}`}
@@ -243,11 +243,62 @@ export function CICDetailAllE({
           </div>
         </FormField>
         <FormField>
+          <FormFieldTitle>Degraded All-E Counters</FormFieldTitle>
+          <div
+            className={classes["chip-wrapper"]}
+            style={{ marginBottom: "10px" }}
+          >
+            {degradedAllECounters?.length === 0 ? (
+              <div className={`${classes["chip"]} ${classes["chip-info"]}`}>
+                👍 None
+              </div>
+            ) : (
+              degradedAllECounters?.map((flag, index) => (
+                <div
+                  key={index}
+                  className={`${classes["chip"]} ${classes["chip-warn"]}`}
+                >
+                  {flag}
+                </div>
+              ))
+            )}
+          </div>
+        </FormField>
+        <FormField>
+          <FormFieldTitle>Blocked Control Actions</FormFieldTitle>
+          <div
+            className={classes["chip-wrapper"]}
+            style={{ marginBottom: "10px" }}
+          >
+            {blockedControlActions?.length === 0 ? (
+              <div className={`${classes["chip"]} ${classes["chip-info"]}`}>
+                👍 None
+              </div>
+            ) : (
+              blockedControlActions?.map((flag, index) => (
+                <div
+                  key={index}
+                  className={`${classes["chip"]} ${classes["chip-warn"]}`}
+                >
+                  {flag}
+                </div>
+              ))
+            )}
+          </div>
+        </FormField>
+      </FormSection>
+      <DetailSubSectionHeader title="HeatCharger" />
+      <FormSection>
+        <FormField>
+          <FormFieldTitle>HeatCharger Serial Number</FormFieldTitle>
+          <FormFieldValue value={heatChargerSerialNumber} />
+        </FormField>
+        <FormField>
           <FormFieldTitle>HeatCharger Compressor Enabled</FormFieldTitle>
           <FormFieldValue value={heatChargerCompressorEnabled} />
         </FormField>
         <FormField>
-          <FormFieldTitle>HeatCharger Degration Reason Flags</FormFieldTitle>
+          <FormFieldTitle>HeatCharger Degradation Flags</FormFieldTitle>
           <div
             className={classes["chip-wrapper"]}
             style={{ marginBottom: "10px" }}
@@ -269,9 +320,46 @@ export function CICDetailAllE({
           </div>
         </FormField>
       </FormSection>
-
+      <DetailSubSectionHeader title="HeatBattery" />
+      <FormSection>
+        <FormField>
+          <FormFieldTitle>HeatBattery Serial Number</FormFieldTitle>
+          <FormFieldValue value={heatBatterySerialNumber} />
+        </FormField>
+        <FormField>
+          <FormFieldTitle>HeatBattery Status</FormFieldTitle>
+          <FormFieldValue value={statusMap[heatBatteryStatus]} />
+        </FormField>
+        <FormField>
+          <FormFieldTitle>HeatBattery Size</FormFieldTitle>
+          <FormFieldValue value={batterySizeMap[heatBatterySize]} />
+        </FormField>
+        <FormField>
+          <FormFieldTitle>HeatBattery Charge Percentage</FormFieldTitle>
+          <FormFieldValue value={heatBatteryPercentage} />
+        </FormField>
+        <FormField>
+          <FormFieldTitle>HeatBattery Sensor Failure Issues</FormFieldTitle>
+          <div className={classes["chip-wrapper"]}>
+            {heatBatterySensorFailureFlags?.length === 0 ? (
+              <div className={`${classes["chip"]} ${classes["chip-info"]}`}>
+                👍 None
+              </div>
+            ) : (
+              heatBatterySensorFailureFlags?.map((flag, index) => (
+                <div
+                  key={index}
+                  className={`${classes["chip"]} ${classes["chip-warn"]}`}
+                >
+                  {flag}
+                </div>
+              ))
+            )}
+          </div>
+        </FormField>
+      </FormSection>
       <div style={{ marginBottom: "10px" }} />
-      <DetailSectionHeader title="Advanced Controls" />
+      <DetailSubSectionHeader title="Advanced Controls" />
       <div style={{ marginBottom: "10px" }} />
       <EmergencyButton
         label={
