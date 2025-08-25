@@ -23,6 +23,7 @@ import { InstallationDetail } from "./installation-detail/InstallationDetail";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import ErrorText from "./ui-components/error-text/ErrorText";
 import { CICDebugPage } from "./cic-debug/CICDebugPage";
+import { CICMqttDebugPage } from "./cic-mqtt-debug/CICMqttDebugPage";
 
 const queryClient = new QueryClient();
 
@@ -74,6 +75,11 @@ function App() {
             <Route path="/cics/:cicId/debug">
               {(params) => {
                 return <CICDebugPageWrapper cicId={params.cicId} />;
+              }}
+            </Route>
+            <Route path="/cics/:cicId/MQTTDebug">
+              {(params) => {
+                return <CICMqttDebugPageWrapper cicId={params.cicId} />;
               }}
             </Route>
             <Route path="/installations/:installationUuid">
@@ -177,6 +183,33 @@ const CICDebugPageWrapper = ({ cicId }: { cicId: string }) => {
 
   return isSuccess ? (
     <CICDebugPage data={data?.result} />
+  ) : (
+    <ErrorText text="No CIC data found" />
+  );
+};
+
+const CICMqttDebugPageWrapper = ({ cicId }: { cicId: string }) => {
+  const apiClient = useApiClient();
+  const { data, isLoading, isError, isSuccess, refetch } = useQuery({
+    queryKey: ["cicDetail", cicId],
+    queryFn: () => apiClient.adminGetCic({ cicId }),
+  });
+
+  if (isError) {
+    return (
+      <ErrorText
+        text={`Failed to fetch CIC details for CIC id ${cicId}.`}
+        retry={refetch}
+      />
+    );
+  }
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
+  return isSuccess ? (
+    <CICMqttDebugPage data={data?.result} />
   ) : (
     <ErrorText text="No CIC data found" />
   );
