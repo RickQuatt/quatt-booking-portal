@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import JsonView from "@uiw/react-json-view";
 import { MqttDebugMessage } from "../hooks/useMqttDebugStream";
 import classes from "./MessageDetail.module.css";
 
@@ -19,20 +20,27 @@ export function MessageDetail({ message }: MessageDetailProps) {
     }
   };
 
-  const formattedPayload = useMemo(() => {
-    const formatPayload = (payload: unknown): string => {
+  const parsedPayload = useMemo(() => {
+    const parsePayload = (payload: unknown): unknown => {
       if (typeof payload === "string") {
         try {
-          return JSON.stringify(JSON.parse(payload), null, 2);
+          return JSON.parse(payload);
         } catch {
-          return payload;
+          return payload; // Return as string if not valid JSON
         }
       }
-      return JSON.stringify(payload, null, 2);
+      return payload;
     };
 
-    return formatPayload(message.payload);
+    return parsePayload(message.payload);
   }, [message.payload]);
+
+  const formattedPayload = useMemo(() => {
+    if (typeof parsedPayload === "string") {
+      return parsedPayload;
+    }
+    return JSON.stringify(parsedPayload, null, 2);
+  }, [parsedPayload]);
 
   return (
     <div className={classes.detail}>
@@ -109,7 +117,28 @@ export function MessageDetail({ message }: MessageDetailProps) {
           </div>
         </div>
         <div className={classes.payloadContent}>
-          <pre className={classes.payload}>{formattedPayload}</pre>
+          {typeof parsedPayload === "string" ? (
+            <pre className={classes.payload}>{parsedPayload}</pre>
+          ) : parsedPayload !== null && typeof parsedPayload === "object" ? (
+            <JsonView
+              value={parsedPayload}
+              style={{
+                backgroundColor: "transparent",
+                fontFamily: '"Menlo", "Monaco", "Consolas", monospace',
+                fontSize: "12px",
+                lineHeight: "1.4",
+              }}
+              collapsed={2}
+              displayDataTypes={false}
+              enableClipboard={true}
+              onCopied={(text, _node) => {
+                setCopySuccess("JSON Value");
+                setTimeout(() => setCopySuccess(null), 2000);
+              }}
+            />
+          ) : (
+            <pre className={classes.payload}>{String(parsedPayload)}</pre>
+          )}
         </div>
       </div>
 

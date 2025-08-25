@@ -111,6 +111,16 @@
   overflow-y: auto;
 }
 
+/* JsonView component styling */
+.payloadContent :global(.w-rjv) {
+  font-family: "Menlo", "Monaco", "Consolas", monospace !important;
+}
+
+.payloadContent :global(.w-rjv-line) {
+  border-left: none !important;
+  padding-left: 0 !important;
+}
+
 .payload {
   margin: 0;
   font-family: "Menlo", "Monaco", "Consolas", monospace;

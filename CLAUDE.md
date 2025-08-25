@@ -157,3 +157,4 @@ The API client is auto-generated from the main Quatt-cloud OpenAPI specification
 - **Memory Management**: Cleanup timeouts and connections to prevent memory leaks
 - **State Updates**: Batch state updates for high-frequency real-time data
 - **JSON Parsing**: Use `useMemo` for expensive operations like JSON formatting to prevent re-computation on every render
+- **JSON Display**: Use `@uiw/react-json-view` for interactive JSON visualization with syntax highlighting and collapsible nodes
