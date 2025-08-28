@@ -29,6 +29,32 @@ export function CICMqttDebugPage({ data: { id } }: CICMqttDebugPageProps) {
     // disconnect() will be called automatically by the hook's useEffect
   };
 
+  const handleExportMessages = () => {
+    if (messages.length === 0) return;
+
+    const exportData = messages.map((message) => ({
+      timestamp: message.timestamp,
+      direction: message.direction,
+      topic: message.topic,
+      payload: message.payload,
+      isError: message.isError,
+      id: message.id,
+    }));
+
+    const jsonString = JSON.stringify(exportData, null, 2);
+    const blob = new Blob([jsonString], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `mqtt-debug-${id}-${new Date().toISOString().split("T")[0]}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+  };
+
   useEffect(() => {
     // Auto-start streaming when component mounts
     handleStart();
@@ -46,6 +72,7 @@ export function CICMqttDebugPage({ data: { id } }: CICMqttDebugPageProps) {
         onStart={handleStart}
         onStop={handleStop}
         onClear={clearMessages}
+        onExportMessages={handleExportMessages}
         messageCount={messages.length}
       />
 

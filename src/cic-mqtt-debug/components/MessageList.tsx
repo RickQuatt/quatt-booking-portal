@@ -54,7 +54,7 @@ export function MessageList({ messages }: MessageListProps) {
     return (
       <div className={classes.container}>
         <div className={classes.emptyState}>
-          <p>No messages yet. Start streaming to see MQTT debug messages.</p>
+          <p>No messages yet. Start streaming to see MQTT messages.</p>
         </div>
       </div>
     );

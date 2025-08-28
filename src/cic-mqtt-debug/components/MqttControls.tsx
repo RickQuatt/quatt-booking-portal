@@ -6,6 +6,7 @@ interface MqttControlsProps {
   onStart: () => void;
   onStop: () => void;
   onClear: () => void;
+  onExportMessages: () => void;
   messageCount: number;
 }
 
@@ -14,6 +15,7 @@ export function MqttControls({
   onStart,
   onStop,
   onClear,
+  onExportMessages,
   messageCount,
 }: MqttControlsProps) {
   return (
@@ -35,13 +37,18 @@ export function MqttControls({
           {messageCount} message{messageCount !== 1 ? "s" : ""}
         </span>
         {messageCount > 0 && (
-          <Button
-            onClick={onClear}
-            className={classes.clearButton}
-            color="danger"
-          >
-            🗑️ Clear Messages
-          </Button>
+          <>
+            <Button onClick={onExportMessages} className={classes.exportButton}>
+              📥 Export All
+            </Button>
+            <Button
+              onClick={onClear}
+              className={classes.clearButton}
+              color="danger"
+            >
+              🗑️ Clear Messages
+            </Button>
+          </>
         )}
       </div>
     </div>
