@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import JsonView from "@uiw/react-json-view";
 import { MqttDebugMessage } from "../hooks/useMqttDebugStream";
+import { formatBytes } from "../../utils/formatBytes";
 import classes from "./MessageDetail.module.css";
 
 interface MessageDetailProps {
@@ -85,6 +86,24 @@ export function MessageDetail({ message }: MessageDetailProps) {
               className={classes.copyButton}
               onClick={() => copyToClipboard(message.topic, "Topic")}
               title="Copy Topic"
+            >
+              📋
+            </button>
+          </div>
+          <div className={classes.field}>
+            <label>Message Size:</label>
+            <span className={classes.value}>
+              {formatBytes(message.messageSize)}
+            </span>
+            <button
+              className={classes.copyButton}
+              onClick={() =>
+                copyToClipboard(
+                  formatBytes(message.messageSize),
+                  "Message Size",
+                )
+              }
+              title="Copy Message Size"
             >
               📋
             </button>

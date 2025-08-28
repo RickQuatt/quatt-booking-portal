@@ -39,6 +39,7 @@ export function CICMqttDebugPage({ data: { id } }: CICMqttDebugPageProps) {
       payload: message.payload,
       isError: message.isError,
       id: message.id,
+      messageSize: message.messageSize,
     }));
 
     const jsonString = JSON.stringify(exportData, null, 2);
