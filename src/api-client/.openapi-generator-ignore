@@ -321,4 +321,3 @@ apis/*
 # Protect custom files from being overwritten
 enum-patches.ts
 context.tsx
-README.md
