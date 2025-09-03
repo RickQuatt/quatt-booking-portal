@@ -277,9 +277,48 @@ models/*
 !models/SingleTariff.ts
 !models/SingleTariffFromJSON.ts
 !models/SingleTariffToJSON.ts
+!models/AdminCreateTariff403Response.ts
+!models/AdminCreateTariff403ResponseFromJSON.ts
+!models/AdminCreateTariff403ResponseToJSON.ts
+!models/AdminCreateTariff404Response.ts
+!models/AdminCreateTariff404ResponseFromJSON.ts
+!models/AdminCreateTariff404ResponseToJSON.ts
+!models/AdminGetAllTariffs404Response.ts
+!models/AdminGetAllTariffs404ResponseFromJSON.ts
+!models/AdminGetAllTariffs404ResponseToJSON.ts
+!models/CreateTariff400Response.ts
+!models/CreateTariff400ResponseFromJSON.ts
+!models/CreateTariff400ResponseToJSON.ts
+!models/GetAllTariffs400Response.ts
+!models/GetAllTariffs400ResponseFromJSON.ts
+!models/GetAllTariffs400ResponseToJSON.ts
+!models/DeleteTariffForInstallation409Response.ts
+!models/DeleteTariffForInstallation409ResponseFromJSON.ts
+!models/DeleteTariffForInstallation409ResponseToJSON.ts
+!models/UpdateTariffForInstallation404Response.ts
+!models/UpdateTariffForInstallation404ResponseFromJSON.ts
+!models/UpdateTariffForInstallation404ResponseToJSON.ts
+!models/UpdateTariffForInstallation409Response.ts
+!models/UpdateTariffForInstallation409ResponseFromJSON.ts
+!models/UpdateTariffForInstallation409ResponseToJSON.ts
+
+# Additional error response result models
+!models/AdminCreateTariff403ResponseAllOfResult.ts
+!models/AdminCreateTariff404ResponseAllOfResult.ts
+!models/AdminGetAllTariffs404ResponseAllOfResult.ts
+!models/CreateTariff400ResponseAllOfResult.ts
+!models/DeleteTariffForInstallation409ResponseAllOfResult.ts
+!models/GetAllTariffs400ResponseAllOfResult.ts
+!models/UpdateTariffForInstallation404ResponseAllOfResult.ts
+!models/UpdateTariffForInstallation409ResponseAllOfResult.ts
 
 apis/*
 !apis/SupportDashboardApi.ts
 
 !models/index.ts
 #!apis/index.ts
+
+# Protect custom files from being overwritten
+enum-patches.ts
+context.tsx
+README.md

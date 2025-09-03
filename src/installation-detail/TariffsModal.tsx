@@ -105,7 +105,7 @@ export function TariffsModal({
       electricityPrice: tariffData?.electricityPrice || undefined,
       dayElectricityPrice: tariffData?.dayElectricityPrice || undefined,
       nightElectricityPrice: tariffData?.nightElectricityPrice || undefined,
-      gasPrice: tariffData?.gasPrice,
+      gasPrice: tariffData?.gasPrice ?? undefined,
       validFrom: tariffData?.validFrom,
     }),
     [selectedTariff, tariffData],
@@ -172,7 +172,7 @@ export function TariffsModal({
       // If there is no tariff data, create a new tariff
       if (!tariffData) {
         try {
-          await apiClient.adminCreateInstallationTariff({
+          await apiClient.adminCreateTariff({
             installationId: installationId,
             createTariffRequest: tariffBody,
           });
@@ -188,7 +188,7 @@ export function TariffsModal({
 
         try {
           // If there is tariff data, update the existing tariff
-          await apiClient.adminUpdateInstallationTariff({
+          await apiClient.adminUpdateTariff({
             installationId: installationId,
             tariffId: tariffData.id,
             createTariffRequest: tariffBody,
@@ -222,7 +222,7 @@ export function TariffsModal({
     }
 
     try {
-      await apiClient.adminDeleteInstallationTariff({
+      await apiClient.adminDeleteTariff({
         installationId: installationId,
         tariffId: tariffData.id,
       });

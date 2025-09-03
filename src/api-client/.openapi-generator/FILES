@@ -5,7 +5,13 @@ models/AdminCicCreateInstallation409Response.ts
 models/AdminCicCreateInstallation409ResponseAllOfMeta.ts
 models/AdminCicCreateInstallation409ResponseAllOfResult.ts
 models/AdminCreateInstaller200Response.ts
+models/AdminCreateTariff403Response.ts
+models/AdminCreateTariff403ResponseAllOfResult.ts
+models/AdminCreateTariff404Response.ts
+models/AdminCreateTariff404ResponseAllOfResult.ts
 models/AdminDashboardCics200Response.ts
+models/AdminGetAllTariffs404Response.ts
+models/AdminGetAllTariffs404ResponseAllOfResult.ts
 models/AdminGetCic200Response.ts
 models/AdminGetInstallation200Response.ts
 models/AdminGetInstallationClickhouseData200Response.ts
@@ -61,6 +67,8 @@ models/CompleteCommissioning200Response.ts
 models/ConnectionStatus.ts
 models/Country.ts
 models/CreateTariff200Response.ts
+models/CreateTariff400Response.ts
+models/CreateTariff400ResponseAllOfResult.ts
 models/CreateTariff409Response.ts
 models/CreateTariff409ResponseAllOfResult.ts
 models/CreateTariffRequest.ts
@@ -71,6 +79,8 @@ models/CreateUpdateEnergyTariffGas.ts
 models/CreateUpdateInstaller.ts
 models/CreateUpdateNote.ts
 models/CreateUpdateSingleTariff.ts
+models/DeleteTariffForInstallation409Response.ts
+models/DeleteTariffForInstallation409ResponseAllOfResult.ts
 models/DeviceConnectionStatuses.ts
 models/DeviceType.ts
 models/DoubleTariff.ts
@@ -87,6 +97,8 @@ models/FlowRateTestStatus.ts
 models/ForgetWifiMeCicRequest.ts
 models/GasTariffType.ts
 models/GetAllTariffs200Response.ts
+models/GetAllTariffs400Response.ts
+models/GetAllTariffs400ResponseAllOfResult.ts
 models/GetDynamicPrices200Response.ts
 models/GetDynamicPrices400Response.ts
 models/GetDynamicPrices400ResponseAllOfResult.ts
@@ -150,6 +162,10 @@ models/UpdateCommissioningTest.ts
 models/UpdateInstallerCic.ts
 models/UpdateMeCic.ts
 models/UpdateMeUser.ts
+models/UpdateTariffForInstallation404Response.ts
+models/UpdateTariffForInstallation404ResponseAllOfResult.ts
+models/UpdateTariffForInstallation409Response.ts
+models/UpdateTariffForInstallation409ResponseAllOfResult.ts
 models/UpdatedNote.ts
 models/UserRole.ts
 models/ZuperJob.ts

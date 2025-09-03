@@ -94,7 +94,7 @@ export function InstallationDetailTariff({
             {hasFutureTariffs && (
               <>
                 <FormFieldTitle>Upcoming tariffs</FormFieldTitle>
-                {futureTariffs.map((tariff, index) => (
+                {futureTariffs.map((tariff: Tariff, index: number) => (
                   <div key={index}>
                     <InstallationDetailTariffItem
                       tariff={tariff}
@@ -111,7 +111,7 @@ export function InstallationDetailTariff({
             {hasPastTariffs && (
               <>
                 <FormFieldTitle>Past tariffs</FormFieldTitle>
-                {pastTariffs.map((tariff, index) => (
+                {pastTariffs.map((tariff: Tariff, index: number) => (
                   <div key={index}>
                     <InstallationDetailTariffItem
                       tariff={tariff}
@@ -165,7 +165,7 @@ function InstallationDetailTariffItem({
             <div className={classes["tariff-grid"]}>
               <div>⚡️☀️ €{roundNumber(dayElectricityPrice, 2)}</div>
               <div>⚡️🌙 €{roundNumber(nightElectricityPrice, 2)}</div>
-              <div>🔥 €{roundNumber(gasPrice, 2)}</div>
+              <div>🔥 €{roundNumber(gasPrice || 0, 2)}</div>
             </div>
           ) : (
             <div className={classes["tariff-grid"]}>
@@ -173,7 +173,7 @@ function InstallationDetailTariffItem({
                 ⚡️ €
                 {electricityPrice ? roundNumber(electricityPrice, 2) : "n/a"}
               </div>
-              <div>🔥 €{roundNumber(gasPrice, 2)}</div>
+              <div>🔥 €{roundNumber(gasPrice || 0, 2)}</div>
             </div>
           )}
         </div>
