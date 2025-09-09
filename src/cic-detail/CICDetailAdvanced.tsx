@@ -237,6 +237,9 @@ export function CICDetailAdvanced({ cicData }: { cicData: AdminCic }) {
           <Button onClick={completeCommissioning}>Force commissioning</Button>
         )}
         <Button onClick={startLiveView}>Liveview (30 min)</Button>
+        <ButtonLink href={`/cics/${cicData.id}/MQTTDebug`}>
+          MQTT Debugger
+        </ButtonLink>
       </FormSection>
     </div>
   );
