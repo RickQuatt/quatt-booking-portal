@@ -41,92 +41,98 @@ import {
 /**
  *
  * @export
- * @interface Tariff
+ * @interface TariffsResultCurrentTariff
  */
-export interface Tariff {
+export interface TariffsResultCurrentTariff {
   /**
    *
    * @type {string}
-   * @memberof Tariff
+   * @memberof TariffsResultCurrentTariff
    */
   id: string;
   /**
    *
    * @type {ElectricityTariffType}
-   * @memberof Tariff
+   * @memberof TariffsResultCurrentTariff
    */
   electricityTariffType: ElectricityTariffType;
   /**
    *
    * @type {GasTariffType}
-   * @memberof Tariff
+   * @memberof TariffsResultCurrentTariff
    */
   gasTariffType: GasTariffType;
   /**
    * Electricity price for single tariff
    * @type {number}
-   * @memberof Tariff
+   * @memberof TariffsResultCurrentTariff
    * @deprecated
    */
   electricityPrice?: number | null;
   /**
    * Day electricity price for double tariff
    * @type {number}
-   * @memberof Tariff
+   * @memberof TariffsResultCurrentTariff
    * @deprecated
    */
   dayElectricityPrice?: number | null;
   /**
    * Night electricity price for double tariff
    * @type {number}
-   * @memberof Tariff
+   * @memberof TariffsResultCurrentTariff
    * @deprecated
    */
   nightElectricityPrice?: number | null;
   /**
    * Gas price
    * @type {number}
-   * @memberof Tariff
+   * @memberof TariffsResultCurrentTariff
    * @deprecated
    */
   gasPrice?: number | null;
   /**
    *
    * @type {CreateUpdateEnergyTariffElectricity}
-   * @memberof Tariff
+   * @memberof TariffsResultCurrentTariff
    */
   electricity: CreateUpdateEnergyTariffElectricity;
   /**
    *
    * @type {CreateUpdateEnergyTariffGas}
-   * @memberof Tariff
+   * @memberof TariffsResultCurrentTariff
    */
   gas: CreateUpdateEnergyTariffGas;
   /**
    * The date in ISO 8601 format (YYYY-MM-DD). This schema is used to represent dates in various contexts, such as event dates, deadlines, or any other date-related information.
    *
    * @type {Date}
-   * @memberof Tariff
+   * @memberof TariffsResultCurrentTariff
    */
   validFrom: Date;
   /**
    * If the tariff can be deleted
    * @type {boolean}
-   * @memberof Tariff
+   * @memberof TariffsResultCurrentTariff
    */
   isDeletable: boolean;
   /**
    * If the date can be edited
    * @type {boolean}
-   * @memberof Tariff
+   * @memberof TariffsResultCurrentTariff
    */
   isDateEditable: boolean;
+  /**
+   * Whether the heat pump is cost-effective to run based on the current tariff
+   * @type {boolean}
+   * @memberof TariffsResultCurrentTariff
+   */
+  isHeatPumpCostEffective: boolean;
 }
 
 /**
- * Check if a given object implements the Tariff interface.
+ * Check if a given object implements the TariffsResultCurrentTariff interface.
  */
-export function instanceOfTariff(value: object): boolean {
+export function instanceOfTariffsResultCurrentTariff(value: object): boolean {
   let isInstance = true;
   isInstance = isInstance && "id" in value;
   isInstance = isInstance && "electricityTariffType" in value;
@@ -136,18 +142,21 @@ export function instanceOfTariff(value: object): boolean {
   isInstance = isInstance && "validFrom" in value;
   isInstance = isInstance && "isDeletable" in value;
   isInstance = isInstance && "isDateEditable" in value;
+  isInstance = isInstance && "isHeatPumpCostEffective" in value;
 
   return isInstance;
 }
 
-export function TariffFromJSON(json: any): Tariff {
-  return TariffFromJSONTyped(json, false);
+export function TariffsResultCurrentTariffFromJSON(
+  json: any,
+): TariffsResultCurrentTariff {
+  return TariffsResultCurrentTariffFromJSONTyped(json, false);
 }
 
-export function TariffFromJSONTyped(
+export function TariffsResultCurrentTariffFromJSONTyped(
   json: any,
   ignoreDiscriminator: boolean,
-): Tariff {
+): TariffsResultCurrentTariff {
   if (json === undefined || json === null) {
     return json;
   }
@@ -174,10 +183,13 @@ export function TariffFromJSONTyped(
     validFrom: new Date(json["validFrom"]),
     isDeletable: json["isDeletable"],
     isDateEditable: json["isDateEditable"],
+    isHeatPumpCostEffective: json["isHeatPumpCostEffective"],
   };
 }
 
-export function TariffToJSON(value?: Tariff | null): any {
+export function TariffsResultCurrentTariffToJSON(
+  value?: TariffsResultCurrentTariff | null,
+): any {
   if (value === undefined) {
     return undefined;
   }
@@ -199,5 +211,6 @@ export function TariffToJSON(value?: Tariff | null): any {
     validFrom: value.validFrom.toISOString().substring(0, 10),
     isDeletable: value.isDeletable,
     isDateEditable: value.isDateEditable,
+    isHeatPumpCostEffective: value.isHeatPumpCostEffective,
   };
 }

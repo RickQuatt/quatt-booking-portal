@@ -351,6 +351,24 @@ export interface AdminInstallationDetail {
    */
   supportDynamicPricing: boolean;
   /**
+   * House number
+   * @type {string}
+   * @memberof AdminInstallationDetail
+   */
+  houseNumber: string | null;
+  /**
+   * HubSpot house ID
+   * @type {string}
+   * @memberof AdminInstallationDetail
+   */
+  houseId: string | null;
+  /**
+   * House addition (apartment/unit identifier)
+   * @type {string}
+   * @memberof AdminInstallationDetail
+   */
+  houseAddition: string | null;
+  /**
    *
    * @type {Array<CicState>}
    * @memberof AdminInstallationDetail
@@ -428,6 +446,9 @@ export function instanceOfAdminInstallationDetail(value: object): boolean {
   isInstance = isInstance && "menderId" in value;
   isInstance = isInstance && "hasSoundSlider" in value;
   isInstance = isInstance && "supportDynamicPricing" in value;
+  isInstance = isInstance && "houseNumber" in value;
+  isInstance = isInstance && "houseId" in value;
+  isInstance = isInstance && "houseAddition" in value;
   isInstance = isInstance && "cicState" in value;
   isInstance = isInstance && "cicCommissioning" in value;
   isInstance = isInstance && "settingsUpdates" in value;
@@ -507,6 +528,9 @@ export function AdminInstallationDetailFromJSONTyped(
     menderId: json["menderId"],
     hasSoundSlider: json["hasSoundSlider"],
     supportDynamicPricing: json["supportDynamicPricing"],
+    houseNumber: json["houseNumber"],
+    houseId: json["houseId"],
+    houseAddition: json["houseAddition"],
     cicState: (json["cicState"] as Array<any>).map(CicStateFromJSON),
     cicCommissioning: (json["cicCommissioning"] as Array<any>).map(
       AdminInstallationDetailAllOfCicCommissioningFromJSON,
@@ -587,6 +611,9 @@ export function AdminInstallationDetailToJSON(
     menderId: value.menderId,
     hasSoundSlider: value.hasSoundSlider,
     supportDynamicPricing: value.supportDynamicPricing,
+    houseNumber: value.houseNumber,
+    houseId: value.houseId,
+    houseAddition: value.houseAddition,
     cicState: (value.cicState as Array<any>).map(CicStateToJSON),
     cicCommissioning: (value.cicCommissioning as Array<any>).map(
       AdminInstallationDetailAllOfCicCommissioningToJSON,

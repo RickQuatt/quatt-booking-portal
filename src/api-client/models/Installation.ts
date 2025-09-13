@@ -320,6 +320,24 @@ export interface Installation {
    * @memberof Installation
    */
   supportDynamicPricing: boolean;
+  /**
+   * House number
+   * @type {string}
+   * @memberof Installation
+   */
+  houseNumber: string | null;
+  /**
+   * HubSpot house ID
+   * @type {string}
+   * @memberof Installation
+   */
+  houseId: string | null;
+  /**
+   * House addition (apartment/unit identifier)
+   * @type {string}
+   * @memberof Installation
+   */
+  houseAddition: string | null;
 }
 
 /**
@@ -368,6 +386,9 @@ export function instanceOfInstallation(value: object): boolean {
   isInstance = isInstance && "menderId" in value;
   isInstance = isInstance && "hasSoundSlider" in value;
   isInstance = isInstance && "supportDynamicPricing" in value;
+  isInstance = isInstance && "houseNumber" in value;
+  isInstance = isInstance && "houseId" in value;
+  isInstance = isInstance && "houseAddition" in value;
 
   return isInstance;
 }
@@ -440,6 +461,9 @@ export function InstallationFromJSONTyped(
     menderId: json["menderId"],
     hasSoundSlider: json["hasSoundSlider"],
     supportDynamicPricing: json["supportDynamicPricing"],
+    houseNumber: json["houseNumber"],
+    houseId: json["houseId"],
+    houseAddition: json["houseAddition"],
   };
 }
 
@@ -505,5 +529,8 @@ export function InstallationToJSON(value?: Installation | null): any {
     menderId: value.menderId,
     hasSoundSlider: value.hasSoundSlider,
     supportDynamicPricing: value.supportDynamicPricing,
+    houseNumber: value.houseNumber,
+    houseId: value.houseId,
+    houseAddition: value.houseAddition,
   };
 }

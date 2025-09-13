@@ -149,6 +149,7 @@ models/StopIdentificationTestRequest.ts
 models/Tariff.ts
 models/TariffType.ts
 models/TariffsResult.ts
+models/TariffsResultCurrentTariff.ts
 models/ThermostatType.ts
 models/Ticket.ts
 models/TicketHsPipelineStage.ts

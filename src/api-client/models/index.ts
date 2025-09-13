@@ -150,6 +150,7 @@ export * from "./StopIdentificationTestRequest";
 export * from "./Tariff";
 export * from "./TariffType";
 export * from "./TariffsResult";
+export * from "./TariffsResultCurrentTariff";
 export * from "./ThermostatType";
 export * from "./Ticket";
 export * from "./TicketHsPipelineStage";

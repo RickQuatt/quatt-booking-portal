@@ -181,6 +181,9 @@ export const ErrorCode = {
   NoTariffsFound: "NO_TARIFFS_FOUND",
   PricingItemNotFoundForCurrentTime: "PRICING_ITEM_NOT_FOUND_FOR_CURRENT_TIME",
   FeatureNotAvailable: "FEATURE_NOT_AVAILABLE",
+  NotImplemented: "NOT_IMPLEMENTED",
+  NoLegacyCommissioningHistory: "NO_LEGACY_COMMISSIONING_HISTORY",
+  LegacyCommissioningMigrationFailed: "LEGACY_COMMISSIONING_MIGRATION_FAILED",
 } as const;
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];
 

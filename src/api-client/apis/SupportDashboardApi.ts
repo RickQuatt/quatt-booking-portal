@@ -38,7 +38,7 @@ import type {
   CreateTariff200Response,
   CreateTariff400Response,
   CreateTariff409Response,
-  CreateTariffRequest,
+  CreateUpdateEnergyTariff,
   CreateUpdateInstaller,
   CreateUpdateNote,
   DeleteTariffForInstallation409Response,
@@ -109,8 +109,8 @@ import {
   CreateTariff400ResponseToJSON,
   CreateTariff409ResponseFromJSON,
   CreateTariff409ResponseToJSON,
-  CreateTariffRequestFromJSON,
-  CreateTariffRequestToJSON,
+  CreateUpdateEnergyTariffFromJSON,
+  CreateUpdateEnergyTariffToJSON,
   CreateUpdateInstallerFromJSON,
   CreateUpdateInstallerToJSON,
   CreateUpdateNoteFromJSON,
@@ -222,7 +222,7 @@ export interface AdminCreateInstallerRequest {
 
 export interface AdminCreateTariffRequest {
   installationId: string;
-  createTariffRequest: CreateTariffRequest;
+  createUpdateEnergyTariff: CreateUpdateEnergyTariff;
   xClientVersion?: string;
   xClientPlatform?: AdminCreateTariffXClientPlatformEnum;
 }
@@ -426,7 +426,7 @@ export interface AdminRebootDeviceOperationRequest {
   cicId: string;
   adminRebootDeviceRequest: AdminRebootDeviceRequest;
   xClientVersion?: string;
-  xClientPlatform?: AdminRebootDeviceXClientPlatformEnum;
+  xClientPlatform?: AdminRebootDeviceOperationXClientPlatformEnum;
 }
 
 export interface AdminUpdateCicRequest {
@@ -457,7 +457,7 @@ export interface AdminUpdateInstallerRequest {
 export interface AdminUpdateTariffRequest {
   installationId: string;
   tariffId: string;
-  createTariffRequest: CreateTariffRequest;
+  createUpdateEnergyTariff: CreateUpdateEnergyTariff;
 }
 
 export interface GetAdminDynamicPricesRequest {
@@ -482,7 +482,7 @@ export interface SendCommandToCICOperationRequest {
   cicId: string;
   sendCommandToCICRequest: SendCommandToCICRequest;
   xClientVersion?: string;
-  xClientPlatform?: SendCommandToCICXClientPlatformEnum;
+  xClientPlatform?: SendCommandToCICOperationXClientPlatformEnum;
 }
 
 export interface UpdateAdminInstallationCommissioningRequest {
@@ -1260,12 +1260,12 @@ export class SupportDashboardApi extends runtime.BaseAPI {
     }
 
     if (
-      requestParameters.createTariffRequest === null ||
-      requestParameters.createTariffRequest === undefined
+      requestParameters.createUpdateEnergyTariff === null ||
+      requestParameters.createUpdateEnergyTariff === undefined
     ) {
       throw new runtime.RequiredError(
-        "createTariffRequest",
-        "Required parameter requestParameters.createTariffRequest was null or undefined when calling adminCreateTariff.",
+        "createUpdateEnergyTariff",
+        "Required parameter requestParameters.createUpdateEnergyTariff was null or undefined when calling adminCreateTariff.",
       );
     }
 
@@ -1310,7 +1310,9 @@ export class SupportDashboardApi extends runtime.BaseAPI {
         method: "POST",
         headers: headerParameters,
         query: queryParameters,
-        body: CreateTariffRequestToJSON(requestParameters.createTariffRequest),
+        body: CreateUpdateEnergyTariffToJSON(
+          requestParameters.createUpdateEnergyTariff,
+        ),
       },
       initOverrides,
     );
@@ -4203,12 +4205,12 @@ export class SupportDashboardApi extends runtime.BaseAPI {
     }
 
     if (
-      requestParameters.createTariffRequest === null ||
-      requestParameters.createTariffRequest === undefined
+      requestParameters.createUpdateEnergyTariff === null ||
+      requestParameters.createUpdateEnergyTariff === undefined
     ) {
       throw new runtime.RequiredError(
-        "createTariffRequest",
-        "Required parameter requestParameters.createTariffRequest was null or undefined when calling adminUpdateTariff.",
+        "createUpdateEnergyTariff",
+        "Required parameter requestParameters.createUpdateEnergyTariff was null or undefined when calling adminUpdateTariff.",
       );
     }
 
@@ -4240,7 +4242,9 @@ export class SupportDashboardApi extends runtime.BaseAPI {
         method: "PUT",
         headers: headerParameters,
         query: queryParameters,
-        body: CreateTariffRequestToJSON(requestParameters.createTariffRequest),
+        body: CreateUpdateEnergyTariffToJSON(
+          requestParameters.createUpdateEnergyTariff,
+        ),
       },
       initOverrides,
     );

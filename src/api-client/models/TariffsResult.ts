@@ -15,6 +15,12 @@
 import { exists, mapValues } from "../runtime";
 import type { Tariff } from "./Tariff";
 import { TariffFromJSON, TariffFromJSONTyped, TariffToJSON } from "./Tariff";
+import type { TariffsResultCurrentTariff } from "./TariffsResultCurrentTariff";
+import {
+  TariffsResultCurrentTariffFromJSON,
+  TariffsResultCurrentTariffFromJSONTyped,
+  TariffsResultCurrentTariffToJSON,
+} from "./TariffsResultCurrentTariff";
 
 /**
  *
@@ -24,10 +30,10 @@ import { TariffFromJSON, TariffFromJSONTyped, TariffToJSON } from "./Tariff";
 export interface TariffsResult {
   /**
    *
-   * @type {Tariff}
+   * @type {TariffsResultCurrentTariff}
    * @memberof TariffsResult
    */
-  currentTariff: Tariff | null;
+  currentTariff: TariffsResultCurrentTariff | null;
   /**
    *
    * @type {Array<Tariff>}
@@ -66,7 +72,7 @@ export function TariffsResultFromJSONTyped(
     return json;
   }
   return {
-    currentTariff: TariffFromJSON(json["currentTariff"]),
+    currentTariff: TariffsResultCurrentTariffFromJSON(json["currentTariff"]),
     pastTariffs: (json["pastTariffs"] as Array<any>).map(TariffFromJSON),
     futureTariffs: (json["futureTariffs"] as Array<any>).map(TariffFromJSON),
   };
@@ -80,7 +86,7 @@ export function TariffsResultToJSON(value?: TariffsResult | null): any {
     return null;
   }
   return {
-    currentTariff: TariffToJSON(value.currentTariff),
+    currentTariff: TariffsResultCurrentTariffToJSON(value.currentTariff),
     pastTariffs: (value.pastTariffs as Array<any>).map(TariffToJSON),
     futureTariffs: (value.futureTariffs as Array<any>).map(TariffToJSON),
   };
