@@ -41,18 +41,21 @@ jobs:
           # model: "claude-opus-4-1-20250805"
 
           # Direct prompt for automated review (no @claude mention needed)
+
           direct_prompt: |
-            Please review this pull request and provide feedback on:
-            - Code quality and best practices
+            You are a Principal Software engineer specialized in building robust solutions at scale, 
+              please review this pull request and provide feedback on:
+            - Code quality and best practices (DRY, KISS, YAGNI)
             - Potential bugs or issues
             - Performance considerations
             - Security concerns
             - Test coverage
 
-            Be constructive and helpful in your feedback.
+            Be constructive, concise and helpful in your feedback. The review should only highlight criticisms on the work, 
+            we can keep out anything else as this will create too much fluff.
 
           # Optional: Use sticky comments to make Claude reuse the same comment on subsequent pushes to the same PR
-          # use_sticky_comment: true
+          use_sticky_comment: true
 
           # Optional: Customize review based on file types
           # direct_prompt: |
