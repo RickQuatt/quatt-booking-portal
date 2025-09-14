@@ -13,7 +13,7 @@ export function DateSelector({
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const dateValue = event.target.value;
     if (dateValue) {
-      onDateChange(new Date(dateValue));
+      onDateChange(new Date(dateValue + "T00:00:00.000Z"));
     }
   };
 

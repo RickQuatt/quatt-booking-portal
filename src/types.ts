@@ -22,3 +22,11 @@ export type CICEntryList = CICEntry[];
 export interface CICEntryDetail extends CICEntry {
   quattBuild: string;
 }
+
+export interface PricingDataPoint {
+  hour: number;
+  price: number;
+  timestamp: string;
+  validFrom: string;
+  validTo: string;
+}

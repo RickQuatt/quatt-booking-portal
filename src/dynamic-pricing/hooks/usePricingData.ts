@@ -2,14 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useApiClient } from "../../api-client/context";
 import { GetDynamicPrices200Response } from "../../api-client/models/GetDynamicPrices200Response";
 import { PricingItem } from "../../api-client/models/PricingItem";
-
-interface PricingDataPoint {
-  hour: number;
-  price: number;
-  timestamp: string;
-  validFrom: string;
-  validTo: string;
-}
+import { PricingDataPoint } from "../../types";
 
 interface PricingResponse {
   currentPrice: number;
@@ -36,14 +29,12 @@ export function usePricingData(selectedDate: Date) {
         const validFromDate = new Date(item.validFrom);
 
         // Convert to Amsterdam timezone for consistent display
-        const amsterdamHour = parseInt(
-          validFromDate.toLocaleTimeString("en-US", {
+        const amsterdamDate = new Date(
+          validFromDate.toLocaleString("en-CA", {
             timeZone: "Europe/Amsterdam",
-            hour: "2-digit",
-            hour12: false,
           }),
-          10,
         );
+        const amsterdamHour = amsterdamDate.getHours();
 
         return {
           hour: amsterdamHour,
