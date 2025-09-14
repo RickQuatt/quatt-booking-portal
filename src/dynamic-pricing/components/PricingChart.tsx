@@ -12,6 +12,7 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import classes from "./PricingChart.module.css";
+import { PricingDataPoint } from "../../types";
 
 ChartJS.register(
   CategoryScale,
@@ -22,14 +23,6 @@ ChartJS.register(
   Tooltip,
   Legend,
 );
-
-interface PricingDataPoint {
-  hour: number;
-  price: number;
-  timestamp: string;
-  validFrom: string;
-  validTo: string;
-}
 
 interface PricingChartProps {
   data: PricingDataPoint[];
@@ -84,23 +77,7 @@ export function PricingChart({ data, selectedDate }: PricingChartProps) {
           callbacks: {
             label: (context: TooltipItem<"line">) => {
               const dataPoint = data[context.dataIndex];
-              const validFromDate = new Date(dataPoint.validFrom);
-              const validToDate = new Date(dataPoint.validTo);
-
-              const startTime = validFromDate.toLocaleTimeString("en-US", {
-                timeZone: "Europe/Amsterdam",
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: false,
-              });
-              const endTime = validToDate.toLocaleTimeString("en-US", {
-                timeZone: "Europe/Amsterdam",
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: false,
-              });
-
-              return `${startTime} - ${endTime}: €${context.parsed.y.toFixed(3)} per kWh`;
+              return `${dataPoint.formattedValidFrom} - ${dataPoint.formattedValidTo}: €${context.parsed.y.toFixed(3)} per kWh`;
             },
           },
         },
