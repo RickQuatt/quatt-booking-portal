@@ -13,6 +13,24 @@
  */
 
 import { exists, mapValues } from "../runtime";
+import type { AdminCicAllOfInProgressCommissioningRef } from "./AdminCicAllOfInProgressCommissioningRef";
+import {
+  AdminCicAllOfInProgressCommissioningRefFromJSON,
+  AdminCicAllOfInProgressCommissioningRefFromJSONTyped,
+  AdminCicAllOfInProgressCommissioningRefToJSON,
+} from "./AdminCicAllOfInProgressCommissioningRef";
+import type { AdminCicSettingsUpdate } from "./AdminCicSettingsUpdate";
+import {
+  AdminCicSettingsUpdateFromJSON,
+  AdminCicSettingsUpdateFromJSONTyped,
+  AdminCicSettingsUpdateToJSON,
+} from "./AdminCicSettingsUpdate";
+import type { AdminCicState } from "./AdminCicState";
+import {
+  AdminCicStateFromJSON,
+  AdminCicStateFromJSONTyped,
+  AdminCicStateToJSON,
+} from "./AdminCicState";
 import type { AllEStatus } from "./AllEStatus";
 import {
   AllEStatusFromJSON,
@@ -31,12 +49,6 @@ import {
   CicAvailableWifiNetworksInnerFromJSONTyped,
   CicAvailableWifiNetworksInnerToJSON,
 } from "./CicAvailableWifiNetworksInner";
-import type { CicCommissioning } from "./CicCommissioning";
-import {
-  CicCommissioningFromJSON,
-  CicCommissioningFromJSONTyped,
-  CicCommissioningToJSON,
-} from "./CicCommissioning";
 import type { CicHealthCheckStatus } from "./CicHealthCheckStatus";
 import {
   CicHealthCheckStatusFromJSON,
@@ -55,18 +67,6 @@ import {
   CicHealthChecksByKpiFromJSONTyped,
   CicHealthChecksByKpiToJSON,
 } from "./CicHealthChecksByKpi";
-import type { CicSettingsUpdate } from "./CicSettingsUpdate";
-import {
-  CicSettingsUpdateFromJSON,
-  CicSettingsUpdateFromJSONTyped,
-  CicSettingsUpdateToJSON,
-} from "./CicSettingsUpdate";
-import type { CicState } from "./CicState";
-import {
-  CicStateFromJSON,
-  CicStateFromJSONTyped,
-  CicStateToJSON,
-} from "./CicState";
 import type { CicStatus } from "./CicStatus";
 import {
   CicStatusFromJSON,
@@ -79,12 +79,6 @@ import {
   ConnectionStatusFromJSONTyped,
   ConnectionStatusToJSON,
 } from "./ConnectionStatus";
-import type { Country } from "./Country";
-import {
-  CountryFromJSON,
-  CountryFromJSONTyped,
-  CountryToJSON,
-} from "./Country";
 import type { HeatDeliverySystem } from "./HeatDeliverySystem";
 import {
   HeatDeliverySystemFromJSON,
@@ -97,12 +91,30 @@ import {
   HeatPumpFromJSONTyped,
   HeatPumpToJSON,
 } from "./HeatPump";
+import type { HybridCommissioning } from "./HybridCommissioning";
+import {
+  HybridCommissioningFromJSON,
+  HybridCommissioningFromJSONTyped,
+  HybridCommissioningToJSON,
+} from "./HybridCommissioning";
 import type { MaxSoundLevel } from "./MaxSoundLevel";
 import {
   MaxSoundLevelFromJSON,
   MaxSoundLevelFromJSONTyped,
   MaxSoundLevelToJSON,
 } from "./MaxSoundLevel";
+import type { MeCicAllOfAvoidNighttimeCharging } from "./MeCicAllOfAvoidNighttimeCharging";
+import {
+  MeCicAllOfAvoidNighttimeChargingFromJSON,
+  MeCicAllOfAvoidNighttimeChargingFromJSONTyped,
+  MeCicAllOfAvoidNighttimeChargingToJSON,
+} from "./MeCicAllOfAvoidNighttimeCharging";
+import type { NullableCountry } from "./NullableCountry";
+import {
+  NullableCountryFromJSON,
+  NullableCountryFromJSONTyped,
+  NullableCountryToJSON,
+} from "./NullableCountry";
 import type { SilentMode } from "./SilentMode";
 import {
   SilentModeFromJSON,
@@ -360,6 +372,12 @@ export interface AdminCic {
   usePricingToLimitHeatPump: boolean;
   /**
    *
+   * @type {MeCicAllOfAvoidNighttimeCharging}
+   * @memberof AdminCic
+   */
+  avoidNighttimeCharging: MeCicAllOfAvoidNighttimeCharging | null;
+  /**
+   *
    * @type {SilentMode}
    * @memberof AdminCic
    */
@@ -426,10 +444,10 @@ export interface AdminCic {
   zipCode: string | null;
   /**
    *
-   * @type {Country}
+   * @type {NullableCountry}
    * @memberof AdminCic
    */
-  country: Country;
+  country: NullableCountry | null;
   /**
    * The supported tariff types
    * @type {Set<TariffType>}
@@ -564,10 +582,10 @@ export interface AdminCic {
   maximumHeatingOutdoorTemperature: number | null;
   /**
    *
-   * @type {CicCommissioning}
+   * @type {HybridCommissioning}
    * @memberof AdminCic
    */
-  lastCommissioning: CicCommissioning;
+  lastCommissioning: HybridCommissioning;
   /**
    * ISO timestamp of last stat update
    * @type {string}
@@ -587,11 +605,11 @@ export interface AdminCic {
    */
   hwid: string | null;
   /**
-   *
+   * The installation UUID, or null if not applicable
    * @type {string}
    * @memberof AdminCic
    */
-  installationUuid?: string;
+  installationUuid?: string | null;
   /**
    *
    * @type {string}
@@ -630,22 +648,22 @@ export interface AdminCic {
   healthChecksByCategory: CicHealthChecksByCategory;
   /**
    *
-   * @type {Array<CicState>}
+   * @type {Array<AdminCicState>}
    * @memberof AdminCic
    */
-  stateHistory: Array<CicState>;
+  stateHistory: Array<AdminCicState>;
   /**
    *
-   * @type {Array<CicCommissioning>}
+   * @type {Array<HybridCommissioning>}
    * @memberof AdminCic
    */
-  commissioningHistory: Array<CicCommissioning>;
+  commissioningHistory: Array<HybridCommissioning>;
   /**
    *
-   * @type {Array<CicSettingsUpdate>}
+   * @type {Array<AdminCicSettingsUpdate>}
    * @memberof AdminCic
    */
-  settingsUpdates: Array<CicSettingsUpdate>;
+  settingsUpdates: Array<AdminCicSettingsUpdate>;
   /**
    * CIC supports the reboot and the forget wifi features
    * @type {boolean}
@@ -658,6 +676,12 @@ export interface AdminCic {
    * @memberof AdminCic
    */
   supportsForceAndCancelCommissioning: boolean;
+  /**
+   *
+   * @type {AdminCicAllOfInProgressCommissioningRef}
+   * @memberof AdminCic
+   */
+  inProgressCommissioningRef: AdminCicAllOfInProgressCommissioningRef | null;
 }
 
 /**
@@ -707,6 +731,7 @@ export function instanceOfAdminCic(value: object): boolean {
   isInstance = isInstance && "soundNightTimeEndMin" in value;
   isInstance = isInstance && "gasPrice" in value;
   isInstance = isInstance && "usePricingToLimitHeatPump" in value;
+  isInstance = isInstance && "avoidNighttimeCharging" in value;
   isInstance = isInstance && "silentMode" in value;
   isInstance = isInstance && "heatPumps" in value;
   isInstance = isInstance && "name" in value;
@@ -747,6 +772,7 @@ export function instanceOfAdminCic(value: object): boolean {
   isInstance = isInstance && "settingsUpdates" in value;
   isInstance = isInstance && "supportsRebootAndForget" in value;
   isInstance = isInstance && "supportsForceAndCancelCommissioning" in value;
+  isInstance = isInstance && "inProgressCommissioningRef" in value;
 
   return isInstance;
 }
@@ -826,6 +852,9 @@ export function AdminCicFromJSONTyped(
     soundNightTimeEndMin: json["soundNightTimeEndMin"],
     gasPrice: json["gasPrice"],
     usePricingToLimitHeatPump: json["usePricingToLimitHeatPump"],
+    avoidNighttimeCharging: MeCicAllOfAvoidNighttimeChargingFromJSON(
+      json["avoidNighttimeCharging"],
+    ),
     silentMode: SilentModeFromJSON(json["silentMode"]),
     heatPumps: (json["heatPumps"] as Array<any>).map(HeatPumpFromJSON),
     supervisoryControlMode: !exists(json, "supervisoryControlMode")
@@ -851,7 +880,7 @@ export function AdminCicFromJSONTyped(
       : json["isControllerAlive"],
     name: json["name"],
     zipCode: json["zipCode"],
-    country: CountryFromJSON(json["country"]),
+    country: NullableCountryFromJSON(json["country"]),
     supportedTariffTypes: new Set(
       (json["supportedTariffTypes"] as Array<any>).map(TariffTypeFromJSON),
     ),
@@ -886,7 +915,7 @@ export function AdminCicFromJSONTyped(
     menderUpdateState: json["menderUpdateState"],
     ratedMaximumHousePower: json["ratedMaximumHousePower"],
     maximumHeatingOutdoorTemperature: json["maximumHeatingOutdoorTemperature"],
-    lastCommissioning: CicCommissioningFromJSON(json["lastCommissioning"]),
+    lastCommissioning: HybridCommissioningFromJSON(json["lastCommissioning"]),
     lastStatUpdate: !exists(json, "lastStatUpdate")
       ? undefined
       : json["lastStatUpdate"],
@@ -906,16 +935,21 @@ export function AdminCicFromJSONTyped(
     healthChecksByCategory: CicHealthChecksByCategoryFromJSON(
       json["healthChecksByCategory"],
     ),
-    stateHistory: (json["stateHistory"] as Array<any>).map(CicStateFromJSON),
+    stateHistory: (json["stateHistory"] as Array<any>).map(
+      AdminCicStateFromJSON,
+    ),
     commissioningHistory: (json["commissioningHistory"] as Array<any>).map(
-      CicCommissioningFromJSON,
+      HybridCommissioningFromJSON,
     ),
     settingsUpdates: (json["settingsUpdates"] as Array<any>).map(
-      CicSettingsUpdateFromJSON,
+      AdminCicSettingsUpdateFromJSON,
     ),
     supportsRebootAndForget: json["supportsRebootAndForget"],
     supportsForceAndCancelCommissioning:
       json["supportsForceAndCancelCommissioning"],
+    inProgressCommissioningRef: AdminCicAllOfInProgressCommissioningRefFromJSON(
+      json["inProgressCommissioningRef"],
+    ),
   };
 }
 
@@ -975,6 +1009,9 @@ export function AdminCicToJSON(value?: AdminCic | null): any {
     soundNightTimeEndMin: value.soundNightTimeEndMin,
     gasPrice: value.gasPrice,
     usePricingToLimitHeatPump: value.usePricingToLimitHeatPump,
+    avoidNighttimeCharging: MeCicAllOfAvoidNighttimeChargingToJSON(
+      value.avoidNighttimeCharging,
+    ),
     silentMode: SilentModeToJSON(value.silentMode),
     heatPumps: (value.heatPumps as Array<any>).map(HeatPumpToJSON),
     supervisoryControlMode: value.supervisoryControlMode,
@@ -986,7 +1023,7 @@ export function AdminCicToJSON(value?: AdminCic | null): any {
     isControllerAlive: value.isControllerAlive,
     name: value.name,
     zipCode: value.zipCode,
-    country: CountryToJSON(value.country),
+    country: NullableCountryToJSON(value.country),
     supportedTariffTypes: Array.from(
       value.supportedTariffTypes as Set<any>,
     ).map(TariffTypeToJSON),
@@ -1019,7 +1056,7 @@ export function AdminCicToJSON(value?: AdminCic | null): any {
     menderUpdateState: value.menderUpdateState,
     ratedMaximumHousePower: value.ratedMaximumHousePower,
     maximumHeatingOutdoorTemperature: value.maximumHeatingOutdoorTemperature,
-    lastCommissioning: CicCommissioningToJSON(value.lastCommissioning),
+    lastCommissioning: HybridCommissioningToJSON(value.lastCommissioning),
     lastStatUpdate: value.lastStatUpdate,
     canStartCommissioning: value.canStartCommissioning,
     hwid: value.hwid,
@@ -1035,15 +1072,18 @@ export function AdminCicToJSON(value?: AdminCic | null): any {
     healthChecksByCategory: CicHealthChecksByCategoryToJSON(
       value.healthChecksByCategory,
     ),
-    stateHistory: (value.stateHistory as Array<any>).map(CicStateToJSON),
+    stateHistory: (value.stateHistory as Array<any>).map(AdminCicStateToJSON),
     commissioningHistory: (value.commissioningHistory as Array<any>).map(
-      CicCommissioningToJSON,
+      HybridCommissioningToJSON,
     ),
     settingsUpdates: (value.settingsUpdates as Array<any>).map(
-      CicSettingsUpdateToJSON,
+      AdminCicSettingsUpdateToJSON,
     ),
     supportsRebootAndForget: value.supportsRebootAndForget,
     supportsForceAndCancelCommissioning:
       value.supportsForceAndCancelCommissioning,
+    inProgressCommissioningRef: AdminCicAllOfInProgressCommissioningRefToJSON(
+      value.inProgressCommissioningRef,
+    ),
   };
 }

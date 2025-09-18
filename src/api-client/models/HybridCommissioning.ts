@@ -13,251 +13,251 @@
  */
 
 import { exists, mapValues } from "../runtime";
-import type { FlowRateTestStatus } from "./FlowRateTestStatus";
+import type { HybridCommissioningFlowRateTestStatus } from "./HybridCommissioningFlowRateTestStatus";
 import {
-  FlowRateTestStatusFromJSON,
-  FlowRateTestStatusFromJSONTyped,
-  FlowRateTestStatusToJSON,
-} from "./FlowRateTestStatus";
-import type { HeatPumpCommissioning } from "./HeatPumpCommissioning";
+  HybridCommissioningFlowRateTestStatusFromJSON,
+  HybridCommissioningFlowRateTestStatusFromJSONTyped,
+  HybridCommissioningFlowRateTestStatusToJSON,
+} from "./HybridCommissioningFlowRateTestStatus";
+import type { HybridCommissioningHeatPumpPowerTest } from "./HybridCommissioningHeatPumpPowerTest";
 import {
-  HeatPumpCommissioningFromJSON,
-  HeatPumpCommissioningFromJSONTyped,
-  HeatPumpCommissioningToJSON,
-} from "./HeatPumpCommissioning";
-import type { HeatPumpTestLevel } from "./HeatPumpTestLevel";
+  HybridCommissioningHeatPumpPowerTestFromJSON,
+  HybridCommissioningHeatPumpPowerTestFromJSONTyped,
+  HybridCommissioningHeatPumpPowerTestToJSON,
+} from "./HybridCommissioningHeatPumpPowerTest";
+import type { HybridCommissioningHeatPumpTestLevel } from "./HybridCommissioningHeatPumpTestLevel";
 import {
-  HeatPumpTestLevelFromJSON,
-  HeatPumpTestLevelFromJSONTyped,
-  HeatPumpTestLevelToJSON,
-} from "./HeatPumpTestLevel";
+  HybridCommissioningHeatPumpTestLevelFromJSON,
+  HybridCommissioningHeatPumpTestLevelFromJSONTyped,
+  HybridCommissioningHeatPumpTestLevelToJSON,
+} from "./HybridCommissioningHeatPumpTestLevel";
+import type { HybridCommissioningIdentificationStatus } from "./HybridCommissioningIdentificationStatus";
+import {
+  HybridCommissioningIdentificationStatusFromJSON,
+  HybridCommissioningIdentificationStatusFromJSONTyped,
+  HybridCommissioningIdentificationStatusToJSON,
+} from "./HybridCommissioningIdentificationStatus";
+import type { HybridCommissioningIdentificationTestStatus } from "./HybridCommissioningIdentificationTestStatus";
+import {
+  HybridCommissioningIdentificationTestStatusFromJSON,
+  HybridCommissioningIdentificationTestStatusFromJSONTyped,
+  HybridCommissioningIdentificationTestStatusToJSON,
+} from "./HybridCommissioningIdentificationTestStatus";
 import type { HybridCommissioningMode } from "./HybridCommissioningMode";
 import {
   HybridCommissioningModeFromJSON,
   HybridCommissioningModeFromJSONTyped,
   HybridCommissioningModeToJSON,
 } from "./HybridCommissioningMode";
-import type { IdentificationStatus } from "./IdentificationStatus";
-import {
-  IdentificationStatusFromJSON,
-  IdentificationStatusFromJSONTyped,
-  IdentificationStatusToJSON,
-} from "./IdentificationStatus";
-import type { IdentificationTestStatus } from "./IdentificationTestStatus";
-import {
-  IdentificationTestStatusFromJSON,
-  IdentificationTestStatusFromJSONTyped,
-  IdentificationTestStatusToJSON,
-} from "./IdentificationTestStatus";
 
 /**
- *
+ * A hybrid commissioning performed by an installer on a CiC
  * @export
- * @interface CicCommissioning
+ * @interface HybridCommissioning
  */
-export interface CicCommissioning {
+export interface HybridCommissioning {
   /**
    *
-   * @type {IdentificationStatus}
-   * @memberof CicCommissioning
+   * @type {HybridCommissioningIdentificationStatus}
+   * @memberof HybridCommissioning
    */
-  thermostatIdentificationStatus: IdentificationStatus | null;
+  thermostatIdentificationStatus: HybridCommissioningIdentificationStatus | null;
   /**
    *
-   * @type {IdentificationStatus}
-   * @memberof CicCommissioning
+   * @type {HybridCommissioningIdentificationStatus}
+   * @memberof HybridCommissioning
    */
-  boilerIdentificationStatus?: IdentificationStatus | null;
+  boilerIdentificationStatus?: HybridCommissioningIdentificationStatus | null;
   /**
    *
-   * @type {IdentificationStatus}
-   * @memberof CicCommissioning
+   * @type {HybridCommissioningIdentificationStatus}
+   * @memberof HybridCommissioning
    */
-  heatPumpIdentificationStatus: IdentificationStatus | null;
+  heatPumpIdentificationStatus: HybridCommissioningIdentificationStatus | null;
   /**
    *
-   * @type {IdentificationStatus}
-   * @memberof CicCommissioning
+   * @type {HybridCommissioningIdentificationStatus}
+   * @memberof HybridCommissioning
    */
-  heatPump1IdentificationStatus: IdentificationStatus | null;
+  heatPump1IdentificationStatus: HybridCommissioningIdentificationStatus | null;
   /**
    *
-   * @type {IdentificationStatus}
-   * @memberof CicCommissioning
+   * @type {HybridCommissioningIdentificationStatus}
+   * @memberof HybridCommissioning
    */
-  heatPump2IdentificationStatus: IdentificationStatus | null;
+  heatPump2IdentificationStatus: HybridCommissioningIdentificationStatus | null;
   /**
    *
-   * @type {IdentificationStatus}
-   * @memberof CicCommissioning
+   * @type {HybridCommissioningIdentificationStatus}
+   * @memberof HybridCommissioning
    */
-  flowTemperatureSensorIdentificationStatus: IdentificationStatus | null;
+  flowTemperatureSensorIdentificationStatus: HybridCommissioningIdentificationStatus | null;
   /**
    *
-   * @type {IdentificationTestStatus}
-   * @memberof CicCommissioning
+   * @type {HybridCommissioningIdentificationTestStatus}
+   * @memberof HybridCommissioning
    */
-  identificationTestStatus: IdentificationTestStatus | null;
+  identificationTestStatus: HybridCommissioningIdentificationTestStatus | null;
   /**
    * Amount of power in watt
    * @type {number}
-   * @memberof CicCommissioning
+   * @memberof HybridCommissioning
    */
   boilerPowerOnTestStop?: number | null;
   /**
    *
    * @type {Date}
-   * @memberof CicCommissioning
+   * @memberof HybridCommissioning
    */
   boilerTestStoppableAt?: Date | null;
   /**
    * When test is stopped and the minimum test period has been past, the cloud will set the deaerationTestStatus to finished. Else cancelled.
    * @type {string}
-   * @memberof CicCommissioning
+   * @memberof HybridCommissioning
    */
-  deaerationTestStatus: CicCommissioningDeaerationTestStatusEnum;
+  deaerationTestStatus: HybridCommissioningDeaerationTestStatusEnum;
   /**
    *
    * @type {Date}
-   * @memberof CicCommissioning
+   * @memberof HybridCommissioning
    */
   deaerationStoppableAt: Date | null;
   /**
    *
-   * @type {FlowRateTestStatus}
-   * @memberof CicCommissioning
+   * @type {HybridCommissioningFlowRateTestStatus}
+   * @memberof HybridCommissioning
    */
-  flowRateTestStatus: FlowRateTestStatus | null;
+  flowRateTestStatus: HybridCommissioningFlowRateTestStatus | null;
   /**
    *
-   * @type {FlowRateTestStatus}
-   * @memberof CicCommissioning
+   * @type {HybridCommissioningFlowRateTestStatus}
+   * @memberof HybridCommissioning
    */
-  flowRateHp1TestStatus: FlowRateTestStatus | null;
+  flowRateHp1TestStatus: HybridCommissioningFlowRateTestStatus | null;
   /**
    *
-   * @type {FlowRateTestStatus}
-   * @memberof CicCommissioning
+   * @type {HybridCommissioningFlowRateTestStatus}
+   * @memberof HybridCommissioning
    */
-  flowRateHp2TestStatus: FlowRateTestStatus | null;
+  flowRateHp2TestStatus: HybridCommissioningFlowRateTestStatus | null;
   /**
    *
-   * @type {FlowRateTestStatus}
-   * @memberof CicCommissioning
+   * @type {HybridCommissioningFlowRateTestStatus}
+   * @memberof HybridCommissioning
    */
-  flowRateAllTestStatus: FlowRateTestStatus | null;
+  flowRateAllTestStatus: HybridCommissioningFlowRateTestStatus | null;
   /**
    *
    * @type {Date}
-   * @memberof CicCommissioning
+   * @memberof HybridCommissioning
    */
   flowRateHp1TestStoppableAt: Date | null;
   /**
    *
    * @type {Date}
-   * @memberof CicCommissioning
+   * @memberof HybridCommissioning
    */
   flowRateHp2TestStoppableAt: Date | null;
   /**
    *
    * @type {Date}
-   * @memberof CicCommissioning
+   * @memberof HybridCommissioning
    */
   flowRateAllTestStoppableAt: Date | null;
   /**
    * Flow rate on test stop
    * @type {number}
-   * @memberof CicCommissioning
+   * @memberof HybridCommissioning
    */
   flowRateOnTestStop: number | null;
   /**
    * Flow rate on test stop
    * @type {number}
-   * @memberof CicCommissioning
+   * @memberof HybridCommissioning
    */
   flowRateHp1OnTestStop?: number | null;
   /**
    * Flow rate on test stop
    * @type {number}
-   * @memberof CicCommissioning
+   * @memberof HybridCommissioning
    */
   flowRateHp2OnTestStop?: number | null;
   /**
    * Flow rate on test stop
    * @type {number}
-   * @memberof CicCommissioning
+   * @memberof HybridCommissioning
    */
   flowRateAllOnTestStop?: number | null;
   /**
    *
    * @type {string}
-   * @memberof CicCommissioning
+   * @memberof HybridCommissioning
    */
-  heatPumpTestStatus: CicCommissioningHeatPumpTestStatusEnum;
+  heatPumpTestStatus: HybridCommissioningHeatPumpTestStatusEnum;
   /**
    *
    * @type {Date}
-   * @memberof CicCommissioning
+   * @memberof HybridCommissioning
    */
   heatPumpTestStoppableAt: Date | null;
   /**
    *
-   * @type {HeatPumpTestLevel}
-   * @memberof CicCommissioning
+   * @type {HybridCommissioningHeatPumpTestLevel}
+   * @memberof HybridCommissioning
    */
-  heatPumpTestLevel?: HeatPumpTestLevel | null;
+  heatPumpTestLevel?: HybridCommissioningHeatPumpTestLevel | null;
   /**
    *
    * @type {string}
-   * @memberof CicCommissioning
+   * @memberof HybridCommissioning
    */
-  boilerTestStatus?: CicCommissioningBoilerTestStatusEnum;
+  boilerTestStatus?: HybridCommissioningBoilerTestStatusEnum;
   /**
    *
    * @type {HybridCommissioningMode}
-   * @memberof CicCommissioning
+   * @memberof HybridCommissioning
    */
   commissioningMode: HybridCommissioningMode | null;
   /**
    * Whether the commissioning is forced
    * @type {boolean}
-   * @memberof CicCommissioning
+   * @memberof HybridCommissioning
    */
   isForced: boolean;
   /**
    * Whether the commissioning is cancelled
    * @type {boolean}
-   * @memberof CicCommissioning
+   * @memberof HybridCommissioning
    */
   isCancelled: boolean;
   /**
    *
    * @type {Date}
-   * @memberof CicCommissioning
+   * @memberof HybridCommissioning
    */
   completedAt: Date | null;
   /**
    *
    * @type {Date}
-   * @memberof CicCommissioning
+   * @memberof HybridCommissioning
    */
   createdAt: Date | null;
   /**
    *
    * @type {Date}
-   * @memberof CicCommissioning
+   * @memberof HybridCommissioning
    */
   updatedAt: Date | null;
   /**
    *
-   * @type {Array<HeatPumpCommissioning>}
-   * @memberof CicCommissioning
+   * @type {Array<HybridCommissioningHeatPumpPowerTest>}
+   * @memberof HybridCommissioning
    */
-  heatPumps: Array<HeatPumpCommissioning>;
+  heatPumps: Array<HybridCommissioningHeatPumpPowerTest>;
   /**
    * Whether the cic can start commissioning. Not application for the identification test
    * @type {boolean}
-   * @memberof CicCommissioning
+   * @memberof HybridCommissioning
    */
   canStartCommissioning?: boolean;
 }
@@ -265,18 +265,18 @@ export interface CicCommissioning {
 /**
  * @export
  */
-export const CicCommissioningDeaerationTestStatusEnum = {
+export const HybridCommissioningDeaerationTestStatusEnum = {
   Finished: "finished",
   Running: "running",
   Cancelled: "cancelled",
 } as const;
-export type CicCommissioningDeaerationTestStatusEnum =
-  (typeof CicCommissioningDeaerationTestStatusEnum)[keyof typeof CicCommissioningDeaerationTestStatusEnum];
+export type HybridCommissioningDeaerationTestStatusEnum =
+  (typeof HybridCommissioningDeaerationTestStatusEnum)[keyof typeof HybridCommissioningDeaerationTestStatusEnum];
 
 /**
  * @export
  */
-export const CicCommissioningHeatPumpTestStatusEnum = {
+export const HybridCommissioningHeatPumpTestStatusEnum = {
   Running: "running",
   PrePumping: "pre_pumping",
   PreHeating: "pre_heating",
@@ -286,25 +286,25 @@ export const CicCommissioningHeatPumpTestStatusEnum = {
   Cancelled: "cancelled",
   HeatPumpsReversed: "heat_pumps_reversed",
 } as const;
-export type CicCommissioningHeatPumpTestStatusEnum =
-  (typeof CicCommissioningHeatPumpTestStatusEnum)[keyof typeof CicCommissioningHeatPumpTestStatusEnum];
+export type HybridCommissioningHeatPumpTestStatusEnum =
+  (typeof HybridCommissioningHeatPumpTestStatusEnum)[keyof typeof HybridCommissioningHeatPumpTestStatusEnum];
 
 /**
  * @export
  */
-export const CicCommissioningBoilerTestStatusEnum = {
+export const HybridCommissioningBoilerTestStatusEnum = {
   MinimumReached: "minimum_reached",
   MinimumNotReached: "minimum_not_reached",
   Finished: "finished",
   Cancelled: "cancelled",
 } as const;
-export type CicCommissioningBoilerTestStatusEnum =
-  (typeof CicCommissioningBoilerTestStatusEnum)[keyof typeof CicCommissioningBoilerTestStatusEnum];
+export type HybridCommissioningBoilerTestStatusEnum =
+  (typeof HybridCommissioningBoilerTestStatusEnum)[keyof typeof HybridCommissioningBoilerTestStatusEnum];
 
 /**
- * Check if a given object implements the CicCommissioning interface.
+ * Check if a given object implements the HybridCommissioning interface.
  */
-export function instanceOfCicCommissioning(value: object): boolean {
+export function instanceOfHybridCommissioning(value: object): boolean {
   let isInstance = true;
   isInstance = isInstance && "thermostatIdentificationStatus" in value;
   isInstance = isInstance && "heatPumpIdentificationStatus" in value;
@@ -336,39 +336,47 @@ export function instanceOfCicCommissioning(value: object): boolean {
   return isInstance;
 }
 
-export function CicCommissioningFromJSON(json: any): CicCommissioning {
-  return CicCommissioningFromJSONTyped(json, false);
+export function HybridCommissioningFromJSON(json: any): HybridCommissioning {
+  return HybridCommissioningFromJSONTyped(json, false);
 }
 
-export function CicCommissioningFromJSONTyped(
+export function HybridCommissioningFromJSONTyped(
   json: any,
   ignoreDiscriminator: boolean,
-): CicCommissioning {
+): HybridCommissioning {
   if (json === undefined || json === null) {
     return json;
   }
   return {
-    thermostatIdentificationStatus: IdentificationStatusFromJSON(
-      json["thermostatIdentificationStatus"],
-    ),
+    thermostatIdentificationStatus:
+      HybridCommissioningIdentificationStatusFromJSON(
+        json["thermostatIdentificationStatus"],
+      ),
     boilerIdentificationStatus: !exists(json, "boilerIdentificationStatus")
       ? undefined
-      : IdentificationStatusFromJSON(json["boilerIdentificationStatus"]),
-    heatPumpIdentificationStatus: IdentificationStatusFromJSON(
-      json["heatPumpIdentificationStatus"],
-    ),
-    heatPump1IdentificationStatus: IdentificationStatusFromJSON(
-      json["heatPump1IdentificationStatus"],
-    ),
-    heatPump2IdentificationStatus: IdentificationStatusFromJSON(
-      json["heatPump2IdentificationStatus"],
-    ),
-    flowTemperatureSensorIdentificationStatus: IdentificationStatusFromJSON(
-      json["flowTemperatureSensorIdentificationStatus"],
-    ),
-    identificationTestStatus: IdentificationTestStatusFromJSON(
-      json["identificationTestStatus"],
-    ),
+      : HybridCommissioningIdentificationStatusFromJSON(
+          json["boilerIdentificationStatus"],
+        ),
+    heatPumpIdentificationStatus:
+      HybridCommissioningIdentificationStatusFromJSON(
+        json["heatPumpIdentificationStatus"],
+      ),
+    heatPump1IdentificationStatus:
+      HybridCommissioningIdentificationStatusFromJSON(
+        json["heatPump1IdentificationStatus"],
+      ),
+    heatPump2IdentificationStatus:
+      HybridCommissioningIdentificationStatusFromJSON(
+        json["heatPump2IdentificationStatus"],
+      ),
+    flowTemperatureSensorIdentificationStatus:
+      HybridCommissioningIdentificationStatusFromJSON(
+        json["flowTemperatureSensorIdentificationStatus"],
+      ),
+    identificationTestStatus:
+      HybridCommissioningIdentificationTestStatusFromJSON(
+        json["identificationTestStatus"],
+      ),
     boilerPowerOnTestStop: !exists(json, "boilerPowerOnTestStop")
       ? undefined
       : json["boilerPowerOnTestStop"],
@@ -382,14 +390,16 @@ export function CicCommissioningFromJSONTyped(
       json["deaerationStoppableAt"] === null
         ? null
         : new Date(json["deaerationStoppableAt"]),
-    flowRateTestStatus: FlowRateTestStatusFromJSON(json["flowRateTestStatus"]),
-    flowRateHp1TestStatus: FlowRateTestStatusFromJSON(
+    flowRateTestStatus: HybridCommissioningFlowRateTestStatusFromJSON(
+      json["flowRateTestStatus"],
+    ),
+    flowRateHp1TestStatus: HybridCommissioningFlowRateTestStatusFromJSON(
       json["flowRateHp1TestStatus"],
     ),
-    flowRateHp2TestStatus: FlowRateTestStatusFromJSON(
+    flowRateHp2TestStatus: HybridCommissioningFlowRateTestStatusFromJSON(
       json["flowRateHp2TestStatus"],
     ),
-    flowRateAllTestStatus: FlowRateTestStatusFromJSON(
+    flowRateAllTestStatus: HybridCommissioningFlowRateTestStatusFromJSON(
       json["flowRateAllTestStatus"],
     ),
     flowRateHp1TestStoppableAt:
@@ -421,7 +431,7 @@ export function CicCommissioningFromJSONTyped(
         : new Date(json["heatPumpTestStoppableAt"]),
     heatPumpTestLevel: !exists(json, "heatPumpTestLevel")
       ? undefined
-      : HeatPumpTestLevelFromJSON(json["heatPumpTestLevel"]),
+      : HybridCommissioningHeatPumpTestLevelFromJSON(json["heatPumpTestLevel"]),
     boilerTestStatus: !exists(json, "boilerTestStatus")
       ? undefined
       : json["boilerTestStatus"],
@@ -435,7 +445,7 @@ export function CicCommissioningFromJSONTyped(
     createdAt: json["createdAt"] === null ? null : new Date(json["createdAt"]),
     updatedAt: json["updatedAt"] === null ? null : new Date(json["updatedAt"]),
     heatPumps: (json["heatPumps"] as Array<any>).map(
-      HeatPumpCommissioningFromJSON,
+      HybridCommissioningHeatPumpPowerTestFromJSON,
     ),
     canStartCommissioning: !exists(json, "canStartCommissioning")
       ? undefined
@@ -443,7 +453,9 @@ export function CicCommissioningFromJSONTyped(
   };
 }
 
-export function CicCommissioningToJSON(value?: CicCommissioning | null): any {
+export function HybridCommissioningToJSON(
+  value?: HybridCommissioning | null,
+): any {
   if (value === undefined) {
     return undefined;
   }
@@ -451,25 +463,29 @@ export function CicCommissioningToJSON(value?: CicCommissioning | null): any {
     return null;
   }
   return {
-    thermostatIdentificationStatus: IdentificationStatusToJSON(
-      value.thermostatIdentificationStatus,
-    ),
-    boilerIdentificationStatus: IdentificationStatusToJSON(
+    thermostatIdentificationStatus:
+      HybridCommissioningIdentificationStatusToJSON(
+        value.thermostatIdentificationStatus,
+      ),
+    boilerIdentificationStatus: HybridCommissioningIdentificationStatusToJSON(
       value.boilerIdentificationStatus,
     ),
-    heatPumpIdentificationStatus: IdentificationStatusToJSON(
+    heatPumpIdentificationStatus: HybridCommissioningIdentificationStatusToJSON(
       value.heatPumpIdentificationStatus,
     ),
-    heatPump1IdentificationStatus: IdentificationStatusToJSON(
-      value.heatPump1IdentificationStatus,
-    ),
-    heatPump2IdentificationStatus: IdentificationStatusToJSON(
-      value.heatPump2IdentificationStatus,
-    ),
-    flowTemperatureSensorIdentificationStatus: IdentificationStatusToJSON(
-      value.flowTemperatureSensorIdentificationStatus,
-    ),
-    identificationTestStatus: IdentificationTestStatusToJSON(
+    heatPump1IdentificationStatus:
+      HybridCommissioningIdentificationStatusToJSON(
+        value.heatPump1IdentificationStatus,
+      ),
+    heatPump2IdentificationStatus:
+      HybridCommissioningIdentificationStatusToJSON(
+        value.heatPump2IdentificationStatus,
+      ),
+    flowTemperatureSensorIdentificationStatus:
+      HybridCommissioningIdentificationStatusToJSON(
+        value.flowTemperatureSensorIdentificationStatus,
+      ),
+    identificationTestStatus: HybridCommissioningIdentificationTestStatusToJSON(
       value.identificationTestStatus,
     ),
     boilerPowerOnTestStop: value.boilerPowerOnTestStop,
@@ -484,14 +500,16 @@ export function CicCommissioningToJSON(value?: CicCommissioning | null): any {
       value.deaerationStoppableAt === null
         ? null
         : value.deaerationStoppableAt.toISOString(),
-    flowRateTestStatus: FlowRateTestStatusToJSON(value.flowRateTestStatus),
-    flowRateHp1TestStatus: FlowRateTestStatusToJSON(
+    flowRateTestStatus: HybridCommissioningFlowRateTestStatusToJSON(
+      value.flowRateTestStatus,
+    ),
+    flowRateHp1TestStatus: HybridCommissioningFlowRateTestStatusToJSON(
       value.flowRateHp1TestStatus,
     ),
-    flowRateHp2TestStatus: FlowRateTestStatusToJSON(
+    flowRateHp2TestStatus: HybridCommissioningFlowRateTestStatusToJSON(
       value.flowRateHp2TestStatus,
     ),
-    flowRateAllTestStatus: FlowRateTestStatusToJSON(
+    flowRateAllTestStatus: HybridCommissioningFlowRateTestStatusToJSON(
       value.flowRateAllTestStatus,
     ),
     flowRateHp1TestStoppableAt:
@@ -515,7 +533,9 @@ export function CicCommissioningToJSON(value?: CicCommissioning | null): any {
       value.heatPumpTestStoppableAt === null
         ? null
         : value.heatPumpTestStoppableAt.toISOString(),
-    heatPumpTestLevel: HeatPumpTestLevelToJSON(value.heatPumpTestLevel),
+    heatPumpTestLevel: HybridCommissioningHeatPumpTestLevelToJSON(
+      value.heatPumpTestLevel,
+    ),
     boilerTestStatus: value.boilerTestStatus,
     commissioningMode: HybridCommissioningModeToJSON(value.commissioningMode),
     isForced: value.isForced,
@@ -524,7 +544,9 @@ export function CicCommissioningToJSON(value?: CicCommissioning | null): any {
       value.completedAt === null ? null : value.completedAt.toISOString(),
     createdAt: value.createdAt === null ? null : value.createdAt.toISOString(),
     updatedAt: value.updatedAt === null ? null : value.updatedAt.toISOString(),
-    heatPumps: (value.heatPumps as Array<any>).map(HeatPumpCommissioningToJSON),
+    heatPumps: (value.heatPumps as Array<any>).map(
+      HybridCommissioningHeatPumpPowerTestToJSON,
+    ),
     canStartCommissioning: value.canStartCommissioning,
   };
 }

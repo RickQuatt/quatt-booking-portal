@@ -43,6 +43,12 @@ import {
   ThermostatTypeFromJSONTyped,
   ThermostatTypeToJSON,
 } from "./ThermostatType";
+import type { UpdateCicSharedPropertiesAvoidNighttimeCharging } from "./UpdateCicSharedPropertiesAvoidNighttimeCharging";
+import {
+  UpdateCicSharedPropertiesAvoidNighttimeChargingFromJSON,
+  UpdateCicSharedPropertiesAvoidNighttimeChargingFromJSONTyped,
+  UpdateCicSharedPropertiesAvoidNighttimeChargingToJSON,
+} from "./UpdateCicSharedPropertiesAvoidNighttimeCharging";
 
 /**
  *
@@ -80,6 +86,12 @@ export interface UpdateAdminCic {
    * @memberof UpdateAdminCic
    */
   usePricingToLimitHeatPump?: boolean;
+  /**
+   *
+   * @type {UpdateCicSharedPropertiesAvoidNighttimeCharging}
+   * @memberof UpdateAdminCic
+   */
+  avoidNighttimeCharging?: UpdateCicSharedPropertiesAvoidNighttimeCharging | null;
   /**
    *
    * @type {SilentMode}
@@ -192,6 +204,11 @@ export function UpdateAdminCicFromJSONTyped(
     usePricingToLimitHeatPump: !exists(json, "usePricingToLimitHeatPump")
       ? undefined
       : json["usePricingToLimitHeatPump"],
+    avoidNighttimeCharging: !exists(json, "avoidNighttimeCharging")
+      ? undefined
+      : UpdateCicSharedPropertiesAvoidNighttimeChargingFromJSON(
+          json["avoidNighttimeCharging"],
+        ),
     silentMode: !exists(json, "silentMode")
       ? undefined
       : SilentModeFromJSON(json["silentMode"]),
@@ -245,6 +262,10 @@ export function UpdateAdminCicToJSON(value?: UpdateAdminCic | null): any {
     nightElectricityPrice: value.nightElectricityPrice,
     gasPrice: value.gasPrice,
     usePricingToLimitHeatPump: value.usePricingToLimitHeatPump,
+    avoidNighttimeCharging:
+      UpdateCicSharedPropertiesAvoidNighttimeChargingToJSON(
+        value.avoidNighttimeCharging,
+      ),
     silentMode: SilentModeToJSON(value.silentMode),
     dayMaxSoundLevel: MaxSoundLevelToJSON(value.dayMaxSoundLevel),
     nightMaxSoundLevel: MaxSoundLevelToJSON(value.nightMaxSoundLevel),

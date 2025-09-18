@@ -44,9 +44,9 @@ import type {
   DeleteTariffForInstallation409Response,
   Error1,
   ForgetWifiMeCicRequest,
+  GetAdminDynamicPrices200Response,
   GetAllTariffs200Response,
   GetAllTariffs400Response,
-  GetDynamicPrices200Response,
   GetDynamicPrices400Response,
   GetDynamicPrices500Response,
   GetInstallationCommissionings200Response,
@@ -121,12 +121,12 @@ import {
   Error1ToJSON,
   ForgetWifiMeCicRequestFromJSON,
   ForgetWifiMeCicRequestToJSON,
+  GetAdminDynamicPrices200ResponseFromJSON,
+  GetAdminDynamicPrices200ResponseToJSON,
   GetAllTariffs200ResponseFromJSON,
   GetAllTariffs200ResponseToJSON,
   GetAllTariffs400ResponseFromJSON,
   GetAllTariffs400ResponseToJSON,
-  GetDynamicPrices200ResponseFromJSON,
-  GetDynamicPrices200ResponseToJSON,
   GetDynamicPrices400ResponseFromJSON,
   GetDynamicPrices400ResponseToJSON,
   GetDynamicPrices500ResponseFromJSON,
@@ -4274,7 +4274,7 @@ export class SupportDashboardApi extends runtime.BaseAPI {
   async getAdminDynamicPricesRaw(
     requestParameters: GetAdminDynamicPricesRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<GetDynamicPrices200Response>> {
+  ): Promise<runtime.ApiResponse<GetAdminDynamicPrices200Response>> {
     const queryParameters: any = {};
 
     if (requestParameters.date !== undefined) {
@@ -4322,7 +4322,7 @@ export class SupportDashboardApi extends runtime.BaseAPI {
     );
 
     return new runtime.JSONApiResponse(response, (jsonValue) =>
-      GetDynamicPrices200ResponseFromJSON(jsonValue),
+      GetAdminDynamicPrices200ResponseFromJSON(jsonValue),
     );
   }
 
@@ -4332,7 +4332,7 @@ export class SupportDashboardApi extends runtime.BaseAPI {
   async getAdminDynamicPrices(
     requestParameters: GetAdminDynamicPricesRequest = {},
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<GetDynamicPrices200Response> {
+  ): Promise<GetAdminDynamicPrices200Response> {
     const response = await this.getAdminDynamicPricesRaw(
       requestParameters,
       initOverrides,

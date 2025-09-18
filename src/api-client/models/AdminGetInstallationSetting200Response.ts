@@ -13,12 +13,12 @@
  */
 
 import { exists, mapValues } from "../runtime";
-import type { CicSettingsUpdate } from "./CicSettingsUpdate";
+import type { AdminCicSettingsUpdate } from "./AdminCicSettingsUpdate";
 import {
-  CicSettingsUpdateFromJSON,
-  CicSettingsUpdateFromJSONTyped,
-  CicSettingsUpdateToJSON,
-} from "./CicSettingsUpdate";
+  AdminCicSettingsUpdateFromJSON,
+  AdminCicSettingsUpdateFromJSONTyped,
+  AdminCicSettingsUpdateToJSON,
+} from "./AdminCicSettingsUpdate";
 import type { ResponseMeta } from "./ResponseMeta";
 import {
   ResponseMetaFromJSON,
@@ -40,10 +40,10 @@ export interface AdminGetInstallationSetting200Response {
   meta: ResponseMeta;
   /**
    *
-   * @type {CicSettingsUpdate}
+   * @type {AdminCicSettingsUpdate}
    * @memberof AdminGetInstallationSetting200Response
    */
-  result: CicSettingsUpdate;
+  result: AdminCicSettingsUpdate;
 }
 
 /**
@@ -74,7 +74,7 @@ export function AdminGetInstallationSetting200ResponseFromJSONTyped(
   }
   return {
     meta: ResponseMetaFromJSON(json["meta"]),
-    result: CicSettingsUpdateFromJSON(json["result"]),
+    result: AdminCicSettingsUpdateFromJSON(json["result"]),
   };
 }
 
@@ -89,6 +89,6 @@ export function AdminGetInstallationSetting200ResponseToJSON(
   }
   return {
     meta: ResponseMetaToJSON(value.meta),
-    result: CicSettingsUpdateToJSON(value.result),
+    result: AdminCicSettingsUpdateToJSON(value.result),
   };
 }

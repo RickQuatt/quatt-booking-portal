@@ -51,7 +51,7 @@ export interface AllEStatus {
   isDomesticHotWaterOn: boolean | null;
   /**
    *
-   * @type {string}
+   * @type {object}
    * @memberof AllEStatus
    */
   heatBatterySize: AllEStatusHeatBatterySizeEnum;

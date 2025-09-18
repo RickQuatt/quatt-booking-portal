@@ -31,12 +31,6 @@ import {
   CicAvailableWifiNetworksInnerFromJSONTyped,
   CicAvailableWifiNetworksInnerToJSON,
 } from "./CicAvailableWifiNetworksInner";
-import type { CicCommissioning } from "./CicCommissioning";
-import {
-  CicCommissioningFromJSON,
-  CicCommissioningFromJSONTyped,
-  CicCommissioningToJSON,
-} from "./CicCommissioning";
 import type { CicStatus } from "./CicStatus";
 import {
   CicStatusFromJSON,
@@ -49,12 +43,6 @@ import {
   ConnectionStatusFromJSONTyped,
   ConnectionStatusToJSON,
 } from "./ConnectionStatus";
-import type { Country } from "./Country";
-import {
-  CountryFromJSON,
-  CountryFromJSONTyped,
-  CountryToJSON,
-} from "./Country";
 import type { HeatDeliverySystem } from "./HeatDeliverySystem";
 import {
   HeatDeliverySystemFromJSON,
@@ -67,12 +55,30 @@ import {
   HeatPumpFromJSONTyped,
   HeatPumpToJSON,
 } from "./HeatPump";
+import type { HybridCommissioning } from "./HybridCommissioning";
+import {
+  HybridCommissioningFromJSON,
+  HybridCommissioningFromJSONTyped,
+  HybridCommissioningToJSON,
+} from "./HybridCommissioning";
 import type { MaxSoundLevel } from "./MaxSoundLevel";
 import {
   MaxSoundLevelFromJSON,
   MaxSoundLevelFromJSONTyped,
   MaxSoundLevelToJSON,
 } from "./MaxSoundLevel";
+import type { MeCicAllOfAvoidNighttimeCharging } from "./MeCicAllOfAvoidNighttimeCharging";
+import {
+  MeCicAllOfAvoidNighttimeChargingFromJSON,
+  MeCicAllOfAvoidNighttimeChargingFromJSONTyped,
+  MeCicAllOfAvoidNighttimeChargingToJSON,
+} from "./MeCicAllOfAvoidNighttimeCharging";
+import type { NullableCountry } from "./NullableCountry";
+import {
+  NullableCountryFromJSON,
+  NullableCountryFromJSONTyped,
+  NullableCountryToJSON,
+} from "./NullableCountry";
 import type { SilentMode } from "./SilentMode";
 import {
   SilentModeFromJSON,
@@ -330,6 +336,12 @@ export interface InstallerCic {
   usePricingToLimitHeatPump: boolean;
   /**
    *
+   * @type {MeCicAllOfAvoidNighttimeCharging}
+   * @memberof InstallerCic
+   */
+  avoidNighttimeCharging: MeCicAllOfAvoidNighttimeCharging | null;
+  /**
+   *
    * @type {SilentMode}
    * @memberof InstallerCic
    */
@@ -396,10 +408,10 @@ export interface InstallerCic {
   zipCode: string | null;
   /**
    *
-   * @type {Country}
+   * @type {NullableCountry}
    * @memberof InstallerCic
    */
-  country: Country;
+  country: NullableCountry | null;
   /**
    * The supported tariff types
    * @type {Set<TariffType>}
@@ -534,10 +546,10 @@ export interface InstallerCic {
   maximumHeatingOutdoorTemperature: number | null;
   /**
    *
-   * @type {CicCommissioning}
+   * @type {HybridCommissioning}
    * @memberof InstallerCic
    */
-  lastCommissioning: CicCommissioning;
+  lastCommissioning: HybridCommissioning;
   /**
    * ISO timestamp of last stat update
    * @type {string}
@@ -599,6 +611,7 @@ export function instanceOfInstallerCic(value: object): boolean {
   isInstance = isInstance && "soundNightTimeEndMin" in value;
   isInstance = isInstance && "gasPrice" in value;
   isInstance = isInstance && "usePricingToLimitHeatPump" in value;
+  isInstance = isInstance && "avoidNighttimeCharging" in value;
   isInstance = isInstance && "silentMode" in value;
   isInstance = isInstance && "heatPumps" in value;
   isInstance = isInstance && "name" in value;
@@ -706,6 +719,9 @@ export function InstallerCicFromJSONTyped(
     soundNightTimeEndMin: json["soundNightTimeEndMin"],
     gasPrice: json["gasPrice"],
     usePricingToLimitHeatPump: json["usePricingToLimitHeatPump"],
+    avoidNighttimeCharging: MeCicAllOfAvoidNighttimeChargingFromJSON(
+      json["avoidNighttimeCharging"],
+    ),
     silentMode: SilentModeFromJSON(json["silentMode"]),
     heatPumps: (json["heatPumps"] as Array<any>).map(HeatPumpFromJSON),
     supervisoryControlMode: !exists(json, "supervisoryControlMode")
@@ -731,7 +747,7 @@ export function InstallerCicFromJSONTyped(
       : json["isControllerAlive"],
     name: json["name"],
     zipCode: json["zipCode"],
-    country: CountryFromJSON(json["country"]),
+    country: NullableCountryFromJSON(json["country"]),
     supportedTariffTypes: new Set(
       (json["supportedTariffTypes"] as Array<any>).map(TariffTypeFromJSON),
     ),
@@ -766,7 +782,7 @@ export function InstallerCicFromJSONTyped(
     menderUpdateState: json["menderUpdateState"],
     ratedMaximumHousePower: json["ratedMaximumHousePower"],
     maximumHeatingOutdoorTemperature: json["maximumHeatingOutdoorTemperature"],
-    lastCommissioning: CicCommissioningFromJSON(json["lastCommissioning"]),
+    lastCommissioning: HybridCommissioningFromJSON(json["lastCommissioning"]),
     lastStatUpdate: !exists(json, "lastStatUpdate")
       ? undefined
       : json["lastStatUpdate"],
@@ -830,6 +846,9 @@ export function InstallerCicToJSON(value?: InstallerCic | null): any {
     soundNightTimeEndMin: value.soundNightTimeEndMin,
     gasPrice: value.gasPrice,
     usePricingToLimitHeatPump: value.usePricingToLimitHeatPump,
+    avoidNighttimeCharging: MeCicAllOfAvoidNighttimeChargingToJSON(
+      value.avoidNighttimeCharging,
+    ),
     silentMode: SilentModeToJSON(value.silentMode),
     heatPumps: (value.heatPumps as Array<any>).map(HeatPumpToJSON),
     supervisoryControlMode: value.supervisoryControlMode,
@@ -841,7 +860,7 @@ export function InstallerCicToJSON(value?: InstallerCic | null): any {
     isControllerAlive: value.isControllerAlive,
     name: value.name,
     zipCode: value.zipCode,
-    country: CountryToJSON(value.country),
+    country: NullableCountryToJSON(value.country),
     supportedTariffTypes: Array.from(
       value.supportedTariffTypes as Set<any>,
     ).map(TariffTypeToJSON),
@@ -874,7 +893,7 @@ export function InstallerCicToJSON(value?: InstallerCic | null): any {
     menderUpdateState: value.menderUpdateState,
     ratedMaximumHousePower: value.ratedMaximumHousePower,
     maximumHeatingOutdoorTemperature: value.maximumHeatingOutdoorTemperature,
-    lastCommissioning: CicCommissioningToJSON(value.lastCommissioning),
+    lastCommissioning: HybridCommissioningToJSON(value.lastCommissioning),
     lastStatUpdate: value.lastStatUpdate,
     canStartCommissioning: value.canStartCommissioning,
   };

@@ -315,6 +315,12 @@ export interface Installation {
    */
   hasSoundSlider: boolean;
   /**
+   *
+   * @type {boolean}
+   * @memberof Installation
+   */
+  hasAllEAvoidNighttimeCharging: boolean;
+  /**
    * Whether the CIC and client app both support dynamic pricing feature
    * @type {boolean}
    * @memberof Installation
@@ -385,6 +391,7 @@ export function instanceOfInstallation(value: object): boolean {
   isInstance = isInstance && "lastConnectionStatusUpdatedAt" in value;
   isInstance = isInstance && "menderId" in value;
   isInstance = isInstance && "hasSoundSlider" in value;
+  isInstance = isInstance && "hasAllEAvoidNighttimeCharging" in value;
   isInstance = isInstance && "supportDynamicPricing" in value;
   isInstance = isInstance && "houseNumber" in value;
   isInstance = isInstance && "houseId" in value;
@@ -460,6 +467,7 @@ export function InstallationFromJSONTyped(
         : new Date(json["lastConnectionStatusUpdatedAt"]),
     menderId: json["menderId"],
     hasSoundSlider: json["hasSoundSlider"],
+    hasAllEAvoidNighttimeCharging: json["hasAllEAvoidNighttimeCharging"],
     supportDynamicPricing: json["supportDynamicPricing"],
     houseNumber: json["houseNumber"],
     houseId: json["houseId"],
@@ -528,6 +536,7 @@ export function InstallationToJSON(value?: Installation | null): any {
         : value.lastConnectionStatusUpdatedAt.toISOString(),
     menderId: value.menderId,
     hasSoundSlider: value.hasSoundSlider,
+    hasAllEAvoidNighttimeCharging: value.hasAllEAvoidNighttimeCharging,
     supportDynamicPricing: value.supportDynamicPricing,
     houseNumber: value.houseNumber,
     houseId: value.houseId,

@@ -1,7 +1,7 @@
 import React from "react";
 
 import classes from "./CICDetail.module.css";
-import { AdminCic, CicCommissioning } from "../api-client/models";
+import { AdminCic, HybridCommissioning } from "../api-client/models";
 import {
   FormField,
   FormFieldJson,
@@ -53,7 +53,7 @@ export function CICDetailCommissioning({ cicData }: CICDetailProps) {
 }
 
 interface CICDetailCommissioningItemProps {
-  commissioning: CicCommissioning;
+  commissioning: HybridCommissioning;
 }
 
 function CICDetailCommissioningItem({

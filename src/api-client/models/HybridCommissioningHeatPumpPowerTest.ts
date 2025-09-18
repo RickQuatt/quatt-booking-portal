@@ -16,63 +16,65 @@ import { exists, mapValues } from "../runtime";
 /**
  *
  * @export
- * @interface HeatPumpCommissioning
+ * @interface HybridCommissioningHeatPumpPowerTest
  */
-export interface HeatPumpCommissioning {
+export interface HybridCommissioningHeatPumpPowerTest {
   /**
    *
    * @type {number}
-   * @memberof HeatPumpCommissioning
+   * @memberof HybridCommissioningHeatPumpPowerTest
    */
   modbusSlaveId: number;
   /**
    * PWM % on test stop
    * @type {number}
-   * @memberof HeatPumpCommissioning
+   * @memberof HybridCommissioningHeatPumpPowerTest
    */
   pwmOnTestStop: number | null;
   /**
    * PWM % on hp1 test stop
    * @type {number}
-   * @memberof HeatPumpCommissioning
+   * @memberof HybridCommissioningHeatPumpPowerTest
    */
   pwmOnFlowRateHp1TestStop: number | null;
   /**
    * PWM % on hp2 test stop
    * @type {number}
-   * @memberof HeatPumpCommissioning
+   * @memberof HybridCommissioningHeatPumpPowerTest
    */
   pwmOnFlowRateHp2TestStop: number | null;
   /**
    * PWM % on all test stop
    * @type {number}
-   * @memberof HeatPumpCommissioning
+   * @memberof HybridCommissioningHeatPumpPowerTest
    */
   pwmOnFlowRateAllTestStop: number | null;
   /**
    * Power in watt on medium test stop
    * @type {number}
-   * @memberof HeatPumpCommissioning
+   * @memberof HybridCommissioningHeatPumpPowerTest
    */
   powerOnMediumTestStop: number | null;
   /**
    * Power in watt on maximum test stop
    * @type {number}
-   * @memberof HeatPumpCommissioning
+   * @memberof HybridCommissioningHeatPumpPowerTest
    */
   powerOnMaximumTestStop: number | null;
   /**
    * Power in watt on test stop
    * @type {number}
-   * @memberof HeatPumpCommissioning
+   * @memberof HybridCommissioningHeatPumpPowerTest
    */
   powerOnTestStop: number | null;
 }
 
 /**
- * Check if a given object implements the HeatPumpCommissioning interface.
+ * Check if a given object implements the HybridCommissioningHeatPumpPowerTest interface.
  */
-export function instanceOfHeatPumpCommissioning(value: object): boolean {
+export function instanceOfHybridCommissioningHeatPumpPowerTest(
+  value: object,
+): boolean {
   let isInstance = true;
   isInstance = isInstance && "modbusSlaveId" in value;
   isInstance = isInstance && "pwmOnTestStop" in value;
@@ -86,16 +88,16 @@ export function instanceOfHeatPumpCommissioning(value: object): boolean {
   return isInstance;
 }
 
-export function HeatPumpCommissioningFromJSON(
+export function HybridCommissioningHeatPumpPowerTestFromJSON(
   json: any,
-): HeatPumpCommissioning {
-  return HeatPumpCommissioningFromJSONTyped(json, false);
+): HybridCommissioningHeatPumpPowerTest {
+  return HybridCommissioningHeatPumpPowerTestFromJSONTyped(json, false);
 }
 
-export function HeatPumpCommissioningFromJSONTyped(
+export function HybridCommissioningHeatPumpPowerTestFromJSONTyped(
   json: any,
   ignoreDiscriminator: boolean,
-): HeatPumpCommissioning {
+): HybridCommissioningHeatPumpPowerTest {
   if (json === undefined || json === null) {
     return json;
   }
@@ -111,8 +113,8 @@ export function HeatPumpCommissioningFromJSONTyped(
   };
 }
 
-export function HeatPumpCommissioningToJSON(
-  value?: HeatPumpCommissioning | null,
+export function HybridCommissioningHeatPumpPowerTestToJSON(
+  value?: HybridCommissioningHeatPumpPowerTest | null,
 ): any {
   if (value === undefined) {
     return undefined;
