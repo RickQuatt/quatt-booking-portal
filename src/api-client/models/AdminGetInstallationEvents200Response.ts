@@ -13,12 +13,8 @@
  */
 
 import { exists, mapValues } from "../runtime";
-import type { HybridCommissioning } from "./HybridCommissioning";
-import {
-  HybridCommissioningFromJSON,
-  HybridCommissioningFromJSONTyped,
-  HybridCommissioningToJSON,
-} from "./HybridCommissioning";
+import type { Event } from "./Event";
+import { EventFromJSON, EventFromJSONTyped, EventToJSON } from "./Event";
 import type { ResponseMeta } from "./ResponseMeta";
 import {
   ResponseMetaFromJSON,
@@ -29,27 +25,27 @@ import {
 /**
  *
  * @export
- * @interface AdminGetInstallationCommissioning200Response
+ * @interface AdminGetInstallationEvents200Response
  */
-export interface AdminGetInstallationCommissioning200Response {
+export interface AdminGetInstallationEvents200Response {
   /**
    *
    * @type {ResponseMeta}
-   * @memberof AdminGetInstallationCommissioning200Response
+   * @memberof AdminGetInstallationEvents200Response
    */
   meta: ResponseMeta;
   /**
    *
-   * @type {HybridCommissioning}
-   * @memberof AdminGetInstallationCommissioning200Response
+   * @type {Array<Event>}
+   * @memberof AdminGetInstallationEvents200Response
    */
-  result: HybridCommissioning;
+  result: Array<Event>;
 }
 
 /**
- * Check if a given object implements the AdminGetInstallationCommissioning200Response interface.
+ * Check if a given object implements the AdminGetInstallationEvents200Response interface.
  */
-export function instanceOfAdminGetInstallationCommissioning200Response(
+export function instanceOfAdminGetInstallationEvents200Response(
   value: object,
 ): boolean {
   let isInstance = true;
@@ -59,27 +55,27 @@ export function instanceOfAdminGetInstallationCommissioning200Response(
   return isInstance;
 }
 
-export function AdminGetInstallationCommissioning200ResponseFromJSON(
+export function AdminGetInstallationEvents200ResponseFromJSON(
   json: any,
-): AdminGetInstallationCommissioning200Response {
-  return AdminGetInstallationCommissioning200ResponseFromJSONTyped(json, false);
+): AdminGetInstallationEvents200Response {
+  return AdminGetInstallationEvents200ResponseFromJSONTyped(json, false);
 }
 
-export function AdminGetInstallationCommissioning200ResponseFromJSONTyped(
+export function AdminGetInstallationEvents200ResponseFromJSONTyped(
   json: any,
   ignoreDiscriminator: boolean,
-): AdminGetInstallationCommissioning200Response {
+): AdminGetInstallationEvents200Response {
   if (json === undefined || json === null) {
     return json;
   }
   return {
     meta: ResponseMetaFromJSON(json["meta"]),
-    result: HybridCommissioningFromJSON(json["result"]),
+    result: (json["result"] as Array<any>).map(EventFromJSON),
   };
 }
 
-export function AdminGetInstallationCommissioning200ResponseToJSON(
-  value?: AdminGetInstallationCommissioning200Response | null,
+export function AdminGetInstallationEvents200ResponseToJSON(
+  value?: AdminGetInstallationEvents200Response | null,
 ): any {
   if (value === undefined) {
     return undefined;
@@ -89,6 +85,6 @@ export function AdminGetInstallationCommissioning200ResponseToJSON(
   }
   return {
     meta: ResponseMetaToJSON(value.meta),
-    result: HybridCommissioningToJSON(value.result),
+    result: (value.result as Array<any>).map(EventToJSON),
   };
 }

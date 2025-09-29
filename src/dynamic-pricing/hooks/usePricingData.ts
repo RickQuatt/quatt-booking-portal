@@ -1,9 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
 import { useApiClient } from "../../api-client/context";
-import { GetDynamicPrices200Response } from "../../api-client/models/GetDynamicPrices200Response";
+import { GetAdminDynamicPrices200Response } from "../../api-client/models/GetAdminDynamicPrices200Response";
 import { PricingItem } from "../../api-client/models/PricingItem";
 import { PricingDataPoint } from "../../types";
 
+// Create formatters at module scope for performance optimization
+const hourFormatter = new Intl.DateTimeFormat("en-US", {
+  timeZone: "Europe/Amsterdam",
+  hour: "numeric",
+  hour12: false,
+});
+
+const timeFormatter = new Intl.DateTimeFormat("en-US", {
+  timeZone: "Europe/Amsterdam",
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: false,
+});
 interface PricingResponse {
   currentPrice: number;
   currentGasPrice: number;
@@ -18,24 +31,12 @@ export function usePricingData(selectedDate: Date) {
   };
 
   const transformApiResponse = (
-    apiResponse: GetDynamicPrices200Response,
+    apiResponse: GetAdminDynamicPrices200Response,
   ): PricingResponse => {
     const electricityPrices = apiResponse.result.prices.electricity;
-    const currentElectricityPrice = apiResponse.result.currentPrice.electricity;
-    const currentGasPrice = apiResponse.result.currentPrice.gas;
-
-    // Create formatters once outside the map function for efficiency
-    const hourFormatter = new Intl.DateTimeFormat("en-US", {
-      timeZone: "Europe/Amsterdam",
-      hour: "numeric",
-      hour12: false,
-    });
-    const timeFormatter = new Intl.DateTimeFormat("en-US", {
-      timeZone: "Europe/Amsterdam",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    });
+    const currentElectricityPrice =
+      apiResponse.result.currentPrice.electricity ?? 0;
+    const currentGasPrice = apiResponse.result.currentPrice.gas ?? 0;
 
     const hourlyPrices: PricingDataPoint[] = electricityPrices.map(
       (item: PricingItem) => {

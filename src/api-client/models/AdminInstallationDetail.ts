@@ -13,6 +13,12 @@
  */
 
 import { exists, mapValues } from "../runtime";
+import type { AdminCicState } from "./AdminCicState";
+import {
+  AdminCicStateFromJSON,
+  AdminCicStateFromJSONTyped,
+  AdminCicStateToJSON,
+} from "./AdminCicState";
 import type { AdminInstallationDetailAllOfCicCommissioning } from "./AdminInstallationDetailAllOfCicCommissioning";
 import {
   AdminInstallationDetailAllOfCicCommissioningFromJSON,
@@ -25,12 +31,6 @@ import {
   BoilerTypeFromJSONTyped,
   BoilerTypeToJSON,
 } from "./BoilerType";
-import type { CicState } from "./CicState";
-import {
-  CicStateFromJSON,
-  CicStateFromJSONTyped,
-  CicStateToJSON,
-} from "./CicState";
 import type { Country } from "./Country";
 import {
   CountryFromJSON,
@@ -345,6 +345,12 @@ export interface AdminInstallationDetail {
    */
   hasSoundSlider: boolean;
   /**
+   *
+   * @type {boolean}
+   * @memberof AdminInstallationDetail
+   */
+  hasAllEAvoidNighttimeCharging: boolean;
+  /**
    * Whether the CIC and client app both support dynamic pricing feature
    * @type {boolean}
    * @memberof AdminInstallationDetail
@@ -370,10 +376,10 @@ export interface AdminInstallationDetail {
   houseAddition: string | null;
   /**
    *
-   * @type {Array<CicState>}
+   * @type {Array<AdminCicState>}
    * @memberof AdminInstallationDetail
    */
-  cicState: Array<CicState>;
+  cicState: Array<AdminCicState>;
   /**
    *
    * @type {Array<AdminInstallationDetailAllOfCicCommissioning>}
@@ -445,6 +451,7 @@ export function instanceOfAdminInstallationDetail(value: object): boolean {
   isInstance = isInstance && "lastConnectionStatusUpdatedAt" in value;
   isInstance = isInstance && "menderId" in value;
   isInstance = isInstance && "hasSoundSlider" in value;
+  isInstance = isInstance && "hasAllEAvoidNighttimeCharging" in value;
   isInstance = isInstance && "supportDynamicPricing" in value;
   isInstance = isInstance && "houseNumber" in value;
   isInstance = isInstance && "houseId" in value;
@@ -527,11 +534,12 @@ export function AdminInstallationDetailFromJSONTyped(
         : new Date(json["lastConnectionStatusUpdatedAt"]),
     menderId: json["menderId"],
     hasSoundSlider: json["hasSoundSlider"],
+    hasAllEAvoidNighttimeCharging: json["hasAllEAvoidNighttimeCharging"],
     supportDynamicPricing: json["supportDynamicPricing"],
     houseNumber: json["houseNumber"],
     houseId: json["houseId"],
     houseAddition: json["houseAddition"],
-    cicState: (json["cicState"] as Array<any>).map(CicStateFromJSON),
+    cicState: (json["cicState"] as Array<any>).map(AdminCicStateFromJSON),
     cicCommissioning: (json["cicCommissioning"] as Array<any>).map(
       AdminInstallationDetailAllOfCicCommissioningFromJSON,
     ),
@@ -610,11 +618,12 @@ export function AdminInstallationDetailToJSON(
         : value.lastConnectionStatusUpdatedAt.toISOString(),
     menderId: value.menderId,
     hasSoundSlider: value.hasSoundSlider,
+    hasAllEAvoidNighttimeCharging: value.hasAllEAvoidNighttimeCharging,
     supportDynamicPricing: value.supportDynamicPricing,
     houseNumber: value.houseNumber,
     houseId: value.houseId,
     houseAddition: value.houseAddition,
-    cicState: (value.cicState as Array<any>).map(CicStateToJSON),
+    cicState: (value.cicState as Array<any>).map(AdminCicStateToJSON),
     cicCommissioning: (value.cicCommissioning as Array<any>).map(
       AdminInstallationDetailAllOfCicCommissioningToJSON,
     ),

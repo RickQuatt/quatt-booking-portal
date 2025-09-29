@@ -23,91 +23,91 @@ import {
 /**
  *
  * @export
- * @interface CicSettingsUpdate
+ * @interface AdminCicSettingsUpdate
  */
-export interface CicSettingsUpdate {
+export interface AdminCicSettingsUpdate {
   /**
    *
    * @type {string}
-   * @memberof CicSettingsUpdate
+   * @memberof AdminCicSettingsUpdate
    */
   settingsId: string;
   /**
    *
    * @type {string}
-   * @memberof CicSettingsUpdate
+   * @memberof AdminCicSettingsUpdate
    */
   cicId: string;
   /**
    *
    * @type {string}
-   * @memberof CicSettingsUpdate
+   * @memberof AdminCicSettingsUpdate
    */
   userId: string | null;
   /**
    *
    * @type {string}
-   * @memberof CicSettingsUpdate
+   * @memberof AdminCicSettingsUpdate
    */
   updatedBy: string | null;
   /**
    *
    * @type {UserRole}
-   * @memberof CicSettingsUpdate
+   * @memberof AdminCicSettingsUpdate
    */
   role: UserRole | null;
   /**
    *
    * @type {string}
-   * @memberof CicSettingsUpdate
+   * @memberof AdminCicSettingsUpdate
    */
-  settingsType: CicSettingsUpdateSettingsTypeEnum;
+  settingsType: AdminCicSettingsUpdateSettingsTypeEnum;
   /**
    *
    * @type {{ [key: string]: any; }}
-   * @memberof CicSettingsUpdate
+   * @memberof AdminCicSettingsUpdate
    */
   settings: { [key: string]: any };
   /**
    *
    * @type {number}
-   * @memberof CicSettingsUpdate
+   * @memberof AdminCicSettingsUpdate
    */
   retries: number;
   /**
    *
    * @type {boolean}
-   * @memberof CicSettingsUpdate
+   * @memberof AdminCicSettingsUpdate
    */
   supportsConfirmation: boolean;
   /**
    *
    * @type {boolean}
-   * @memberof CicSettingsUpdate
+   * @memberof AdminCicSettingsUpdate
    */
   isUnconfirmed: boolean;
   /**
    *
    * @type {Date}
-   * @memberof CicSettingsUpdate
+   * @memberof AdminCicSettingsUpdate
    */
   confirmedAt: Date | null;
   /**
    *
    * @type {Date}
-   * @memberof CicSettingsUpdate
+   * @memberof AdminCicSettingsUpdate
    */
   cancelledAt: Date | null;
   /**
    *
    * @type {Date}
-   * @memberof CicSettingsUpdate
+   * @memberof AdminCicSettingsUpdate
    */
   createdAt: Date;
   /**
    *
    * @type {Date}
-   * @memberof CicSettingsUpdate
+   * @memberof AdminCicSettingsUpdate
    */
   updatedAt: Date;
 }
@@ -115,18 +115,18 @@ export interface CicSettingsUpdate {
 /**
  * @export
  */
-export const CicSettingsUpdateSettingsTypeEnum = {
+export const AdminCicSettingsUpdateSettingsTypeEnum = {
   Setting: "setting",
   Config: "config",
   NoSupportSplit: "noSupportSplit",
 } as const;
-export type CicSettingsUpdateSettingsTypeEnum =
-  (typeof CicSettingsUpdateSettingsTypeEnum)[keyof typeof CicSettingsUpdateSettingsTypeEnum];
+export type AdminCicSettingsUpdateSettingsTypeEnum =
+  (typeof AdminCicSettingsUpdateSettingsTypeEnum)[keyof typeof AdminCicSettingsUpdateSettingsTypeEnum];
 
 /**
- * Check if a given object implements the CicSettingsUpdate interface.
+ * Check if a given object implements the AdminCicSettingsUpdate interface.
  */
-export function instanceOfCicSettingsUpdate(value: object): boolean {
+export function instanceOfAdminCicSettingsUpdate(value: object): boolean {
   let isInstance = true;
   isInstance = isInstance && "settingsId" in value;
   isInstance = isInstance && "cicId" in value;
@@ -146,14 +146,16 @@ export function instanceOfCicSettingsUpdate(value: object): boolean {
   return isInstance;
 }
 
-export function CicSettingsUpdateFromJSON(json: any): CicSettingsUpdate {
-  return CicSettingsUpdateFromJSONTyped(json, false);
+export function AdminCicSettingsUpdateFromJSON(
+  json: any,
+): AdminCicSettingsUpdate {
+  return AdminCicSettingsUpdateFromJSONTyped(json, false);
 }
 
-export function CicSettingsUpdateFromJSONTyped(
+export function AdminCicSettingsUpdateFromJSONTyped(
   json: any,
   ignoreDiscriminator: boolean,
-): CicSettingsUpdate {
+): AdminCicSettingsUpdate {
   if (json === undefined || json === null) {
     return json;
   }
@@ -177,7 +179,9 @@ export function CicSettingsUpdateFromJSONTyped(
   };
 }
 
-export function CicSettingsUpdateToJSON(value?: CicSettingsUpdate | null): any {
+export function AdminCicSettingsUpdateToJSON(
+  value?: AdminCicSettingsUpdate | null,
+): any {
   if (value === undefined) {
     return undefined;
   }

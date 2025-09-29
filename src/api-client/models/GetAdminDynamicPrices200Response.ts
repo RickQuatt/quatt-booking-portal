@@ -13,12 +13,12 @@
  */
 
 import { exists, mapValues } from "../runtime";
-import type { HybridCommissioning } from "./HybridCommissioning";
+import type { AdminDynamicPrices } from "./AdminDynamicPrices";
 import {
-  HybridCommissioningFromJSON,
-  HybridCommissioningFromJSONTyped,
-  HybridCommissioningToJSON,
-} from "./HybridCommissioning";
+  AdminDynamicPricesFromJSON,
+  AdminDynamicPricesFromJSONTyped,
+  AdminDynamicPricesToJSON,
+} from "./AdminDynamicPrices";
 import type { ResponseMeta } from "./ResponseMeta";
 import {
   ResponseMetaFromJSON,
@@ -29,27 +29,27 @@ import {
 /**
  *
  * @export
- * @interface AdminGetInstallationCommissioning200Response
+ * @interface GetAdminDynamicPrices200Response
  */
-export interface AdminGetInstallationCommissioning200Response {
+export interface GetAdminDynamicPrices200Response {
   /**
    *
    * @type {ResponseMeta}
-   * @memberof AdminGetInstallationCommissioning200Response
+   * @memberof GetAdminDynamicPrices200Response
    */
   meta: ResponseMeta;
   /**
    *
-   * @type {HybridCommissioning}
-   * @memberof AdminGetInstallationCommissioning200Response
+   * @type {AdminDynamicPrices}
+   * @memberof GetAdminDynamicPrices200Response
    */
-  result: HybridCommissioning;
+  result: AdminDynamicPrices;
 }
 
 /**
- * Check if a given object implements the AdminGetInstallationCommissioning200Response interface.
+ * Check if a given object implements the GetAdminDynamicPrices200Response interface.
  */
-export function instanceOfAdminGetInstallationCommissioning200Response(
+export function instanceOfGetAdminDynamicPrices200Response(
   value: object,
 ): boolean {
   let isInstance = true;
@@ -59,27 +59,27 @@ export function instanceOfAdminGetInstallationCommissioning200Response(
   return isInstance;
 }
 
-export function AdminGetInstallationCommissioning200ResponseFromJSON(
+export function GetAdminDynamicPrices200ResponseFromJSON(
   json: any,
-): AdminGetInstallationCommissioning200Response {
-  return AdminGetInstallationCommissioning200ResponseFromJSONTyped(json, false);
+): GetAdminDynamicPrices200Response {
+  return GetAdminDynamicPrices200ResponseFromJSONTyped(json, false);
 }
 
-export function AdminGetInstallationCommissioning200ResponseFromJSONTyped(
+export function GetAdminDynamicPrices200ResponseFromJSONTyped(
   json: any,
   ignoreDiscriminator: boolean,
-): AdminGetInstallationCommissioning200Response {
+): GetAdminDynamicPrices200Response {
   if (json === undefined || json === null) {
     return json;
   }
   return {
     meta: ResponseMetaFromJSON(json["meta"]),
-    result: HybridCommissioningFromJSON(json["result"]),
+    result: AdminDynamicPricesFromJSON(json["result"]),
   };
 }
 
-export function AdminGetInstallationCommissioning200ResponseToJSON(
-  value?: AdminGetInstallationCommissioning200Response | null,
+export function GetAdminDynamicPrices200ResponseToJSON(
+  value?: GetAdminDynamicPrices200Response | null,
 ): any {
   if (value === undefined) {
     return undefined;
@@ -89,6 +89,6 @@ export function AdminGetInstallationCommissioning200ResponseToJSON(
   }
   return {
     meta: ResponseMetaToJSON(value.meta),
-    result: HybridCommissioningToJSON(value.result),
+    result: AdminDynamicPricesToJSON(value.result),
   };
 }

@@ -1,7 +1,7 @@
 import React from "react";
 
 import classes from "./CICDetail.module.css";
-import { AdminCic, CicSettingsUpdate } from "../api-client/models";
+import { AdminCic, AdminCicSettingsUpdate } from "../api-client/models";
 import {
   FormField,
   FormFieldJson,
@@ -25,8 +25,11 @@ export function CICDetailSettings({ cicData }: CICDetailProps) {
           <FormFieldTitle>Date of updated setting</FormFieldTitle>
           <div className={classes["detail-section-commissioning"]}>
             <Accordion>
-              {cicData.settingsUpdates.map((setting) => (
-                <CICDetailSettingsItem settingsUpdate={setting} />
+              {cicData.settingsUpdates.map((setting, index) => (
+                <CICDetailSettingsItem
+                  key={setting.createdAt?.toISOString() || index}
+                  settingsUpdate={setting}
+                />
               ))}
             </Accordion>
           </div>
@@ -37,7 +40,7 @@ export function CICDetailSettings({ cicData }: CICDetailProps) {
 }
 
 interface CICDetailCommissioningItemProps {
-  settingsUpdate: CicSettingsUpdate;
+  settingsUpdate: AdminCicSettingsUpdate;
 }
 
 function CICDetailSettingsItem({

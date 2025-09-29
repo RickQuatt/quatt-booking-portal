@@ -13,12 +13,12 @@
  */
 
 import { exists, mapValues } from "../runtime";
-import type { AdminCicSettingsUpdate } from "./AdminCicSettingsUpdate";
+import type { GetAllTariffs403ResponseAllOfResult } from "./GetAllTariffs403ResponseAllOfResult";
 import {
-  AdminCicSettingsUpdateFromJSON,
-  AdminCicSettingsUpdateFromJSONTyped,
-  AdminCicSettingsUpdateToJSON,
-} from "./AdminCicSettingsUpdate";
+  GetAllTariffs403ResponseAllOfResultFromJSON,
+  GetAllTariffs403ResponseAllOfResultFromJSONTyped,
+  GetAllTariffs403ResponseAllOfResultToJSON,
+} from "./GetAllTariffs403ResponseAllOfResult";
 import type { ResponseMeta } from "./ResponseMeta";
 import {
   ResponseMetaFromJSON,
@@ -29,29 +29,27 @@ import {
 /**
  *
  * @export
- * @interface AdminGetInstallationSetting200Response
+ * @interface GetAllTariffs403Response
  */
-export interface AdminGetInstallationSetting200Response {
+export interface GetAllTariffs403Response {
   /**
    *
    * @type {ResponseMeta}
-   * @memberof AdminGetInstallationSetting200Response
+   * @memberof GetAllTariffs403Response
    */
   meta: ResponseMeta;
   /**
    *
-   * @type {AdminCicSettingsUpdate}
-   * @memberof AdminGetInstallationSetting200Response
+   * @type {GetAllTariffs403ResponseAllOfResult}
+   * @memberof GetAllTariffs403Response
    */
-  result: AdminCicSettingsUpdate;
+  result: GetAllTariffs403ResponseAllOfResult;
 }
 
 /**
- * Check if a given object implements the AdminGetInstallationSetting200Response interface.
+ * Check if a given object implements the GetAllTariffs403Response interface.
  */
-export function instanceOfAdminGetInstallationSetting200Response(
-  value: object,
-): boolean {
+export function instanceOfGetAllTariffs403Response(value: object): boolean {
   let isInstance = true;
   isInstance = isInstance && "meta" in value;
   isInstance = isInstance && "result" in value;
@@ -59,27 +57,27 @@ export function instanceOfAdminGetInstallationSetting200Response(
   return isInstance;
 }
 
-export function AdminGetInstallationSetting200ResponseFromJSON(
+export function GetAllTariffs403ResponseFromJSON(
   json: any,
-): AdminGetInstallationSetting200Response {
-  return AdminGetInstallationSetting200ResponseFromJSONTyped(json, false);
+): GetAllTariffs403Response {
+  return GetAllTariffs403ResponseFromJSONTyped(json, false);
 }
 
-export function AdminGetInstallationSetting200ResponseFromJSONTyped(
+export function GetAllTariffs403ResponseFromJSONTyped(
   json: any,
   ignoreDiscriminator: boolean,
-): AdminGetInstallationSetting200Response {
+): GetAllTariffs403Response {
   if (json === undefined || json === null) {
     return json;
   }
   return {
     meta: ResponseMetaFromJSON(json["meta"]),
-    result: AdminCicSettingsUpdateFromJSON(json["result"]),
+    result: GetAllTariffs403ResponseAllOfResultFromJSON(json["result"]),
   };
 }
 
-export function AdminGetInstallationSetting200ResponseToJSON(
-  value?: AdminGetInstallationSetting200Response | null,
+export function GetAllTariffs403ResponseToJSON(
+  value?: GetAllTariffs403Response | null,
 ): any {
   if (value === undefined) {
     return undefined;
@@ -89,6 +87,6 @@ export function AdminGetInstallationSetting200ResponseToJSON(
   }
   return {
     meta: ResponseMetaToJSON(value.meta),
-    result: AdminCicSettingsUpdateToJSON(value.result),
+    result: GetAllTariffs403ResponseAllOfResultToJSON(value.result),
   };
 }

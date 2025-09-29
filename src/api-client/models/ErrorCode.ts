@@ -87,6 +87,7 @@ export const ErrorCode = {
   OrderNumberNotFound: "ORDER_NUMBER_NOT_FOUND",
   CommissioningNotFound: "COMMISSIONING_NOT_FOUND",
   SettingsUpdateNotFound: "SETTINGS_UPDATE_NOT_FOUND",
+  SnowflakeQueryFailed: "SNOWFLAKE_QUERY_FAILED",
   NotesNotFound: "NOTES_NOT_FOUND",
   CommissioningIsForced: "COMMISSIONING_IS_FORCED",
   CommissioningIsCancelled: "COMMISSIONING_IS_CANCELLED",
@@ -117,6 +118,8 @@ export const ErrorCode = {
   InvalidHeatBatterySize: "INVALID_HEAT_BATTERY_SIZE",
   NoDevicesFound: "NO_DEVICES_FOUND",
   InvalidSoundLevelForAllElectric: "INVALID_SOUND_LEVEL_FOR_ALL_ELECTRIC",
+  InvalidAvoidNighttimeChargingForHybrid:
+    "INVALID_AVOID_NIGHTTIME_CHARGING_FOR_HYBRID",
   ApiResponseValidationError: "API_RESPONSE_VALIDATION_ERROR",
   InstallationIsNotHybrid: "INSTALLATION_IS_NOT_HYBRID",
   InstallationIsNotAllElectric: "INSTALLATION_IS_NOT_ALL_ELECTRIC",
@@ -184,6 +187,8 @@ export const ErrorCode = {
   NotImplemented: "NOT_IMPLEMENTED",
   NoLegacyCommissioningHistory: "NO_LEGACY_COMMISSIONING_HISTORY",
   LegacyCommissioningMigrationFailed: "LEGACY_COMMISSIONING_MIGRATION_FAILED",
+  InvalidDateFormat: "INVALID_DATE_FORMAT",
+  NoCommissioningTestHandlerFound: "NO_COMMISSIONING_TEST_HANDLER_FOUND",
 } as const;
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];
 

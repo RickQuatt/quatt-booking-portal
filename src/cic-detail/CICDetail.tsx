@@ -19,6 +19,10 @@ import { CICDetailState } from "./CICDetailState";
 import { CICDetailCommissioning } from "./CICDetailCommissioning";
 import { CICDetailSettings } from "./CICDetailSettings";
 import { AdminCicWithRequiredAllEStatus, CICDetailAllE } from "./CICDetailAllE";
+import {
+  AdminCicWithAvoidNighttimeCharging,
+  CICDetailAvoidNighttimeCharging,
+} from "./CICDetailAvoidNighttimeCharging";
 
 interface CICDetailProps {
   data: AdminCic;
@@ -38,6 +42,11 @@ export function CICDetail({ data }: CICDetailProps) {
         <CICDetailUpdateInfo cicData={cicData} />
         {cicData.allEStatus ? (
           <CICDetailAllE cicData={cicData as AdminCicWithRequiredAllEStatus} />
+        ) : null}
+        {cicData.avoidNighttimeCharging ? (
+          <CICDetailAvoidNighttimeCharging
+            cicData={cicData as AdminCicWithAvoidNighttimeCharging}
+          />
         ) : null}
         <CICDetailBoilerInfo cicData={cicData} />
         <CICDetailThermostatInfo cicData={cicData} />

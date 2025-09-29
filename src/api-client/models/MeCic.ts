@@ -37,12 +37,6 @@ import {
   ConnectionStatusFromJSONTyped,
   ConnectionStatusToJSON,
 } from "./ConnectionStatus";
-import type { Country } from "./Country";
-import {
-  CountryFromJSON,
-  CountryFromJSONTyped,
-  CountryToJSON,
-} from "./Country";
 import type { HeatPump } from "./HeatPump";
 import {
   HeatPumpFromJSON,
@@ -55,6 +49,18 @@ import {
   MaxSoundLevelFromJSONTyped,
   MaxSoundLevelToJSON,
 } from "./MaxSoundLevel";
+import type { MeCicAllOfAvoidNighttimeCharging } from "./MeCicAllOfAvoidNighttimeCharging";
+import {
+  MeCicAllOfAvoidNighttimeChargingFromJSON,
+  MeCicAllOfAvoidNighttimeChargingFromJSONTyped,
+  MeCicAllOfAvoidNighttimeChargingToJSON,
+} from "./MeCicAllOfAvoidNighttimeCharging";
+import type { NullableCountry } from "./NullableCountry";
+import {
+  NullableCountryFromJSON,
+  NullableCountryFromJSONTyped,
+  NullableCountryToJSON,
+} from "./NullableCountry";
 import type { SilentMode } from "./SilentMode";
 import {
   SilentModeFromJSON,
@@ -306,6 +312,12 @@ export interface MeCic {
   usePricingToLimitHeatPump: boolean;
   /**
    *
+   * @type {MeCicAllOfAvoidNighttimeCharging}
+   * @memberof MeCic
+   */
+  avoidNighttimeCharging: MeCicAllOfAvoidNighttimeCharging | null;
+  /**
+   *
    * @type {SilentMode}
    * @memberof MeCic
    */
@@ -372,10 +384,10 @@ export interface MeCic {
   zipCode: string | null;
   /**
    *
-   * @type {Country}
+   * @type {NullableCountry}
    * @memberof MeCic
    */
-  country: Country;
+  country: NullableCountry | null;
   /**
    * The supported tariff types
    * @type {Set<TariffType>}
@@ -498,6 +510,7 @@ export function instanceOfMeCic(value: object): boolean {
   isInstance = isInstance && "soundNightTimeEndMin" in value;
   isInstance = isInstance && "gasPrice" in value;
   isInstance = isInstance && "usePricingToLimitHeatPump" in value;
+  isInstance = isInstance && "avoidNighttimeCharging" in value;
   isInstance = isInstance && "silentMode" in value;
   isInstance = isInstance && "heatPumps" in value;
   isInstance = isInstance && "name" in value;
@@ -596,6 +609,9 @@ export function MeCicFromJSONTyped(
     soundNightTimeEndMin: json["soundNightTimeEndMin"],
     gasPrice: json["gasPrice"],
     usePricingToLimitHeatPump: json["usePricingToLimitHeatPump"],
+    avoidNighttimeCharging: MeCicAllOfAvoidNighttimeChargingFromJSON(
+      json["avoidNighttimeCharging"],
+    ),
     silentMode: SilentModeFromJSON(json["silentMode"]),
     heatPumps: (json["heatPumps"] as Array<any>).map(HeatPumpFromJSON),
     supervisoryControlMode: !exists(json, "supervisoryControlMode")
@@ -621,7 +637,7 @@ export function MeCicFromJSONTyped(
       : json["isControllerAlive"],
     name: json["name"],
     zipCode: json["zipCode"],
-    country: CountryFromJSON(json["country"]),
+    country: NullableCountryFromJSON(json["country"]),
     supportedTariffTypes: new Set(
       (json["supportedTariffTypes"] as Array<any>).map(TariffTypeFromJSON),
     ),
@@ -700,6 +716,9 @@ export function MeCicToJSON(value?: MeCic | null): any {
     soundNightTimeEndMin: value.soundNightTimeEndMin,
     gasPrice: value.gasPrice,
     usePricingToLimitHeatPump: value.usePricingToLimitHeatPump,
+    avoidNighttimeCharging: MeCicAllOfAvoidNighttimeChargingToJSON(
+      value.avoidNighttimeCharging,
+    ),
     silentMode: SilentModeToJSON(value.silentMode),
     heatPumps: (value.heatPumps as Array<any>).map(HeatPumpToJSON),
     supervisoryControlMode: value.supervisoryControlMode,
@@ -711,7 +730,7 @@ export function MeCicToJSON(value?: MeCic | null): any {
     isControllerAlive: value.isControllerAlive,
     name: value.name,
     zipCode: value.zipCode,
-    country: CountryToJSON(value.country),
+    country: NullableCountryToJSON(value.country),
     supportedTariffTypes: Array.from(
       value.supportedTariffTypes as Set<any>,
     ).map(TariffTypeToJSON),

@@ -102,7 +102,7 @@ export interface HeatPump {
    * @type {boolean}
    * @memberof HeatPump
    */
-  _true?: boolean;
+  on?: boolean;
   /**
    * Is the heat pump currently running in silent mode?
    * @type {boolean}
@@ -198,7 +198,7 @@ export function HeatPumpFromJSONTyped(
     compressorFrequencyDemand: json["compressorFrequencyDemand"],
     compressorFrequency: json["compressorFrequency"],
     status: json["status"],
-    _true: !exists(json, "true") ? undefined : json["true"],
+    on: !exists(json, "on") ? undefined : json["on"],
     silentModeStatus: json["silentModeStatus"],
     limitedByCop: json["limitedByCop"],
     oduType: !exists(json, "oduType") ? undefined : json["oduType"],
@@ -229,7 +229,7 @@ export function HeatPumpToJSON(value?: HeatPump | null): any {
     compressorFrequencyDemand: value.compressorFrequencyDemand,
     compressorFrequency: value.compressorFrequency,
     status: value.status,
-    true: value._true,
+    on: value.on,
     silentModeStatus: value.silentModeStatus,
     limitedByCop: value.limitedByCop,
     oduType: value.oduType,

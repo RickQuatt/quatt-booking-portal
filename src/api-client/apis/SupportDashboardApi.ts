@@ -24,6 +24,8 @@ import type {
   AdminGetInstallation200Response,
   AdminGetInstallationClickhouseData200Response,
   AdminGetInstallationCommissioning200Response,
+  AdminGetInstallationEvents200Response,
+  AdminGetInstallationEvents500Response,
   AdminGetInstallationNotes200Response,
   AdminGetInstallationSetting200Response,
   AdminGetInstallationTickets200Response,
@@ -44,9 +46,10 @@ import type {
   DeleteTariffForInstallation409Response,
   Error1,
   ForgetWifiMeCicRequest,
+  GetAdminDynamicPrices200Response,
   GetAllTariffs200Response,
   GetAllTariffs400Response,
-  GetDynamicPrices200Response,
+  GetAllTariffs403Response,
   GetDynamicPrices400Response,
   GetDynamicPrices500Response,
   GetInstallationCommissionings200Response,
@@ -81,6 +84,10 @@ import {
   AdminGetInstallationClickhouseData200ResponseToJSON,
   AdminGetInstallationCommissioning200ResponseFromJSON,
   AdminGetInstallationCommissioning200ResponseToJSON,
+  AdminGetInstallationEvents200ResponseFromJSON,
+  AdminGetInstallationEvents200ResponseToJSON,
+  AdminGetInstallationEvents500ResponseFromJSON,
+  AdminGetInstallationEvents500ResponseToJSON,
   AdminGetInstallationNotes200ResponseFromJSON,
   AdminGetInstallationNotes200ResponseToJSON,
   AdminGetInstallationSetting200ResponseFromJSON,
@@ -121,12 +128,14 @@ import {
   Error1ToJSON,
   ForgetWifiMeCicRequestFromJSON,
   ForgetWifiMeCicRequestToJSON,
+  GetAdminDynamicPrices200ResponseFromJSON,
+  GetAdminDynamicPrices200ResponseToJSON,
   GetAllTariffs200ResponseFromJSON,
   GetAllTariffs200ResponseToJSON,
   GetAllTariffs400ResponseFromJSON,
   GetAllTariffs400ResponseToJSON,
-  GetDynamicPrices200ResponseFromJSON,
-  GetDynamicPrices200ResponseToJSON,
+  GetAllTariffs403ResponseFromJSON,
+  GetAllTariffs403ResponseToJSON,
   GetDynamicPrices400ResponseFromJSON,
   GetDynamicPrices400ResponseToJSON,
   GetDynamicPrices500ResponseFromJSON,
@@ -295,6 +304,12 @@ export interface AdminGetInstallationCommissioningRequest {
   xClientPlatform?: AdminGetInstallationCommissioningXClientPlatformEnum;
 }
 
+export interface AdminGetInstallationEventsRequest {
+  installationUuid: string;
+  xClientVersion?: string;
+  xClientPlatform?: AdminGetInstallationEventsXClientPlatformEnum;
+}
+
 export interface AdminGetInstallationNotesRequest {
   installationId: string;
 }
@@ -366,6 +381,10 @@ export interface AdminInstallationInstallationIdTariffTariffIdOptionsRequest {
 
 export interface AdminInstallationInstallationIdZuperJobsOptionsRequest {
   installationId: string;
+}
+
+export interface AdminInstallationInstallationUuidEventsOptionsRequest {
+  installationUuid: string;
 }
 
 export interface AdminInstallationInstallationUuidOptionsRequest {
@@ -2242,6 +2261,85 @@ export class SupportDashboardApi extends runtime.BaseAPI {
   }
 
   /**
+   * Get events for installation from Snowflake
+   */
+  async adminGetInstallationEventsRaw(
+    requestParameters: AdminGetInstallationEventsRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<AdminGetInstallationEvents200Response>> {
+    if (
+      requestParameters.installationUuid === null ||
+      requestParameters.installationUuid === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "installationUuid",
+        "Required parameter requestParameters.installationUuid was null or undefined when calling adminGetInstallationEvents.",
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    if (
+      requestParameters.xClientVersion !== undefined &&
+      requestParameters.xClientVersion !== null
+    ) {
+      headerParameters["X-Client-Version"] = String(
+        requestParameters.xClientVersion,
+      );
+    }
+
+    if (
+      requestParameters.xClientPlatform !== undefined &&
+      requestParameters.xClientPlatform !== null
+    ) {
+      headerParameters["X-Client-Platform"] = String(
+        requestParameters.xClientPlatform,
+      );
+    }
+
+    if (this.configuration && this.configuration.accessToken) {
+      const token = this.configuration.accessToken;
+      const tokenString = await token("bearerAuth", []);
+
+      if (tokenString) {
+        headerParameters["Authorization"] = `Bearer ${tokenString}`;
+      }
+    }
+    const response = await this.request(
+      {
+        path: `/admin/installation/{installationUuid}/events`.replace(
+          `{${"installationUuid"}}`,
+          encodeURIComponent(String(requestParameters.installationUuid)),
+        ),
+        method: "GET",
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    );
+
+    return new runtime.JSONApiResponse(response, (jsonValue) =>
+      AdminGetInstallationEvents200ResponseFromJSON(jsonValue),
+    );
+  }
+
+  /**
+   * Get events for installation from Snowflake
+   */
+  async adminGetInstallationEvents(
+    requestParameters: AdminGetInstallationEventsRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<AdminGetInstallationEvents200Response> {
+    const response = await this.adminGetInstallationEventsRaw(
+      requestParameters,
+      initOverrides,
+    );
+    return await response.value();
+  }
+
+  /**
    * Get notes for installation
    */
   async adminGetInstallationNotesRaw(
@@ -3192,6 +3290,54 @@ export class SupportDashboardApi extends runtime.BaseAPI {
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<void> {
     await this.adminInstallationInstallationIdZuperJobsOptionsRaw(
+      requestParameters,
+      initOverrides,
+    );
+  }
+
+  /**
+   */
+  async adminInstallationInstallationUuidEventsOptionsRaw(
+    requestParameters: AdminInstallationInstallationUuidEventsOptionsRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<runtime.ApiResponse<void>> {
+    if (
+      requestParameters.installationUuid === null ||
+      requestParameters.installationUuid === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "installationUuid",
+        "Required parameter requestParameters.installationUuid was null or undefined when calling adminInstallationInstallationUuidEventsOptions.",
+      );
+    }
+
+    const queryParameters: any = {};
+
+    const headerParameters: runtime.HTTPHeaders = {};
+
+    const response = await this.request(
+      {
+        path: `/admin/installation/{installationUuid}/events`.replace(
+          `{${"installationUuid"}}`,
+          encodeURIComponent(String(requestParameters.installationUuid)),
+        ),
+        method: "OPTIONS",
+        headers: headerParameters,
+        query: queryParameters,
+      },
+      initOverrides,
+    );
+
+    return new runtime.VoidApiResponse(response);
+  }
+
+  /**
+   */
+  async adminInstallationInstallationUuidEventsOptions(
+    requestParameters: AdminInstallationInstallationUuidEventsOptionsRequest,
+    initOverrides?: RequestInit | runtime.InitOverrideFunction,
+  ): Promise<void> {
+    await this.adminInstallationInstallationUuidEventsOptionsRaw(
       requestParameters,
       initOverrides,
     );
@@ -4274,7 +4420,7 @@ export class SupportDashboardApi extends runtime.BaseAPI {
   async getAdminDynamicPricesRaw(
     requestParameters: GetAdminDynamicPricesRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<GetDynamicPrices200Response>> {
+  ): Promise<runtime.ApiResponse<GetAdminDynamicPrices200Response>> {
     const queryParameters: any = {};
 
     if (requestParameters.date !== undefined) {
@@ -4322,7 +4468,7 @@ export class SupportDashboardApi extends runtime.BaseAPI {
     );
 
     return new runtime.JSONApiResponse(response, (jsonValue) =>
-      GetDynamicPrices200ResponseFromJSON(jsonValue),
+      GetAdminDynamicPrices200ResponseFromJSON(jsonValue),
     );
   }
 
@@ -4332,7 +4478,7 @@ export class SupportDashboardApi extends runtime.BaseAPI {
   async getAdminDynamicPrices(
     requestParameters: GetAdminDynamicPricesRequest = {},
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<GetDynamicPrices200Response> {
+  ): Promise<GetAdminDynamicPrices200Response> {
     const response = await this.getAdminDynamicPricesRaw(
       requestParameters,
       initOverrides,
@@ -4980,6 +5126,16 @@ export const AdminGetInstallationCommissioningXClientPlatformEnum = {
 } as const;
 export type AdminGetInstallationCommissioningXClientPlatformEnum =
   (typeof AdminGetInstallationCommissioningXClientPlatformEnum)[keyof typeof AdminGetInstallationCommissioningXClientPlatformEnum];
+/**
+ * @export
+ */
+export const AdminGetInstallationEventsXClientPlatformEnum = {
+  Ios: "ios",
+  Android: "android",
+  Web: "web",
+} as const;
+export type AdminGetInstallationEventsXClientPlatformEnum =
+  (typeof AdminGetInstallationEventsXClientPlatformEnum)[keyof typeof AdminGetInstallationEventsXClientPlatformEnum];
 /**
  * @export
  */
