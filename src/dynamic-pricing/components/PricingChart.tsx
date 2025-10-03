@@ -126,12 +126,17 @@ export function PricingChart({
     ];
 
     // Add COP switching line if we have gas price
-    // Validate gas price is positive to prevent division by zero
-    if (currentGasPrice && currentGasPrice > 0) {
+    // Only show COP line if gas price is defined and not zero (to prevent division by zero)
+    if (currentGasPrice !== undefined && currentGasPrice !== 0) {
       // Calculate COP for switching at each time point
       // COP = electricityPrice_€/kWh / (gasPrice_€/m³ / heatFromM3OfGas_kWh/m³)
       // Simplified: COP = (electricityPrice_€/kWh × heatFromM3OfGas_kWh/m³) / gasPrice_€/m³
+      // Note: Negative gas prices are theoretically possible (like negative electricity prices)
       const copValues = prices.map((electricityPrice) => {
+        // Handle edge case: if electricity price is null/undefined, return null for that point
+        if (electricityPrice === undefined || electricityPrice === null) {
+          return null;
+        }
         return (electricityPrice * HEAT_FROM_M3_OF_GAS) / currentGasPrice;
       });
 
@@ -147,6 +152,7 @@ export function PricingChart({
         pointRadius: 0,
         pointHoverRadius: 0,
         yAxisID: "y1", // Use secondary y-axis for COP values
+        spanGaps: true, // Connect line across null/missing values
       });
     }
 
@@ -162,7 +168,7 @@ export function PricingChart({
       plugins: {
         ...STATIC_CHART_OPTIONS.plugins,
         legend: {
-          display: !!currentGasPrice,
+          display: currentGasPrice !== undefined && currentGasPrice !== 0,
           position: "top" as const,
           labels: {
             usePointStyle: true,
@@ -176,10 +182,17 @@ export function PricingChart({
               if (context.datasetIndex === 0) {
                 // Electricity price dataset
                 const dataPoint = data[context.dataIndex];
-                return `${dataPoint.formattedValidFrom} - ${dataPoint.formattedValidTo}: €${context.parsed.y.toFixed(3)} per kWh`;
+                const price = context.parsed.y;
+                if (price === null || price === undefined) {
+                  return `${dataPoint.formattedValidFrom} - ${dataPoint.formattedValidTo}: No data`;
+                }
+                return `${dataPoint.formattedValidFrom} - ${dataPoint.formattedValidTo}: €${price.toFixed(3)} per kWh`;
               } else {
                 // COP switching line - return array for multiple lines
                 const copValue = context.parsed.y;
+                if (copValue === null || copValue === undefined) {
+                  return "COP: No data";
+                }
                 return [
                   `COP switching point: ${copValue.toFixed(2)}`,
                   `(heat pump COP must be > ${copValue.toFixed(2)} to be cheaper than gas)`,
@@ -193,7 +206,7 @@ export function PricingChart({
         ...STATIC_CHART_OPTIONS.scales,
         y1: {
           type: "linear" as const,
-          display: !!currentGasPrice,
+          display: currentGasPrice !== undefined && currentGasPrice !== 0,
           position: "right" as const,
           beginAtZero: true,
           title: {
