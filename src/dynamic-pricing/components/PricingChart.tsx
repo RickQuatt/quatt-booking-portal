@@ -9,6 +9,7 @@ import {
   Tooltip,
   Legend,
   TooltipItem,
+  ChartDataset,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import classes from "./PricingChart.module.css";
@@ -30,6 +31,72 @@ interface PricingChartProps {
   currentGasPrice?: number;
 }
 
+// Static chart configuration (doesn't change between renders)
+const STATIC_CHART_OPTIONS = {
+  responsive: true,
+  maintainAspectRatio: false,
+  scales: {
+    x: {
+      display: true,
+      title: {
+        display: true,
+        text: "Time (hours)",
+        color: "#495057",
+        font: {
+          size: 12,
+          weight: 500,
+        },
+      },
+      grid: {
+        color: "#e9ecef",
+      },
+      ticks: {
+        color: "#6c757d",
+        maxTicksLimit: 12,
+      },
+    },
+    y: {
+      type: "linear" as const,
+      display: true,
+      position: "left" as const,
+      title: {
+        display: true,
+        text: "€/kWh",
+        color: "#495057",
+        font: {
+          size: 12,
+          weight: 500,
+        },
+      },
+      grid: {
+        color: "#e9ecef",
+      },
+      ticks: {
+        color: "#6c757d",
+        callback: function (value: string | number) {
+          return `€${Number(value).toFixed(3)}`;
+        },
+      },
+    },
+  },
+  interaction: {
+    mode: "nearest" as const,
+    axis: "x" as const,
+    intersect: false,
+  },
+  plugins: {
+    tooltip: {
+      mode: "index" as const,
+      intersect: false,
+      backgroundColor: "rgba(0, 0, 0, 0.8)",
+      titleColor: "#ffffff",
+      bodyColor: "#ffffff",
+      borderColor: "#28a745",
+      borderWidth: 1,
+    },
+  },
+};
+
 export function PricingChart({
   data,
   selectedDate,
@@ -42,7 +109,7 @@ export function PricingChart({
     const labels = data.map((point) => point.formattedValidFrom);
     const prices = data.map((point) => point.price);
 
-    const datasets: any[] = [
+    const datasets: ChartDataset<"line">[] = [
       {
         label: "Electricity Price (€/kWh)",
         data: prices,
@@ -59,7 +126,8 @@ export function PricingChart({
     ];
 
     // Add COP switching line if we have gas price
-    if (currentGasPrice) {
+    // Validate gas price is positive to prevent division by zero
+    if (currentGasPrice && currentGasPrice > 0) {
       // Calculate COP for switching at each time point
       // COP = electricityPrice_€/kWh / (gasPrice_€/m³ / heatFromM3OfGas_kWh/m³)
       // Simplified: COP = (electricityPrice_€/kWh × heatFromM3OfGas_kWh/m³) / gasPrice_€/m³
@@ -90,11 +158,11 @@ export function PricingChart({
 
   const options = React.useMemo(
     () => ({
-      responsive: true,
-      maintainAspectRatio: false,
+      ...STATIC_CHART_OPTIONS,
       plugins: {
+        ...STATIC_CHART_OPTIONS.plugins,
         legend: {
-          display: currentGasPrice ? true : false,
+          display: !!currentGasPrice,
           position: "top" as const,
           labels: {
             usePointStyle: true,
@@ -102,13 +170,7 @@ export function PricingChart({
           },
         },
         tooltip: {
-          mode: "index" as const,
-          intersect: false,
-          backgroundColor: "rgba(0, 0, 0, 0.8)",
-          titleColor: "#ffffff",
-          bodyColor: "#ffffff",
-          borderColor: "#28a745",
-          borderWidth: 1,
+          ...STATIC_CHART_OPTIONS.plugins.tooltip,
           callbacks: {
             label: (context: TooltipItem<"line">) => {
               if (context.datasetIndex === 0) {
@@ -128,51 +190,10 @@ export function PricingChart({
         },
       },
       scales: {
-        x: {
-          display: true,
-          title: {
-            display: true,
-            text: "Time (hours)",
-            color: "#495057",
-            font: {
-              size: 12,
-              weight: 500,
-            },
-          },
-          grid: {
-            color: "#e9ecef",
-          },
-          ticks: {
-            color: "#6c757d",
-            maxTicksLimit: 12,
-          },
-        },
-        y: {
-          type: "linear" as const,
-          display: true,
-          position: "left" as const,
-          title: {
-            display: true,
-            text: "€/kWh",
-            color: "#495057",
-            font: {
-              size: 12,
-              weight: 500,
-            },
-          },
-          grid: {
-            color: "#e9ecef",
-          },
-          ticks: {
-            color: "#6c757d",
-            callback: function (value: string | number) {
-              return `€${Number(value).toFixed(3)}`;
-            },
-          },
-        },
+        ...STATIC_CHART_OPTIONS.scales,
         y1: {
           type: "linear" as const,
-          display: currentGasPrice ? true : false,
+          display: !!currentGasPrice,
           position: "right" as const,
           beginAtZero: true,
           title: {
@@ -194,11 +215,6 @@ export function PricingChart({
             },
           },
         },
-      },
-      interaction: {
-        mode: "nearest" as const,
-        axis: "x" as const,
-        intersect: false,
       },
     }),
     [data, currentGasPrice],
