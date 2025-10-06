@@ -22,6 +22,7 @@ import { useGetZuperJobs } from "./hooks/useGetZuperJobs";
 import { InstallationDetailZuperService } from "./InstallationDetailZuperService";
 import { InstallationLatestCommissioning } from "./InstallationLatestCommissioning";
 import { InstallationDetailEvents } from "./InstallationDetailEvents";
+import { InstallationDetailHomeBattery } from "./InstallationDetailHomeBattery";
 
 interface InstallationDetailProps {
   installationUuid: string;
@@ -63,9 +64,6 @@ export function InstallationDetail({
 
   const installationId = installationDetails.externalId || "";
 
-  if (!installationDetails.activeCic) {
-    throw new Error("Active CIC not found");
-  }
   const isAllE =
     installationDetails.installationType === InstallationType.AllElectric ||
     installationDetails.installationType === InstallationType.AllElectricDuo;
@@ -73,28 +71,35 @@ export function InstallationDetail({
     <div className={classes["detail-sections"]}>
       <div className={classes["detail-sections-health"]}>
         <span className={classes["order-number"]}>
-          {installationUuid} - {installationDetails.country}
+          {installationUuid} - {installationDetails.country} -{" "}
+          {installationDetails.installationType}
         </span>
-        <div className={classes["detail-section"]}>
-          <DetailSectionHeader title="🏥 Health checks" />
-          <InstallationHealthChecks
-            installationUuid={installationUuid}
-            isAllE={isAllE}
-            cicId={installationDetails.activeCic}
-            thermostatType={installationDetails.thermostatType}
-            deviceConnectionStatuses={
-              installationDetails.deviceConnectionStatuses
-            }
-            internetConnectionStatuses={
-              installationDetails.internetConnectionStatuses
-            }
-            boilerType={installationDetails.boilerType}
-            numberOfHeatPumps={installationDetails.numberOfHeatPumps}
-          />
-        </div>
+        {installationDetails.activeCic && (
+          <div className={classes["detail-section"]}>
+            <DetailSectionHeader title="🏥 Health checks" />
+            <InstallationHealthChecks
+              installationUuid={installationUuid}
+              isAllE={isAllE}
+              cicId={installationDetails.activeCic}
+              thermostatType={installationDetails.thermostatType}
+              deviceConnectionStatuses={
+                installationDetails.deviceConnectionStatuses
+              }
+              internetConnectionStatuses={
+                installationDetails.internetConnectionStatuses
+              }
+              boilerType={installationDetails.boilerType}
+              numberOfHeatPumps={installationDetails.numberOfHeatPumps}
+            />
+          </div>
+        )}
 
         <InstallationDetailNotes installationId={installationId} />
         <InstallationDetailHouseDetails installation={installationDetails} />
+        {installationDetails.installationType ===
+          InstallationType.HomeBattery && (
+          <InstallationDetailHomeBattery installation={installationDetails} />
+        )}
         <InstallationDetailExtraInformation
           installation={installationDetails}
         />
@@ -115,8 +120,14 @@ export function InstallationDetail({
           cicId={installationDetails.activeCic}
           quattBuild={installationDetails.quattBuild}
         />
-        <InstallationDetailSettingsHistory installation={installationDetails} />
-        <InstallationDetailSettings installation={installationDetails} />
+        {installationDetails.activeCic && (
+          <>
+            <InstallationDetailSettingsHistory
+              installation={installationDetails}
+            />
+            <InstallationDetailSettings installation={installationDetails} />
+          </>
+        )}
       </div>
 
       <div className={classes["detail-sections-api"]}>
@@ -129,8 +140,12 @@ export function InstallationDetail({
           zuperJobsError={zuperJobsError}
           refetch={refetchZuperJobs}
         />
-        <InstallationDetailTariff installationId={installationId} />
-        <InstallationDetailCICQR cicId={installationDetails.activeCic} />
+        {installationDetails.activeCic && (
+          <>
+            <InstallationDetailTariff installationId={installationId} />
+            <InstallationDetailCICQR cicId={installationDetails.activeCic} />
+          </>
+        )}
       </div>
     </div>
   );
