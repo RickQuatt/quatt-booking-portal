@@ -26,9 +26,9 @@ This is the Quatt Support Dashboard - a React TypeScript application for interna
 
 ### API Client Management
 
-- `npm run api:generate-client` - Generate API client from OpenAPI spec (requires Quatt-cloud repo path)
+- `npm run api:generate-client` - Generate API client from OpenAPI spec (requires Quatt-cloud repo path). By default the path is set correctly.
 - `npm run api:clean-models` - Remove unused API models based on .openapi-generator-ignore
-- `npm run api:generate-and-clean` - Run both API generation and cleanup in sequence
+- `npm run api:generate-and-clean` - Run both API generation and cleanup in sequence. This should be the default used when updating the API client.
 
 Example: `./generate-api-client.sh ../Quatt-cloud`
 
@@ -159,4 +159,31 @@ The API client is auto-generated from the main Quatt-cloud OpenAPI specification
 - **JSON Parsing**: Use `useMemo` for expensive operations like JSON formatting to prevent re-computation on every render
 - **JSON Display**: Use `@uiw/react-json-view` for interactive JSON visualization with syntax highlighting and collapsible nodes
 
-- memorize always use QPD-152 as parent when creating bugs
+=======
+
+## Jira Configuration
+
+### Creating Jira Tickets
+
+When creating Jira tickets, use these default values to avoid unnecessary queries:
+
+- **Cloud ID**: `e00d2e3c-9946-4be6-b81a-0bb231fc50c7`
+- **Default Project**: `QPD` (Quatt Product Development)
+- **Default Parent for Bugs**: `QPD-152` (Production Incidents/Maintenance - App/Backend)
+- **Available Issue Types to use**: Bug, Task,
+- **Jira Team**: quatt-team
+- **always return the jira url when creating a ticket**: https://quatt-team.atlassian.net/browse/{issueId}
+
+Example bug creation command:
+
+```
+Project: QPD
+Issue Type: Bug
+Parent: QPD-152
+Summary: [description]
+```
+
+When implementing a feature, always start by creating a new git branch from `develop` with the the naming convention QPD-{issueId}-{short-description}.
+Example: `QPD-1234-fix-mqtt-debugger`
+
+When creating a pull request, always have `develop` as the target branch and include the issueId in the title of the PR.
