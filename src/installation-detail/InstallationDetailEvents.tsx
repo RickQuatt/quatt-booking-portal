@@ -89,7 +89,11 @@ export function InstallationDetailEvents({
                         }}
                         className={classes["event-card"]}
                         key={event.eventId}
-                        onClick={() => handleEventClick(event.url)}
+                        onClick={
+                          event.url
+                            ? () => handleEventClick(event.url)
+                            : undefined
+                        }
                       >
                         <div className={classes["detail-section-bold"]}>
                           {getEventTypeEmoji(event.eventType)} {event.title}
@@ -122,6 +126,12 @@ export function InstallationDetailEvents({
                           <button
                             className={classes["event-expand-button"]}
                             onClick={(e) => toggleExpand(event.eventId, e)}
+                            aria-expanded={isExpanded}
+                            aria-label={
+                              isExpanded
+                                ? "Show less event details"
+                                : "Show more event details"
+                            }
                           >
                             {isExpanded ? "Show less" : "Show more"}
                           </button>

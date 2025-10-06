@@ -150,7 +150,7 @@
 
 .event-expand-button {
   margin-top: 8px;
-  color: #0066cc;
+  color: var(--primary-color);
   background: none;
   border: none;
   padding: 0;
@@ -160,7 +160,7 @@
 }
 
 .event-expand-button:hover {
-  color: #0052a3;
+  opacity: 0.8;
 }
 
 .event-date {
