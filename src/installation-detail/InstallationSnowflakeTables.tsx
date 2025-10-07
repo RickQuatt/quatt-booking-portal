@@ -118,42 +118,54 @@ export function InstallationSnowflakeTables({
     );
   };
 
+  const filteredHealth = health.filter((item) => item.key !== "RELATED_IDS");
+  const filteredInfo = info.filter((item) => item.key !== "RELATED_IDS");
+  const filteredConnections = connections.filter(
+    (item) => item.key !== "RELATED_IDS",
+  );
+
   return (
     <>
       {/* Snowflake Health Checks Section */}
       <div className={classes["panel"]}>
         <DetailSectionHeader title="🏥 Snowflake Health checks" />
-        <table className={classes["table"]}>
-          <tbody>
-            {health
-              .filter((item) => item.key !== "RELATED_IDS")
-              .map(renderTableRow)}
-          </tbody>
-        </table>
+        {filteredHealth.length === 0 ? (
+          <div className={classes["empty-message"]}>
+            No information received from Snowflake
+          </div>
+        ) : (
+          <table className={classes["table"]}>
+            <tbody>{filteredHealth.map(renderTableRow)}</tbody>
+          </table>
+        )}
       </div>
 
       {/* Snowflake Info Section */}
       <div className={classes["panel"]}>
         <DetailSectionHeader title="🔍 Snowflake Info" />
-        <table className={classes["table"]}>
-          <tbody>
-            {info
-              .filter((item) => item.key !== "RELATED_IDS")
-              .map(renderTableRow)}
-          </tbody>
-        </table>
+        {filteredInfo.length === 0 ? (
+          <div className={classes["empty-message"]}>
+            No information received from Snowflake
+          </div>
+        ) : (
+          <table className={classes["table"]}>
+            <tbody>{filteredInfo.map(renderTableRow)}</tbody>
+          </table>
+        )}
       </div>
 
       {/* Snowflake Connections Section */}
       <div className={classes["panel"]}>
         <DetailSectionHeader title="🔗 Snowflake Connections" />
-        <table className={classes["table"]}>
-          <tbody>
-            {connections
-              .filter((item) => item.key !== "RELATED_IDS")
-              .map(renderConnectionRow)}
-          </tbody>
-        </table>
+        {filteredConnections.length === 0 ? (
+          <div className={classes["empty-message"]}>
+            No information received from Snowflake
+          </div>
+        ) : (
+          <table className={classes["table"]}>
+            <tbody>{filteredConnections.map(renderConnectionRow)}</tbody>
+          </table>
+        )}
       </div>
     </>
   );
