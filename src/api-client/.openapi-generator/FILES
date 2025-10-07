@@ -105,6 +105,7 @@ models/Error1.ts
 models/ErrorCode.ts
 models/ErrorResponseResult.ts
 models/Event.ts
+models/EventType.ts
 models/FinishIdentificationTestRequest.ts
 models/FlowTemperatureSensorDevice.ts
 models/ForgetWifiMeCicRequest.ts

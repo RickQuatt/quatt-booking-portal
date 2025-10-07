@@ -346,6 +346,9 @@ models/AdminCicAllOfInProgressCommissioningRef.ts
 !models/Event.ts
 !models/EventFromJSON.ts
 !models/EventToJSON.ts
+!models/EventType.ts
+!models/EventTypeFromJSON.ts
+!models/EventTypeToJSON.ts
 !models/AdminGetInstallationEvents200Response.ts
 !models/AdminGetInstallationEvents200ResponseFromJSON.ts
 !models/AdminGetInstallationEvents200ResponseToJSON.ts

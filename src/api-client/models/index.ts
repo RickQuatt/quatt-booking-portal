@@ -106,6 +106,7 @@ export * from "./Error1";
 export * from "./ErrorCode";
 export * from "./ErrorResponseResult";
 export * from "./Event";
+export * from "./EventType";
 export * from "./FinishIdentificationTestRequest";
 export * from "./FlowTemperatureSensorDevice";
 export * from "./ForgetWifiMeCicRequest";

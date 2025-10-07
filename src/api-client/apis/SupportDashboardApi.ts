@@ -46,6 +46,7 @@ import type {
   CreateUpdateNote,
   DeleteTariffForInstallation409Response,
   Error1,
+  EventType,
   ForgetWifiMeCicRequest,
   GetAdminDynamicPrices200Response,
   GetAllTariffs200Response,
@@ -130,6 +131,8 @@ import {
   DeleteTariffForInstallation409ResponseToJSON,
   Error1FromJSON,
   Error1ToJSON,
+  EventTypeFromJSON,
+  EventTypeToJSON,
   ForgetWifiMeCicRequestFromJSON,
   ForgetWifiMeCicRequestToJSON,
   GetAdminDynamicPrices200ResponseFromJSON,
@@ -314,6 +317,7 @@ export interface AdminGetInstallationEventsRequest {
   installationUuid: string;
   xClientVersion?: string;
   xClientPlatform?: AdminGetInstallationEventsXClientPlatformEnum;
+  eventType?: EventType;
 }
 
 export interface AdminGetInstallationNotesRequest {
@@ -2294,6 +2298,10 @@ export class SupportDashboardApi extends runtime.BaseAPI {
     }
 
     const queryParameters: any = {};
+
+    if (requestParameters.eventType !== undefined) {
+      queryParameters["eventType"] = requestParameters.eventType;
+    }
 
     const headerParameters: runtime.HTTPHeaders = {};
 
