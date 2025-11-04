@@ -233,11 +233,8 @@ export const onRequest = async (context: {
       });
     }
 
-    // Block ALL other paths including /assets/*
-    return new Response("Unauthorized - Please login first", {
-      status: 401,
-      headers: { "Content-Type": "text/plain" },
-    });
+    // Block ALL other paths including /assets/* - redirect to login
+    return Response.redirect(new URL("/", request.url), 303);
   }
 
   // Get session secret from environment
