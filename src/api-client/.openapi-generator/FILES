@@ -47,11 +47,13 @@ models/AppCompatibilityGet200ResponseResult.ts
 models/AppSettingsGet200Response.ts
 models/AppSettingsGet200ResponseResult.ts
 models/AppSettingsGet200ResponseResultTariffCOPValidation.ts
+models/BaseChillMetrics.ts
 models/BaseCommissioningAction.ts
 models/BaseCommissioningTest.ts
 models/BoilerDevice.ts
 models/BoilerType.ts
 models/ChillDevice.ts
+models/ChillRunningMode.ts
 models/Cic.ts
 models/CicAggregate.ts
 models/CicAggregateByCategory.ts

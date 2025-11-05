@@ -23,6 +23,7 @@ import { InstallationDetailZuperService } from "./InstallationDetailZuperService
 import { InstallationLatestCommissioning } from "./InstallationLatestCommissioning";
 import { InstallationDetailEvents } from "./InstallationDetailEvents";
 import { InstallationDetailHomeBattery } from "./InstallationDetailHomeBattery";
+import { InstallationDetailChillDevices } from "./InstallationDetailChillDevices";
 import { InstallationSnowflakeTables } from "./InstallationSnowflakeTables";
 import { getInstallationTypeEmoji } from "../utils/installationTypeEmojiMapper";
 
@@ -106,6 +107,7 @@ export function InstallationDetail({
           InstallationType.HomeBattery && (
           <InstallationDetailHomeBattery installation={installationDetails} />
         )}
+        <InstallationDetailChillDevices installation={installationDetails} />
         <InstallationDetailExtraInformation
           installation={installationDetails}
         />
