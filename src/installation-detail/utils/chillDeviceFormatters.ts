@@ -20,27 +20,6 @@ export function formatRunningMode(
 }
 
 /**
- * Format fan mode enum to readable text
- * ChillFanMode: 0=auto, 1=low, 2=high
- */
-export function formatFanMode(mode: number): string {
-  const fanModes: Record<number, string> = {
-    0: "Auto",
-    1: "Low",
-    2: "High",
-  };
-  return fanModes[mode] || `Mode ${mode}`;
-}
-
-/**
- * Format four-way valve state to operating mode
- * false = cooling mode, true = heating mode
- */
-export function formatFourWayValve(enabled: boolean): string {
-  return enabled ? "🟥 Heating Mode" : "🟦 Cooling Mode";
-}
-
-/**
  * Format temperature with °C suffix
  */
 export function formatTemperature(
@@ -66,19 +45,6 @@ export function formatPercentage(
 ): string | null {
   if (value === null || value === undefined) return null;
   return `${value}%`;
-}
-
-/**
- * Format Unix timestamp (milliseconds) to readable date/time
- */
-export function formatTimestamp(timestamp: number | null): string {
-  if (timestamp === null) return "N/A";
-  try {
-    const date = new Date(timestamp);
-    return format(date, "PPpp");
-  } catch (error) {
-    return "Invalid timestamp";
-  }
 }
 
 /**
