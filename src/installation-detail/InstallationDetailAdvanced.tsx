@@ -27,11 +27,13 @@ export function InstallationDetailAdvanced({
   zuperInstallationJobs?: ZuperService[];
   isLoadingZuperJobs: boolean;
 }) {
-  const { activeCic, hubspotDealId, menderId } = installation;
-  const hubspotDealLink = getHubspotDealLink(hubspotDealId);
-  const hubspotDealText = hubspotDealLink
-    ? "Hubspot - Deal"
-    : "Hubspot - No deal";
+  const { activeCic, hubspotDealId, menderId, houseId } = installation;
+  const hubspotDealLink = getHubspotDealLink(hubspotDealId, houseId);
+  const hubspotDealText = houseId
+    ? "Hubspot - House"
+    : hubspotDealId
+      ? "Hubspot - Deal"
+      : "Hubspot - No deal";
 
   const isAllElectric =
     installation.installationType === InstallationType.AllElectric ||

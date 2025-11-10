@@ -64,13 +64,22 @@ export function getHubspotSearchOrderLink(orderNumber: string) {
   return `https://app-eu1.hubspot.com/contacts/25848718/objects/0-3/views/all/list?query="${orderNumber}"`;
 }
 
-export function getHubspotDealLink(hubspotDealId: string | null) {
+export function getHubspotDealLink(
+  hubspotDealId: string | null,
+  houseId: string | null,
+) {
   const env = getEnvironment();
 
   if (env.isLocal || env.isDevelopment || env.isStaging) {
+    if (houseId) {
+      return `https://app-eu1.hubspot.com/contacts/139510613/record/2-138964309/${houseId}`;
+    }
     return hubspotDealId
       ? `https://app-eu1.hubspot.com/contacts/139510613/record/0-3/${hubspotDealId}`
       : undefined;
+  }
+  if (houseId) {
+    return `https://app-eu1.hubspot.com/contacts/25848718/record/2-138343985/${houseId}`;
   }
   return hubspotDealId
     ? `https://app-eu1.hubspot.com/contacts/25848718/record/0-3/${hubspotDealId}`
