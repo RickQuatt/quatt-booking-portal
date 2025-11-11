@@ -33,7 +33,6 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [user, setUser] = useState<User | null>(null);
 
-  console.log("Setting up auth state listener", user);
   useEffect(() => {
     let mounted = true;
     let unsubscribe: (() => void) | undefined;
@@ -54,7 +53,6 @@ function App() {
       }
 
       // Pure Vite mode (npm run dev) - use Firebase auth as usual
-      console.log("No session cookie - using Firebase auth");
       unsubscribe = auth.onAuthStateChanged(async (user) => {
         if (!mounted) return;
 

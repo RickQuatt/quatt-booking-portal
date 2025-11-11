@@ -34,8 +34,6 @@ models/AdminGetInstallationZuperJobs200Response.ts
 models/AdminGetZuperJobsByInstallationUuid200Response.ts
 models/AdminInstallationDetail.ts
 models/AdminInstallationDetailAllOfCicCommissioning.ts
-models/AdminInstallationsList.ts
-models/AdminInstallationsList200Response.ts
 models/AdminListCics200Response.ts
 models/AdminListCics200ResponseResult.ts
 models/AdminListInstallers200Response.ts
@@ -74,6 +72,7 @@ models/CommissioningActionType.ts
 models/CommissioningAllOfPrerequisites.ts
 models/CommissioningAllOfPrerequisitesCic.ts
 models/CommissioningAllOfPrerequisitesDevices.ts
+models/CommissioningPrerequisiteDetails.ts
 models/CommissioningTestType.ts
 models/CompleteCommissioning200Response.ts
 models/ConnectionStatus.ts
@@ -94,6 +93,7 @@ models/CreateUpdateNote.ts
 models/CreateUpdateSingleTariff.ts
 models/DeleteTariffForInstallation409Response.ts
 models/DeleteTariffForInstallation409ResponseAllOfResult.ts
+models/DetailedInstallationType.ts
 models/Device.ts
 models/DeviceConnectionStatuses.ts
 models/DeviceStatus.ts
@@ -189,6 +189,8 @@ models/TariffsResult.ts
 models/TariffsResultCurrentTariff.ts
 models/ThermostatDevice.ts
 models/ThermostatType.ts
+models/ThreadCommissioningPrerequisiteDetails.ts
+models/ThreadDeviceUpdateState.ts
 models/Ticket.ts
 models/TicketHsPipelineStage.ts
 models/TicketHubspotOwnerId.ts

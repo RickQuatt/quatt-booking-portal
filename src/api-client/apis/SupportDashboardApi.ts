@@ -33,7 +33,6 @@ import type {
   AdminGetInstallationTickets200Response,
   AdminGetInstallationZuperJobs200Response,
   AdminGetZuperJobsByInstallationUuid200Response,
-  AdminInstallationsList200Response,
   AdminListCics200Response,
   AdminListInstallers200Response,
   AdminRebootDeviceRequest,
@@ -106,8 +105,6 @@ import {
   AdminGetInstallationZuperJobs200ResponseToJSON,
   AdminGetZuperJobsByInstallationUuid200ResponseFromJSON,
   AdminGetZuperJobsByInstallationUuid200ResponseToJSON,
-  AdminInstallationsList200ResponseFromJSON,
-  AdminInstallationsList200ResponseToJSON,
   AdminListCics200ResponseFromJSON,
   AdminListCics200ResponseToJSON,
   AdminListInstallers200ResponseFromJSON,
@@ -423,26 +420,6 @@ export interface AdminInstallationInstallationUuidSnowflakeinfoOptionsRequest {
 export interface AdminInstallationInstallationUuidZuperJobsOptionsRequest {
   installationUuid: string;
   orderNumber?: string;
-}
-
-export interface AdminInstallationListOptionsRequest {
-  orderNumber?: string;
-  cicId?: string;
-  installationUuid?: string;
-  zipCode?: string;
-  houseNumber?: string;
-  houseAddition?: string;
-}
-
-export interface AdminInstallationsListRequest {
-  xClientVersion?: string;
-  xClientPlatform?: AdminInstallationsListXClientPlatformEnum;
-  orderNumber?: string;
-  cicId?: string;
-  installationUuid?: string;
-  zipCode?: string;
-  houseNumber?: string;
-  houseAddition?: string;
 }
 
 export interface AdminInstallerOptionsRequest {
@@ -3688,155 +3665,6 @@ export class SupportDashboardApi extends runtime.BaseAPI {
 
   /**
    */
-  async adminInstallationListOptionsRaw(
-    requestParameters: AdminInstallationListOptionsRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<void>> {
-    const queryParameters: any = {};
-
-    if (requestParameters.orderNumber !== undefined) {
-      queryParameters["orderNumber"] = requestParameters.orderNumber;
-    }
-
-    if (requestParameters.cicId !== undefined) {
-      queryParameters["cicId"] = requestParameters.cicId;
-    }
-
-    if (requestParameters.installationUuid !== undefined) {
-      queryParameters["installationUuid"] = requestParameters.installationUuid;
-    }
-
-    if (requestParameters.zipCode !== undefined) {
-      queryParameters["zipCode"] = requestParameters.zipCode;
-    }
-
-    if (requestParameters.houseNumber !== undefined) {
-      queryParameters["houseNumber"] = requestParameters.houseNumber;
-    }
-
-    if (requestParameters.houseAddition !== undefined) {
-      queryParameters["houseAddition"] = requestParameters.houseAddition;
-    }
-
-    const headerParameters: runtime.HTTPHeaders = {};
-
-    const response = await this.request(
-      {
-        path: `/admin/installation/list`,
-        method: "OPTIONS",
-        headers: headerParameters,
-        query: queryParameters,
-      },
-      initOverrides,
-    );
-
-    return new runtime.VoidApiResponse(response);
-  }
-
-  /**
-   */
-  async adminInstallationListOptions(
-    requestParameters: AdminInstallationListOptionsRequest = {},
-    initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<void> {
-    await this.adminInstallationListOptionsRaw(
-      requestParameters,
-      initOverrides,
-    );
-  }
-
-  /**
-   * Installations list
-   */
-  async adminInstallationsListRaw(
-    requestParameters: AdminInstallationsListRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<runtime.ApiResponse<AdminInstallationsList200Response>> {
-    const queryParameters: any = {};
-
-    if (requestParameters.orderNumber !== undefined) {
-      queryParameters["orderNumber"] = requestParameters.orderNumber;
-    }
-
-    if (requestParameters.cicId !== undefined) {
-      queryParameters["cicId"] = requestParameters.cicId;
-    }
-
-    if (requestParameters.installationUuid !== undefined) {
-      queryParameters["installationUuid"] = requestParameters.installationUuid;
-    }
-
-    if (requestParameters.zipCode !== undefined) {
-      queryParameters["zipCode"] = requestParameters.zipCode;
-    }
-
-    if (requestParameters.houseNumber !== undefined) {
-      queryParameters["houseNumber"] = requestParameters.houseNumber;
-    }
-
-    if (requestParameters.houseAddition !== undefined) {
-      queryParameters["houseAddition"] = requestParameters.houseAddition;
-    }
-
-    const headerParameters: runtime.HTTPHeaders = {};
-
-    if (
-      requestParameters.xClientVersion !== undefined &&
-      requestParameters.xClientVersion !== null
-    ) {
-      headerParameters["X-Client-Version"] = String(
-        requestParameters.xClientVersion,
-      );
-    }
-
-    if (
-      requestParameters.xClientPlatform !== undefined &&
-      requestParameters.xClientPlatform !== null
-    ) {
-      headerParameters["X-Client-Platform"] = String(
-        requestParameters.xClientPlatform,
-      );
-    }
-
-    if (this.configuration && this.configuration.accessToken) {
-      const token = this.configuration.accessToken;
-      const tokenString = await token("bearerAuth", []);
-
-      if (tokenString) {
-        headerParameters["Authorization"] = `Bearer ${tokenString}`;
-      }
-    }
-    const response = await this.request(
-      {
-        path: `/admin/installation/list`,
-        method: "GET",
-        headers: headerParameters,
-        query: queryParameters,
-      },
-      initOverrides,
-    );
-
-    return new runtime.JSONApiResponse(response, (jsonValue) =>
-      AdminInstallationsList200ResponseFromJSON(jsonValue),
-    );
-  }
-
-  /**
-   * Installations list
-   */
-  async adminInstallationsList(
-    requestParameters: AdminInstallationsListRequest = {},
-    initOverrides?: RequestInit | runtime.InitOverrideFunction,
-  ): Promise<AdminInstallationsList200Response> {
-    const response = await this.adminInstallationsListRaw(
-      requestParameters,
-      initOverrides,
-    );
-    return await response.value();
-  }
-
-  /**
-   */
   async adminInstallerInstallerIdOptionsRaw(
     initOverrides?: RequestInit | runtime.InitOverrideFunction,
   ): Promise<runtime.ApiResponse<void>> {
@@ -5449,16 +5277,6 @@ export const AdminInstallationInstallationIdTariffOptionsXClientPlatformEnum = {
 } as const;
 export type AdminInstallationInstallationIdTariffOptionsXClientPlatformEnum =
   (typeof AdminInstallationInstallationIdTariffOptionsXClientPlatformEnum)[keyof typeof AdminInstallationInstallationIdTariffOptionsXClientPlatformEnum];
-/**
- * @export
- */
-export const AdminInstallationsListXClientPlatformEnum = {
-  Ios: "ios",
-  Android: "android",
-  Web: "web",
-} as const;
-export type AdminInstallationsListXClientPlatformEnum =
-  (typeof AdminInstallationsListXClientPlatformEnum)[keyof typeof AdminInstallationsListXClientPlatformEnum];
 /**
  * @export
  */

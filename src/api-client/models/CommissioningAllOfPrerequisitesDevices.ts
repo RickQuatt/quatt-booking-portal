@@ -13,18 +13,18 @@
  */
 
 import { exists, mapValues } from "../runtime";
+import type { CommissioningPrerequisiteDetails } from "./CommissioningPrerequisiteDetails";
+import {
+  CommissioningPrerequisiteDetailsFromJSON,
+  CommissioningPrerequisiteDetailsFromJSONTyped,
+  CommissioningPrerequisiteDetailsToJSON,
+} from "./CommissioningPrerequisiteDetails";
 import type { DeviceType } from "./DeviceType";
 import {
   DeviceTypeFromJSON,
   DeviceTypeFromJSONTyped,
   DeviceTypeToJSON,
 } from "./DeviceType";
-import type { HeatChargerCommissioningPrerequisiteDetails } from "./HeatChargerCommissioningPrerequisiteDetails";
-import {
-  HeatChargerCommissioningPrerequisiteDetailsFromJSON,
-  HeatChargerCommissioningPrerequisiteDetailsFromJSONTyped,
-  HeatChargerCommissioningPrerequisiteDetailsToJSON,
-} from "./HeatChargerCommissioningPrerequisiteDetails";
 
 /**
  *
@@ -64,10 +64,10 @@ export interface CommissioningAllOfPrerequisitesDevices {
   notReadyReasons: Array<string>;
   /**
    *
-   * @type {HeatChargerCommissioningPrerequisiteDetails}
+   * @type {CommissioningPrerequisiteDetails}
    * @memberof CommissioningAllOfPrerequisitesDevices
    */
-  commissioningPrerequisiteDetails?: HeatChargerCommissioningPrerequisiteDetails | null;
+  commissioningPrerequisiteDetails?: CommissioningPrerequisiteDetails;
 }
 
 /**
@@ -109,7 +109,7 @@ export function CommissioningAllOfPrerequisitesDevicesFromJSONTyped(
       "commissioningPrerequisiteDetails",
     )
       ? undefined
-      : HeatChargerCommissioningPrerequisiteDetailsFromJSON(
+      : CommissioningPrerequisiteDetailsFromJSON(
           json["commissioningPrerequisiteDetails"],
         ),
   };
@@ -130,9 +130,8 @@ export function CommissioningAllOfPrerequisitesDevicesToJSON(
     name: value.name,
     isReadyForCommissioning: value.isReadyForCommissioning,
     notReadyReasons: value.notReadyReasons,
-    commissioningPrerequisiteDetails:
-      HeatChargerCommissioningPrerequisiteDetailsToJSON(
-        value.commissioningPrerequisiteDetails,
-      ),
+    commissioningPrerequisiteDetails: CommissioningPrerequisiteDetailsToJSON(
+      value.commissioningPrerequisiteDetails,
+    ),
   };
 }

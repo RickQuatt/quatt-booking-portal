@@ -37,6 +37,12 @@ import {
   CountryFromJSONTyped,
   CountryToJSON,
 } from "./Country";
+import type { DetailedInstallationType } from "./DetailedInstallationType";
+import {
+  DetailedInstallationTypeFromJSON,
+  DetailedInstallationTypeFromJSONTyped,
+  DetailedInstallationTypeToJSON,
+} from "./DetailedInstallationType";
 import type { Device } from "./Device";
 import { DeviceFromJSON, DeviceFromJSONTyped, DeviceToJSON } from "./Device";
 import type { DeviceConnectionStatuses } from "./DeviceConnectionStatuses";
@@ -384,6 +390,12 @@ export interface AdminInstallationDetail {
   cicState: Array<AdminCicState>;
   /**
    *
+   * @type {DetailedInstallationType}
+   * @memberof AdminInstallationDetail
+   */
+  type: DetailedInstallationType | null;
+  /**
+   *
    * @type {Array<AdminInstallationDetailAllOfCicCommissioning>}
    * @memberof AdminInstallationDetail
    */
@@ -465,6 +477,7 @@ export function instanceOfAdminInstallationDetail(value: object): boolean {
   isInstance = isInstance && "houseId" in value;
   isInstance = isInstance && "houseAddition" in value;
   isInstance = isInstance && "cicState" in value;
+  isInstance = isInstance && "type" in value;
   isInstance = isInstance && "cicCommissioning" in value;
   isInstance = isInstance && "settingsUpdates" in value;
   isInstance = isInstance && "deviceConnectionStatuses" in value;
@@ -548,6 +561,7 @@ export function AdminInstallationDetailFromJSONTyped(
     houseId: json["houseId"],
     houseAddition: json["houseAddition"],
     cicState: (json["cicState"] as Array<any>).map(AdminCicStateFromJSON),
+    type: DetailedInstallationTypeFromJSON(json["type"]),
     cicCommissioning: (json["cicCommissioning"] as Array<any>).map(
       AdminInstallationDetailAllOfCicCommissioningFromJSON,
     ),
@@ -635,6 +649,7 @@ export function AdminInstallationDetailToJSON(
     houseId: value.houseId,
     houseAddition: value.houseAddition,
     cicState: (value.cicState as Array<any>).map(AdminCicStateToJSON),
+    type: DetailedInstallationTypeToJSON(value.type),
     cicCommissioning: (value.cicCommissioning as Array<any>).map(
       AdminInstallationDetailAllOfCicCommissioningToJSON,
     ),
