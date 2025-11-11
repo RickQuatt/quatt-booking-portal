@@ -370,6 +370,8 @@ models/AdminCicAllOfInProgressCommissioningRef.ts
 !models/DeviceStatus.ts
 !models/BoilerDevice.ts
 !models/ChillDevice.ts
+!models/BaseChillMetrics.ts
+!models/ChillRunningMode.ts
 !models/DongleDevice.ts
 !models/FlowTemperatureSensorDevice.ts
 !models/HeatBatteryDevice.ts

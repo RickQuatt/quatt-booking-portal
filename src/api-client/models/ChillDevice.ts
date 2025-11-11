@@ -13,6 +13,12 @@
  */
 
 import { exists, mapValues } from "../runtime";
+import type { BaseChillMetrics } from "./BaseChillMetrics";
+import {
+  BaseChillMetricsFromJSON,
+  BaseChillMetricsFromJSONTyped,
+  BaseChillMetricsToJSON,
+} from "./BaseChillMetrics";
 import type { DeviceStatus } from "./DeviceStatus";
 import {
   DeviceStatusFromJSON,
@@ -62,6 +68,30 @@ export interface ChillDevice {
    * @memberof ChillDevice
    */
   type: ChillDeviceTypeEnum;
+  /**
+   * Chill device serial number
+   * @type {string}
+   * @memberof ChillDevice
+   */
+  serialNumber: string;
+  /**
+   * Thread network hardware identifier (EUI-64)
+   * @type {string}
+   * @memberof ChillDevice
+   */
+  eui64: string;
+  /**
+   * PCB hardware version
+   * @type {string}
+   * @memberof ChillDevice
+   */
+  pcbHwVersion: string;
+  /**
+   *
+   * @type {BaseChillMetrics}
+   * @memberof ChillDevice
+   */
+  metrics?: BaseChillMetrics;
 }
 
 /**
@@ -81,6 +111,9 @@ export function instanceOfChillDevice(value: object): boolean {
   isInstance = isInstance && "uuid" in value;
   isInstance = isInstance && "status" in value;
   isInstance = isInstance && "type" in value;
+  isInstance = isInstance && "serialNumber" in value;
+  isInstance = isInstance && "eui64" in value;
+  isInstance = isInstance && "pcbHwVersion" in value;
 
   return isInstance;
 }
@@ -105,6 +138,12 @@ export function ChillDeviceFromJSONTyped(
       ? undefined
       : json["installationUuid"],
     type: json["type"],
+    serialNumber: json["serialNumber"],
+    eui64: json["eui64"],
+    pcbHwVersion: json["pcbHwVersion"],
+    metrics: !exists(json, "metrics")
+      ? undefined
+      : BaseChillMetricsFromJSON(json["metrics"]),
   };
 }
 
@@ -122,5 +161,9 @@ export function ChillDeviceToJSON(value?: ChillDevice | null): any {
     status: DeviceStatusToJSON(value.status),
     installationUuid: value.installationUuid,
     type: value.type,
+    serialNumber: value.serialNumber,
+    eui64: value.eui64,
+    pcbHwVersion: value.pcbHwVersion,
+    metrics: BaseChillMetricsToJSON(value.metrics),
   };
 }

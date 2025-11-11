@@ -201,6 +201,7 @@ export const ErrorCode = {
     "COMMISSIONING_ALREADY_RUNNING_ON_INSTALLATION",
   NoDevicesConfigurationFound: "NO_DEVICES_CONFIGURATION_FOUND",
   MissingOnFailureConfiguration: "MISSING_ON_FAILURE_CONFIGURATION",
+  ThreadDeviceNotFound: "THREAD_DEVICE_NOT_FOUND",
 } as const;
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];
 
