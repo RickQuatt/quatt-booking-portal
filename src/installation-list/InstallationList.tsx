@@ -1,4 +1,3 @@
-import { AdminInstallationsList } from "../api-client/models";
 import {
   TBody,
   THead,
@@ -14,39 +13,94 @@ import { Link } from "wouter";
 import React from "react";
 import { InstallationFilters } from "./filters/types";
 import { usePaginate } from "../ui-components/pagination/usePaginate";
-import { CreatedAtFilter, UpdatedAtFilter } from "./filters/Filters";
+import {
+  CreatedAtFilter,
+  UpdatedAtFilter,
+  InstallationTypeFilter,
+} from "./filters/Filters";
 import { Pagination } from "../ui-components/pagination/Pagination";
 import { TextFilter } from "../ui-components/filter/TextFilter";
-import { useGetInstallationsList } from "./hooks/useGetInstallationsList";
 import { Loader } from "../ui-components/loader/Loader";
 import ErrorText from "../ui-components/error-text/ErrorText";
 import {
   getInstallationTypeEmoji,
   getInstallationTypeLabel,
 } from "../utils/installationTypeEmojiMapper";
+import client from "../openapi-client/client";
+import {
+  formatDateToYYYYMMDD,
+  applyFilterPrefixAndValidation,
+  validateMinLength,
+} from "./utils/filterUtils";
+import type { components } from "../openapi-client/types/api/v1";
+
+type AdminInstallation =
+  components["schemas"]["PaginatedInstallationList"]["installations"][number];
 
 export function InstallationList() {
   const [filters, setFilters] = React.useState<InstallationFilters>({});
-  const { installations, isLoading, error, refetchInstallations } =
-    useGetInstallationsList(
-      false,
-      filters.cicId,
-      filters.orderNumber,
-      filters.installationUuid,
-      filters.zipCode,
-      filters.houseNumber,
-      filters.houseAddition,
-    );
+  const [pagination, setPagination] = React.useState({
+    page: 1,
+    pageSize: 50,
+  });
 
-  const { paginatedItems, paginationRange, currentPage, changePage } =
-    usePaginate({
-      items: installations || [],
-      pageSize: 50,
-    });
+  // Build API query parameters with prefix logic and validation
+  const queryParams = React.useMemo(() => {
+    return {
+      page: pagination.page,
+      pageSize: pagination.pageSize,
+      // Apply auto-prefixing and minimum character requirements
+      cicId: applyFilterPrefixAndValidation(filters.cicId, "CIC-", 3),
+      orderNumber: applyFilterPrefixAndValidation(
+        filters.orderNumber,
+        "QUATT",
+        3,
+      ),
+      installationUuid: validateMinLength(filters.installationUuid, 3),
+      installationType: filters.installationType,
+      // Address filters with minimum character requirements
+      zipCode: validateMinLength(filters.zipCode, 3),
+      houseNumber: validateMinLength(filters.houseNumber, 1),
+      houseAddition: validateMinLength(filters.houseAddition, 1),
+      houseId: validateMinLength(filters.houseId, 3),
+      // Format dates to YYYY-MM-DD
+      createdAtStart: formatDateToYYYYMMDD(filters.minCreatedAt),
+      createdAtEnd: formatDateToYYYYMMDD(filters.maxCreatedAt),
+      updatedAtStart: formatDateToYYYYMMDD(filters.minUpdatedAt),
+      updatedAtEnd: formatDateToYYYYMMDD(filters.maxUpdatedAt),
+    };
+  }, [filters, pagination]);
 
-  const noInstallationsFound = installations && installations.length === 0;
+  // Use new openapi-react-query client
+  const { data, isLoading, error } = client.useQuery(
+    "get",
+    "/admin/installation/list",
+    {
+      params: {
+        query: queryParams,
+      },
+    },
+  );
 
-  const isDirty = filters.cicId || filters.orderNumber;
+  const installations = data?.result?.installations || [];
+  const total = data?.result?.total || 0;
+
+  // Reset to page 1 when filters change
+  React.useEffect(() => {
+    setPagination((prev) => ({ ...prev, page: 1 }));
+  }, [filters]);
+
+  // Client-side pagination for UI (using server-paginated data)
+  const { paginationRange, currentPage, changePage } = usePaginate({
+    items: installations,
+    pageSize: pagination.pageSize,
+    total: total, // Use server total for accurate pagination
+  });
+
+  const noInstallationsFound = !isLoading && installations.length === 0;
+
+  const isDirty =
+    filters.cicId || filters.orderNumber || filters.installationType;
   const installationUuidPlaceholder = isDirty
     ? ""
     : "e.g. INS-f804fb98-664b-4c94-ba01-38579323b34c";
@@ -58,6 +112,7 @@ export function InstallationList() {
   const zipCodePlaceholder = isDirty ? "" : "e.g. 1111AB";
   const houseNumberPlaceholder = isDirty ? "" : "e.g. 123";
   const additionPlaceholder = isDirty ? "" : "e.g. 1";
+  const houseIdPlaceholder = isDirty ? "" : "e.g. 12345";
 
   return (
     <div className={classes.page}>
@@ -100,6 +155,9 @@ export function InstallationList() {
             <Th>
               <TdText>House addition</TdText>
             </Th>
+            <Th>
+              <TdText>House ID</TdText>
+            </Th>
 
             <Th>
               <TdText>Active CIC</TdText>
@@ -112,7 +170,9 @@ export function InstallationList() {
             </Th>
           </Tr>
           <Tr>
-            <Th></Th>
+            <Th>
+              <InstallationTypeFilter setFilters={setFilters} />
+            </Th>
             <Th>
               <TextFilter
                 filterKey="installationUuid"
@@ -152,6 +212,13 @@ export function InstallationList() {
                 setFilters={setFilters}
               />
             </Th>
+            <Th>
+              <TextFilter
+                filterKey="houseId"
+                placeholder={houseIdPlaceholder}
+                setFilters={setFilters}
+              />
+            </Th>
 
             <Th>
               <TextFilter
@@ -169,7 +236,7 @@ export function InstallationList() {
           </Tr>
         </THead>
         <TBody>
-          {paginatedItems.map((installation, index) => (
+          {installations.map((installation, index) => (
             <InstallationRow key={index} installation={installation} />
           ))}
         </TBody>
@@ -183,21 +250,25 @@ export function InstallationList() {
         <ErrorText
           text="An error occurred while fetching the installations."
           error={error}
-          retry={refetchInstallations}
         />
       )}
-      <Pagination
-        paginationRange={paginationRange}
-        currentPage={currentPage}
-        changePage={changePage}
-      />
+      <div className={classes["pagination-container"]}>
+        <Pagination
+          paginationRange={paginationRange}
+          currentPage={currentPage}
+          changePage={(page) => {
+            changePage(page);
+            setPagination((prev) => ({ ...prev, page }));
+          }}
+        />
+      </div>
     </div>
   );
 
   function InstallationRow({
     installation,
   }: {
-    installation: AdminInstallationsList;
+    installation: AdminInstallation;
   }) {
     const installationDetailLink = `/installations/${installation.installationUuid}`;
     const cicDetailLink = `/cics/${installation.cicId}`;
@@ -238,13 +309,25 @@ export function InstallationList() {
         </Td>
 
         <Td>
+          <TdText>{installation.houseId}</TdText>
+        </Td>
+
+        <Td>
           <Link to={cicDetailLink}>{installation.cicId}</Link>
         </Td>
         <Td>
-          <TdText>{formatDate(installation.createdAt)}</TdText>
+          <TdText>
+            {installation.createdAt
+              ? formatDate(new Date(installation.createdAt))
+              : null}
+          </TdText>
         </Td>
         <Td>
-          <TdText>{formatDate(installation.updatedAt)}</TdText>
+          <TdText>
+            {installation.updatedAt
+              ? formatDate(new Date(installation.updatedAt))
+              : null}
+          </TdText>
         </Td>
       </Tr>
     );

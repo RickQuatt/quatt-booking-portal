@@ -16,7 +16,7 @@ import ErrorText from "../ui-components/error-text/ErrorText";
 import { ResponseError } from "../api-client/runtime";
 import { InstallationDetailTariff } from "./InstallationDetailTariff";
 import { InstallationDetailActions } from "./InstallationDetailActions";
-import { InstallationType } from "../api-client/models/InstallationType";
+import { DetailedInstallationType } from "../api-client/models/DetailedInstallationType";
 import { InstallationDetailAdvanced } from "./InstallationDetailAdvanced";
 import { useGetZuperJobs } from "./hooks/useGetZuperJobs";
 import { InstallationDetailZuperService } from "./InstallationDetailZuperService";
@@ -25,7 +25,10 @@ import { InstallationDetailEvents } from "./InstallationDetailEvents";
 import { InstallationDetailHomeBattery } from "./InstallationDetailHomeBattery";
 import { InstallationDetailChillDevices } from "./InstallationDetailChillDevices";
 import { InstallationSnowflakeTables } from "./InstallationSnowflakeTables";
-import { getInstallationTypeEmoji } from "../utils/installationTypeEmojiMapper";
+import {
+  getInstallationTypeEmoji,
+  getInstallationTypeLabel,
+} from "../utils/installationTypeEmojiMapper";
 
 interface InstallationDetailProps {
   installationUuid: string;
@@ -67,17 +70,15 @@ export function InstallationDetail({
 
   const installationId = installationDetails.externalId || "";
 
-  const isAllE =
-    installationDetails.installationType === InstallationType.AllElectric ||
-    installationDetails.installationType === InstallationType.AllElectricDuo;
-  const emoji = getInstallationTypeEmoji(installationDetails.installationType);
+  const isAllE = installationDetails.type?.includes("ALL_ELECTRIC") || false;
+  const emoji = getInstallationTypeEmoji(installationDetails.type);
   return (
     <div className={classes["detail-sections"]}>
       <div className={classes["detail-sections-health"]}>
         <span className={classes["order-number"]}>
           {installationUuid} - {installationDetails.country} -{" "}
           {emoji && `${emoji} `}
-          {installationDetails.installationType}
+          {getInstallationTypeLabel(installationDetails.type)}
         </span>
         {installationDetails.activeCic && (
           <div className={classes["detail-section"]}>
@@ -103,19 +104,19 @@ export function InstallationDetail({
 
         <InstallationDetailNotes installationId={installationId} />
         <InstallationDetailHouseDetails installation={installationDetails} />
-        {installationDetails.installationType ===
-          InstallationType.HomeBattery && (
+        {installationDetails.type === DetailedInstallationType.HomeBattery && (
           <InstallationDetailHomeBattery installation={installationDetails} />
         )}
-        <InstallationDetailChillDevices installation={installationDetails} />
         <InstallationDetailExtraInformation
           installation={installationDetails}
         />
+
         <InstallationDetailCicHistory installation={installationDetails} />
         <InstallationLatestCommissioning installation={installationDetails} />
         <InstallationDetailCommissioningHistory
           installation={installationDetails}
         />
+        <InstallationDetailChillDevices installation={installationDetails} />
       </div>
       <div className={classes["detail-sections-insights"]}>
         {/* TODO: implement Zuper changes */}

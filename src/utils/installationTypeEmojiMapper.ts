@@ -1,10 +1,11 @@
-import { InstallationType } from "../api-client/models/InstallationType";
-
+import { components } from "../openapi-client/types/api/v1";
 /**
  * Maps installation types to their corresponding emoji representations
  * @param type - The installation type to map
  * @returns The emoji string representing the installation type
  */
+
+type InstallationType = components["schemas"]["DetailedInstallationType"];
 export function getInstallationTypeEmoji(
   type: InstallationType | undefined,
 ): string {
@@ -13,20 +14,24 @@ export function getInstallationTypeEmoji(
   }
 
   switch (type) {
-    case InstallationType.Hybrid:
+    case "HYBRID_SINGLE":
       return "🔥⚡";
-    case InstallationType.HybridDuo:
+    case "HYBRID_DUO":
       return "🔥⚡⚡";
-    case InstallationType.AllElectric:
-      return "🚿⚡";
-    case InstallationType.AllElectricDuo:
-      return "🚿⚡⚡";
-    case InstallationType.HomeBattery:
-      return "🔋";
-    case InstallationType.Unknown:
-      return "❓";
-    default:
-      return "";
+    case "ALL_ELECTRIC_SINGLE":
+      return "🔋⚡";
+    case "ALL_ELECTRIC_DUO":
+      return "🔋⚡⚡";
+    case "CHILL_HYBRID_SINGLE":
+      return "❄️🔥⚡";
+    case "CHILL_HYBRID_DUO":
+      return "❄️🔥⚡⚡";
+    case "CHILL_ALL_ELECTRIC_SINGLE":
+      return "❄️🔋⚡";
+    case "CHILL_ALL_ELECTRIC_DUO":
+      return "❄️🔋⚡⚡";
+    case "HOME_BATTERY":
+      return "🏠🔋";
   }
 }
 
@@ -43,19 +48,25 @@ export function getInstallationTypeLabel(
   }
 
   switch (type) {
-    case InstallationType.Hybrid:
-      return "Hybrid";
-    case InstallationType.HybridDuo:
+    case "HYBRID_SINGLE":
+      return "Hybrid Single";
+    case "HYBRID_DUO":
       return "Hybrid Duo";
-    case InstallationType.AllElectric:
-      return "All Electric";
-    case InstallationType.AllElectricDuo:
+    case "ALL_ELECTRIC_SINGLE":
+      return "All Electric Single";
+    case "ALL_ELECTRIC_DUO":
       return "All Electric Duo";
-    case InstallationType.HomeBattery:
+    case "CHILL_HYBRID_SINGLE":
+      return "Chill Hybrid Single";
+    case "CHILL_HYBRID_DUO":
+      return "Chill Hybrid Duo";
+    case "CHILL_ALL_ELECTRIC_SINGLE":
+      return "Chill All Electric Single";
+    case "CHILL_ALL_ELECTRIC_DUO":
+      return "Chill All Electric Duo";
+    case "HOME_BATTERY":
       return "Home Battery";
-    case InstallationType.Unknown:
-      return "Unknown";
     default:
-      return "";
+      return "Unknown";
   }
 }

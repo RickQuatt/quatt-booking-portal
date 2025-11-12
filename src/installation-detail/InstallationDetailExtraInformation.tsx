@@ -13,6 +13,7 @@ import classes from "./InstallationDetail.module.css";
 import { DetailSectionHeader } from "../cic-detail/CICDetailSectionHeader";
 import { formatDateDistance, formatDateTimeString } from "../utils/formatDate";
 import { Link } from "wouter";
+import { getInstallationTypeLabel } from "../utils/installationTypeEmojiMapper";
 
 const installationTypeMap: {
   [key in InstallationType]: string;
@@ -55,9 +56,7 @@ export function InstallationDetailExtraInformation({
         </FormField>{" "}
         <FormField>
           <FormFieldTitle>Installation type</FormFieldTitle>
-          <FormFieldValue
-            value={installationTypeMap[installation.installationType]}
-          />
+          <FormFieldValue value={getInstallationTypeLabel(installation.type)} />
         </FormField>
         <FormField>
           <FormFieldTitle>

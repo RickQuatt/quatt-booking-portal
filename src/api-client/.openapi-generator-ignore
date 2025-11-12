@@ -93,8 +93,6 @@ models/*
 !models/AdminGetInstallationSnowflakeInfo200ResponseFromJSON.ts
 !models/AdminGetInstallationSnowflakeInfo200ResponseToJSON.ts
 !models/AdminInstallationDetail.ts
-!models/AdminInstallationsList.ts
-!models/AdminInstallationsList200Response.ts
 !models/CreateTariff200Response.ts
 !models/CreateTariffRequest.ts
 !models/CreateUpdateDoubleTariff.ts
@@ -388,6 +386,10 @@ models/AdminCicAllOfInProgressCommissioningRef.ts
 !models/AdminCicDeviceStream400ResponseFromJSON.ts
 !models/AdminCicDeviceStream400ResponseToJSON.ts
 !models/AdminCicDeviceStream400ResponseAllOfResult.ts
+!models/CommissioningPrerequisiteDetails.ts
+!models/ThreadCommissioningPrerequisiteDetails.ts
+!models/ThreadDeviceUpdateState.ts
+!models/DetailedInstallationType.ts
 
 apis/*
 !apis/SupportDashboardApi.ts

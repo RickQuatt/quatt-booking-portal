@@ -8,11 +8,15 @@ export function TextFilter<T extends object>({
   filterKey,
   inputType = "text",
   placeholder,
+  disabled = false,
+  title,
 }: {
   setFilters: (setFiltersFunc: (oldFilters: T) => T) => void;
   filterKey: keyof T;
   inputType?: React.HTMLInputTypeAttribute;
   placeholder?: string;
+  disabled?: boolean;
+  title?: string;
 }) {
   const doSetFilters = React.useCallback(
     (value: string) => {
@@ -41,6 +45,12 @@ export function TextFilter<T extends object>({
   );
 
   return (
-    <Input placeholder={placeholder} type={inputType} onChange={onChange} />
+    <Input
+      placeholder={placeholder}
+      type={inputType}
+      onChange={onChange}
+      disabled={disabled}
+      title={title}
+    />
   );
 }
