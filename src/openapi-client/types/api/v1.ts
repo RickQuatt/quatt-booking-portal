@@ -4133,7 +4133,7 @@ export interface components {
       devices?: components["schemas"]["Device"][];
     };
     AdminInstallationsList: {
-      cicId: components["schemas"]["CicUuid"] | null;
+      cicId?: components["schemas"]["CicUuid"];
       orderNumber: components["schemas"]["NullableOrderNumber"];
       createdAt: components["schemas"]["Datetime"];
       updatedAt: components["schemas"]["Datetime"];
