@@ -36,7 +36,8 @@ export function InstallationDetailAdvanced({
       : "Hubspot - No deal";
 
   const isAllElectric =
-    installation.installationType?.includes("ALL_ELECTRIC") || false;
+    installation.installationType?.toUpperCase().includes("ALL_ELECTRIC") ||
+    false;
 
   const isHomeBattery = installation.type === "HOME_BATTERY";
 
