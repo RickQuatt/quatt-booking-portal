@@ -1,10 +1,11 @@
 import { invert } from "lodash-es";
-import {
-  CicHealthCheckCategory,
-  CicHealthChecksByCategory,
-  CicHealthChecksByKpi,
-} from "./api-client/models";
+import type { components } from "@/openapi-client/types/api/v1";
 import { getEntries } from "./utils/object";
+
+type CicHealthCheckCategory = components["schemas"]["CicHealthCheckCategory"];
+type CicHealthChecksByCategory =
+  components["schemas"]["CicHealthChecksByCategory"];
+type CicHealthChecksByKpi = components["schemas"]["CicHealthChecksByKpi"];
 
 export const kpiToLabel = {
   validSettings: "Cloud settings",

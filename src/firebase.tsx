@@ -52,3 +52,25 @@ export const signinWithGoogle = async () => {
     console.error("Error in firebase popup", e);
   }
 };
+
+// Sign out and clear session
+export const logout = async (): Promise<void> => {
+  await auth.signOut();
+  // Clear session cookie by setting expired date
+  document.cookie = "session=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT";
+  // Redirect to root (middleware will show login page)
+  window.location.href = "/";
+};
+
+// Re-authenticate by triggering Google sign-in again
+export const reauthenticate = async (): Promise<void> => {
+  try {
+    const provider = new GoogleAuthProvider();
+    const result = await signInWithPopup(auth, provider);
+    const idToken = await result.user.getIdToken();
+    // Create new session cookie with fresh token
+    await createSessionCookie(idToken);
+  } catch (e) {
+    console.error("Error re-authenticating", e);
+  }
+};

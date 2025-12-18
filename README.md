@@ -1,57 +1,40 @@
 # Quatt Support Dashboard
 
-This app is hosted on [Cloudflare pages](https://dash.cloudflare.com/980b3d2d9ff2999bf928439c0eac89c1/pages/view/quatt-support-dashboard)
+Internal support dashboard for managing CICs, installations, and installers.
 
-## Usage
+## Quick Start
 
-1. Run `npm install`
-2. Run `npm run dev`
-3. Happy coding!
+1. `npm install`
+2. `npm run dev`
+3. Open http://localhost:5173
 
-## Secret page
+## Documentation
 
-If you want to send MQTT command to a particular CIC.
-Use the following url: `/cics/{cicUuid}/debug`.
+See [CLAUDE.md](./CLAUDE.md) for comprehensive documentation including:
 
-## Testing with local API
+- Architecture & technology stack
+- Component development standards
+- Testing guidelines
+- API client management
 
-If you have the Quatt-cloud mobile API running locally, you can do the following to use that instead:
+## Authentication Setup
 
-1. Create a file called `.env.development.local`
-2. In this file add the following: `VITE_API_BASE_PATH="http://localhost:3500/api/v1"`
+See [docs/CLOUDFLARE_AUTH_SETUP.md](./docs/CLOUDFLARE_AUTH_SETUP.md) for Cloudflare auth configuration.
 
-## Generating the API client
+## Onboarding
 
-```bash
-npm run api:generate-client
-```
+Additional onboarding tips: [Dev intro (Slite)](https://quatt.slite.com/app/docs/kCmDd2zez8diqa)
 
-The npm script uses the `generate-api-client.sh` script with the first parameter being the relative path to the Quatt cloud repository, and formats with prettier to avoid diffs in the existing generated models.
+## Adding UI Components
 
-Eg. `./generate-api-client.sh ../Quatt-cloud`
-
-This will generate the API client in `src/api-client`. If there are unresolved imports in the `src/apiClient/SupportDashboardApi.ts` or elsewhere, then you must add these missing files to `src/apiClient/.openapi-generator-ignore` to make sure that file is not ignored.
-
-The reason that we have to do this is because `openapi-generator-cli` by default includes all models from the API in the output. And because this dashboard's source-code is publically available, we don't want to expose the complete API to the end-user. Hence, we only include the exact files we need. It would be nice if `openapi-generator-cli` did this by default as a feature based on the tags in the openAPI spec but unfortunately it doesn't do that. Alternatively, we could consider moving the complete application behind an authentication wall in the future. In that case we wouldn't have to worry about this.
-
-Given we have an increasing number of models we DON'T want to include, an additional script has been created to remove any models NOT included in the `.openapi-generator-ignore` file
+To add new shadcn/ui components:
 
 ```bash
-npm run api:clean-models
+npx shadcn@latest add <component-name>
 ```
 
-This command should be run AFTER you have verified which models need to be added to the `.openapi-generator-ignore` to ensure they are not removed from the `models/index.ts` file.
+Configuration is in `components.json`.
 
-If you want to run both in sequence, use the following command:
+## Secret Debug Page
 
-```bash
-npm run api:generate-and-clean
-```
-
-### Important Note
-
-Given that support dashboard APIs may be dependent on nested schemas, the amount of schemas you'll need to add may not seem very clear. Typically if you run the generator, and a lot of schemas have imports without related schema files likely means it's a deeply nested object that needs to be included.
-
-## Onboarding documentation
-
-A few onboarding tips can be found in Slite in the [Dev intro](https://quatt.slite.com/app/docs/kCmDd2zez8diqa)
+MQTT command interface: `/cics/{cicUuid}/debug`

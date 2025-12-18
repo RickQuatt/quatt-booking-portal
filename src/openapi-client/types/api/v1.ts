@@ -2185,7 +2185,7 @@ export interface paths {
           zipCode?: string;
           /** @description House Addition to filter by */
           houseAddition?: string;
-          /** @description House Number to fuilter by */
+          /** @description House Number to filter by */
           houseNumber?: string;
           /** @description CIC id to filter by */
           cicId?: string;
@@ -2499,6 +2499,36 @@ export interface paths {
     };
     /** @description Get Snowflake support data for installation from 3 tables (fct_support_health, fct_support_info, fct_support_connections) */
     get: operations["AdminGetInstallationSnowflakeInfo"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          installationUuid: components["parameters"]["InstallationUuid"];
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        204: components["responses"]["CORSPreflightResponse"];
+      };
+    };
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/admin/installation/{installationUuid}/visit-jobs": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Get visit job information for installation from Snowflake */
+    get: operations["AdminGetInstallationVisitJobs"];
     put?: never;
     post?: never;
     delete?: never;
@@ -2973,12 +3003,6 @@ export interface components {
        */
       eventId: string;
       eventType: components["schemas"]["EventType"];
-      /**
-       * Format: int64
-       * @description Associated deal ID
-       * @example 6876081096
-       */
-      dealId: number;
       /**
        * Format: date-time
        * @description Event creation timestamp
@@ -4616,7 +4640,12 @@ export interface components {
       | "CHILL_INTERFACE_BOARD_ALREADY_DEACTIVATED"
       | "CHILL_INTERFACE_BOARD_NOT_ACTIVE"
       | "CHILL_INTERFACE_BOARD_NOT_BELONG_TO_INSTALLATION"
-      | "DEVICE_IS_NOT_CHILL";
+      | "DEVICE_IS_NOT_CHILL"
+      | "CHILL_NOT_FOUND"
+      | "CANNOT_FIND_ANY_CHILL_STATS"
+      | "CANNOT_FIND_CHILL_STATS"
+      | "CANNOT_FIND_CHILL_STAT_FIELD_VALUE"
+      | "CANNOT_FIND_CHILL_LAST_UPDATED_AT";
     ErrorResponse: components["schemas"]["Error"];
     ErrorResponseResult: {
       /** @example Unexpected error */
@@ -4635,6 +4664,11 @@ export interface components {
       name?: string | null;
       status: components["schemas"]["DeviceStatus"];
       installationUuid?: components["schemas"]["InstallationUuid"] | null;
+      /**
+       * @description Serial number of the device (optional, omitted if not set)
+       * @example HB-L-02-24-0001-00001
+       */
+      serialNumber?: string;
     };
     Device:
       | components["schemas"]["ThermostatDevice"]
@@ -4699,6 +4733,16 @@ export interface components {
       buildingUuid?: string | null;
       /** @example HB-123456 */
       serialNumber: string;
+      /**
+       * @description Check code for the home battery
+       * @example ABC123
+       */
+      checkCode?: string;
+      /**
+       * @description Access key UUID for the home battery
+       * @example a1b2c3d4-e5f6-7890-abcd-ef1234567890
+       */
+      accessKeyUuid?: string;
       /**
        * @description Current connectivity status of the home battery, an offline value indicates that the battery has not received any battery insights for the last 1 hour
        * @example connected
@@ -7081,7 +7125,7 @@ export interface components {
       /**
        * @description Active system protection conditions from CHILL control board
        * @example [
-       *       "highDischargePressure",
+       *       "dischargeOverheat",
        *       "condensationTankFull"
        *     ]
        */
@@ -7603,16 +7647,22 @@ export interface components {
       | "ERROR";
     /**
      * @description Fan speed setting for the Chill device. Controls the airflow and noise level of the unit
-     * @example BOOST
+     * @example HIGH
      * @enum {string}
      */
-    ChillFanMode: "NORMAL" | "MUTE" | "BOOST";
+    ChillFanMode: "NORMAL" | "LOW" | "HIGH";
     /**
      * @description Operating mode of the Chill device. Determines whether the device is providing cooling or heating
      * @example COOLING
      * @enum {string}
      */
     ChillMode: "COOLING" | "HEATING";
+    /**
+     * Format: int32
+     * @description Target temperature in degrees Celsius. Accepts integer values between 16°C and 31°C
+     * @example 22
+     */
+    ChillTargetTemperature: number;
     /** @description Error condition affecting the Chill device, including a specific error code and human-readable message */
     ChillError: {
       /**
@@ -7631,33 +7681,34 @@ export interface components {
         | "HUMIDITY_SENSOR_FAILURE"
         | "SUCTION_PRESSURE_SENSOR_FAILURE"
         | "DISCHARGE_TEMPERATURE_SENSOR_FAILURE_3X"
-        | "EXCESSIVE_CH_TEMP_DIFF_3X"
-        | "INLET_CH_TEMP_LIMIT_3X"
+        | "EXCESSIVE_CH_TEMP_DIFF_3X_PROTECTION"
+        | "INLET_CH_TEMP_LIMIT_3X_PROTECTION"
         | "FAN_FAILURE"
-        | "ABNORMAL_CH_TEMP_DIFF_3X"
+        | "ABNORMAL_CH_TEMP_DIFF_3X_PROTECTION"
         | "EEPROM_FAILURE"
         | "HOST_COMMS_FAILURE"
-        | "HIGH_DISCHARGE_PRESSURE_PROTECTION"
-        | "HIGH_VOLT_SWITCH_PROTECTION"
+        | "DISCHARGE_OVERHEAT_PROTECTION"
+        | "HIGH_PRESSURE_SWITCH_PROTECTION"
         | "SUCTION_PRESSURE_PROTECTION"
-        | "HIGH_VOLT_SWITCH_PROTECTION_3X"
+        | "HIGH_PRESSURE_SWITCH_PROTECTION_3X"
         | "SUCTION_PRESSURE_PROTECTION_3X"
         | "REFRIGERANT_EVAPORATOR_COIL_ANTIFREEZE"
         | "REFRIGERANT_EVAPORATOR_COIL_ANTIFREEZE_3X"
-        | "REFRIGERANT_CONDENSOR_COIL_ANTIFREEZE"
-        | "REFRIGERANT_CONDENSOR_OUTLET_OVERHEAT"
+        | "REFRIGERANT_CONDENSOR_COIL_OVERHEAT"
+        | "HEATING_CONDENSOR_COIL_ANTIFREEZE"
         | "HEATING_EVAPORATOR_COIL_OVERHEAT"
-        | "HEATING_EVAPORATOR_COIL_OVERHEAT_3X"
+        | "HEATING_CONDENSOR_COIL_ANTIFREEZE_3X"
         | "EXCESSIVE_CH_TEMP_DIFF_PROTECTION"
         | "INLET_CH_TEMP_LIMIT_PROTECTION"
         | "ABNORMAL_CH_TEMP_DIFF_PROTECTION"
         | "PUMP_OVER_VOLTAGE_PROTECTION"
         | "PUMP_UNDER_VOLTAGE_PROTECTION"
         | "PUMP_OVER_CURRENT_PROTECTION"
-        | "PUMP_UNDER_CURRENT_PROTECTION"
+        | "PUMP_PHASE_LOSS_PROTECTION"
         | "PUMP_LIGHT_LOAD_PROTECTION"
         | "PUMP_STALL_PROTECTION"
-        | "WATER_FLOW_SWITCH_PROTECTION";
+        | "WATER_FLOW_SWITCH_PROTECTION"
+        | "PUMP_FAILURE";
       /**
        * @description Human-readable description of the error condition for display to users or debugging
        * @example Invalid Chill device state
@@ -7689,12 +7740,8 @@ export interface components {
       };
       fanMode: components["schemas"]["ChillFanMode"];
       mode: components["schemas"]["ChillMode"];
-      /**
-       * Format: int32
-       * @description Target temperature in degrees Celsius. Accepts integer values between 16°C and 31°C
-       * @example 22
-       */
-      targetTemperature: number;
+      coolingTargetTemperature: components["schemas"]["ChillTargetTemperature"];
+      heatingTargetTemperature: components["schemas"]["ChillTargetTemperature"];
       /**
        * Format: float
        * @description Current ambient temperature measured by the Chill device in degrees Celsius
@@ -7727,20 +7774,25 @@ export interface components {
     };
     /** @example CHA-7f24b2d2-a261-4c53-bc61-4e06a836d690 */
     ChillActionUuid: string;
-    /** @description Set the target temperature of the Chill device */
-    ChillActionSetTargetTemperature: {
+    /** @description Set the heating target temperature of the Chill device */
+    ChillActionSetHeatingTargetTemperature: {
       uuid?: components["schemas"]["ChillActionUuid"];
       /**
-       * @example SET_TARGET_TEMPERATURE
+       * @example SET_HEATING_TARGET_TEMPERATURE
        * @enum {string}
        */
-      type: "SET_TARGET_TEMPERATURE";
+      type: "SET_HEATING_TARGET_TEMPERATURE";
+      heatingTargetTemperature: components["schemas"]["ChillTargetTemperature"];
+    };
+    /** @description Set the cooling target temperature of the Chill device */
+    ChillActionSetCoolingTargetTemperature: {
+      uuid?: components["schemas"]["ChillActionUuid"];
       /**
-       * Format: int32
-       * @description Desired target temperature in degrees Celsius. Accepts integer values between 16°C and 31°C
-       * @example 22
+       * @example SET_COOLING_TARGET_TEMPERATURE
+       * @enum {string}
        */
-      targetTemperature: number;
+      type: "SET_COOLING_TARGET_TEMPERATURE";
+      coolingTargetTemperature: components["schemas"]["ChillTargetTemperature"];
     };
     /** @description Set the operating mode of the Chill device */
     ChillActionSetMode: {
@@ -7777,17 +7829,19 @@ export interface components {
       on: boolean;
     };
     ChillActionRequest:
-      | components["schemas"]["ChillActionSetTargetTemperature"]
+      | components["schemas"]["ChillActionSetHeatingTargetTemperature"]
+      | components["schemas"]["ChillActionSetCoolingTargetTemperature"]
       | components["schemas"]["ChillActionSetMode"]
       | components["schemas"]["ChillActionSetFanMode"]
       | components["schemas"]["ChillActionSetOnOff"];
     /**
      * @description The type of action to be performed on the Chill device
-     * @example SET_TARGET_TEMPERATURE
+     * @example SET_COOLING_TARGET_TEMPERATURE
      * @enum {string}
      */
     ChillActionType:
-      | "SET_TARGET_TEMPERATURE"
+      | "SET_COOLING_TARGET_TEMPERATURE"
+      | "SET_HEATING_TARGET_TEMPERATURE"
       | "SET_MODE"
       | "SET_FAN_MODE"
       | "SET_ON_OFF";
@@ -7848,6 +7902,82 @@ export interface components {
        * @example 17
        */
       value: unknown;
+    };
+    VisitJob: {
+      /**
+       * @description Installation UUID
+       * @example 0014b6e7-a99d-48e6-998a-ce4bd822d222
+       */
+      installationUuid: string;
+      /**
+       * @description Unique job identifier
+       * @example abc-123-def-456
+       */
+      jobUid: string;
+      /**
+       * @description Job description
+       * @example [Home Battery] Erik Jonker
+       */
+      jobDescription: string;
+      /**
+       * Format: date-time
+       * @description Job start time in ISO 8601 format
+       * @example 2025-08-29T10:00:00.000Z
+       */
+      startTime: string | null;
+      /**
+       * Format: date-time
+       * @description Job end time in ISO 8601 format
+       * @example 2025-08-29T12:00:00.000Z
+       */
+      endTime: string | null;
+      /**
+       * @description Job duration in minutes
+       * @example 120
+       */
+      duration: number | null;
+      /**
+       * Format: date-time
+       * @description Estimated start time
+       */
+      estimatedStart: string | null;
+      /**
+       * Format: date-time
+       * @description Estimated end time
+       */
+      estimatedEnd: string | null;
+      /**
+       * @description Type of job
+       * @example HomeVisit
+       */
+      jobType: string | null;
+      /**
+       * @description Product name
+       * @example HomeVisit
+       */
+      product: string | null;
+      /**
+       * @description Product family
+       * @example Hybrid
+       */
+      productFamily: string | null;
+      /**
+       * @description Current job status
+       * @example Complete
+       */
+      jobStatus: string | null;
+      /** @description Device version */
+      deviceVersion: string | null;
+      /**
+       * @description Array of related URLs
+       * @example []
+       */
+      allUrls: string[];
+      /**
+       * @description Names of resources assigned to job
+       * @example Amir Wali
+       */
+      resourceNames: string | null;
     };
     /** @description Request body for replacing a Chill Interface Board */
     ReplaceChillInterfaceBoardRequest: {
@@ -8610,7 +8740,7 @@ export interface operations {
       };
     };
     responses: {
-      /** @description Successfull request sent to CIC */
+      /** @description Successful request sent to CIC */
       204: {
         headers: {
           [name: string]: unknown;
@@ -11204,7 +11334,7 @@ export interface operations {
       };
     };
     responses: {
-      /** @description Successfull request sent to CIC */
+      /** @description Successful request sent to CIC */
       204: {
         headers: {
           [name: string]: unknown;
@@ -12959,7 +13089,20 @@ export interface operations {
       };
       401: components["responses"]["Unauthorized"];
       403: components["responses"]["UserHasNoPermission"];
-      404: components["responses"]["NotFound"];
+      /** @description Installation or Chill device not found with given uuids or Chill device not linked to the installation */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"] & {
+            result?: {
+              /** @enum {string} */
+              errorCode?: "CHILL_NOT_FOUND" | "INSTALLATION_NOT_FOUND";
+            };
+          };
+        };
+      };
       500: components["responses"]["Unexpected"];
     };
   };
@@ -13303,13 +13446,13 @@ export interface operations {
       query?: {
         /** @description Order number to filter by */
         orderNumber?: string;
-        /** @description Installation UUID to fuilter by */
+        /** @description Installation UUID to filter by */
         installationUuid?: string;
-        /** @description Zip Code to fuilter by */
+        /** @description Zip Code to filter by */
         zipCode?: string;
-        /** @description House Addition to fuilter by */
+        /** @description House Addition to filter by */
         houseAddition?: string;
-        /** @description House Number to fuilter by */
+        /** @description House Number to filter by */
         houseNumber?: string;
         /** @description CIC id to filter by */
         cicId?: string;
@@ -13894,6 +14037,62 @@ export interface operations {
               /** @description Key-value pairs from fct_support_connections table */
               connections: components["schemas"]["SnowflakeInfo"][];
             };
+          };
+        };
+      };
+      401: components["responses"]["Unauthorized"];
+      403: components["responses"]["UserHasNoPermission"];
+      404: components["responses"]["NotFound"];
+      /** @description Snowflake query failed */
+      500: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"] & {
+            result?: {
+              /** @enum {string} */
+              errorCode?: "SNOWFLAKE_QUERY_FAILED";
+            };
+          };
+        };
+      };
+    };
+  };
+  AdminGetInstallationVisitJobs: {
+    parameters: {
+      query?: {
+        /** @description Filter to specific job UID */
+        jobUid?: string;
+      };
+      header?: {
+        /**
+         * @description Semantic version of the client application.
+         *     Used by the backend to determine available features based on client version.
+         */
+        "X-Client-Version"?: components["parameters"]["X-Client-Version"];
+        /**
+         * @description Platform identifier for the client application.
+         *     Used by the backend to determine platform-specific feature availability.
+         */
+        "X-Client-Platform"?: components["parameters"]["X-Client-Platform"];
+      };
+      path: {
+        installationUuid: components["parameters"]["InstallationUuid"];
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Visit jobs for installation */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            meta: components["schemas"]["ResponseMeta"];
+            result: components["schemas"]["VisitJob"][];
           };
         };
       };

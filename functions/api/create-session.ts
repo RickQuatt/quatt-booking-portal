@@ -167,6 +167,17 @@ export const onRequestPost = async (context: {
       );
     }
 
+    // Check if user is a Quatt employee
+    if (!payload.email?.endsWith("@quatt.io")) {
+      return new Response(
+        JSON.stringify({ error: "Access restricted to Quatt employees" }),
+        {
+          status: 403,
+          headers: { "Content-Type": "application/json" },
+        },
+      );
+    }
+
     // Create our own session JWT
     const sessionToken = await createSessionToken(
       payload.sub,

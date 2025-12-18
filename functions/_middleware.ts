@@ -41,21 +41,25 @@ function getLoginPageHTML(firebaseConfig: string): string {
       color: #333;
     }
     button {
-      background: #4285f4;
-      color: white;
-      border: none;
+      background: #d9ff5c;
+      color: #071413;
+      border: 2px solid #071413;
       padding: 12px 24px;
       font-size: 16px;
+      font-weight: 600;
       border-radius: 4px;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: background 0.2s, transform 0.1s;
     }
     button:hover {
-      background: #357ae8;
+      background: #c4e852;
+      transform: translateY(-1px);
     }
     button:disabled {
       background: #ccc;
+      color: #666;
       cursor: not-allowed;
+      transform: none;
     }
     .error {
       color: #d93025;

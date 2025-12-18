@@ -36,6 +36,11 @@ local_utilities/
 task-context
 .env
 .env.development.local.disabled
+.env.development
+.env.production
+.env.staging
 .env*
 .wrangler
 .dev.vars
+*storybook.log
+storybook-static

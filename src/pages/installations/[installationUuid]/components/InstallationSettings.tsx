@@ -1,0 +1,314 @@
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import type { components } from "@/openapi-client/types/api/v1";
+import { useUpdateInstallationSettings } from "../hooks/useUpdateInstallationSettings";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/Select";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/Form";
+
+type AdminInstallationDetail = components["schemas"]["AdminInstallationDetail"];
+
+export interface InstallationSettingsProps {
+  installation: AdminInstallationDetail;
+}
+
+/**
+ * Installation Settings Component
+ * Form for updating installation configuration (power, temperature, boiler, thermostat, etc.)
+ */
+export function InstallationSettings({
+  installation,
+}: InstallationSettingsProps) {
+  const requiredFieldText = "This field is required";
+
+  const installationSettingsSchema = z.object({
+    ratedMaximumHousePower: z.coerce
+      .number({ message: requiredFieldText })
+      .nullable(),
+    maximumHeatingOutdoorTemperature: z.coerce.number({
+      message: requiredFieldText,
+    }),
+    dayMaxSoundLevel: z
+      .enum(["normal", "library", "silent", "building87"])
+      .optional()
+      .nullable(),
+    nightMaxSoundLevel: z
+      .enum(["normal", "library", "silent", "building87"])
+      .optional()
+      .nullable(),
+    silentMode: z.enum(["never", "night", "always"]).optional().nullable(),
+    boilerType: z.enum(["opentherm", "on_off"], {
+      message: requiredFieldText,
+    }),
+    thermostatType: z.enum(
+      ["opentherm_room_temperature", "opentherm_without_room_temperature"],
+      { message: requiredFieldText },
+    ),
+    numberOfHeatPumps: z.coerce
+      .number({ message: requiredFieldText })
+      .min(1)
+      .max(2),
+  });
+
+  type InstallationSettingsFormData = z.infer<
+    typeof installationSettingsSchema
+  >;
+
+  const form = useForm<InstallationSettingsFormData>({
+    resolver: zodResolver(installationSettingsSchema),
+    defaultValues: {
+      ratedMaximumHousePower: installation.ratedMaximumHousePower ?? undefined,
+      maximumHeatingOutdoorTemperature:
+        installation.maximumHeatingOutdoorTemperature ?? undefined,
+      dayMaxSoundLevel: installation.dayMaxSoundLevel ?? undefined,
+      nightMaxSoundLevel: installation.nightMaxSoundLevel ?? undefined,
+      silentMode: installation.silentMode ?? undefined,
+      boilerType: installation.boilerType ?? undefined,
+      thermostatType: installation.thermostatType ?? undefined,
+      numberOfHeatPumps: installation.numberOfHeatPumps ?? undefined,
+    },
+  });
+
+  const { updateSettings, isPending } = useUpdateInstallationSettings({
+    installationUuid: installation.externalId as string,
+    reset: form.reset,
+  });
+
+  const onSubmit = (data: InstallationSettingsFormData) => {
+    updateSettings(data as components["schemas"]["UpdateAdminInstallation"]);
+  };
+
+  return (
+    <div className="space-y-6">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          {/* Rated Maximum House Power */}
+          <FormField
+            control={form.control}
+            name="ratedMaximumHousePower"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Rated Maximum House Power (W)</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    {...field}
+                    value={field.value ?? ""}
+                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Maximum Heating Outdoor Temperature */}
+          <FormField
+            control={form.control}
+            name="maximumHeatingOutdoorTemperature"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Maximum Heating Outdoor Temperature (°C)</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    {...field}
+                    value={field.value ?? ""}
+                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Sound Settings - Conditional based on hasSoundSlider */}
+          {installation.hasSoundSlider ? (
+            <>
+              {/* Day Max Sound Level */}
+              <FormField
+                control={form.control}
+                name="dayMaxSoundLevel"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Day Max Sound Level</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value ?? undefined}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select sound level" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="normal">Normal</SelectItem>
+                        <SelectItem value="library">Library</SelectItem>
+                        <SelectItem value="silent">Silent</SelectItem>
+                        <SelectItem value="building87">Building87</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Night Max Sound Level */}
+              <FormField
+                control={form.control}
+                name="nightMaxSoundLevel"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Night Max Sound Level</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value ?? undefined}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select sound level" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="normal">Normal</SelectItem>
+                        <SelectItem value="library">Library</SelectItem>
+                        <SelectItem value="silent">Silent</SelectItem>
+                        <SelectItem value="building87">Building87</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </>
+          ) : (
+            /* Silent Mode */
+            <FormField
+              control={form.control}
+              name="silentMode"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Silent Mode</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value ?? undefined}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select silent mode" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="never">Never</SelectItem>
+                      <SelectItem value="night">Night</SelectItem>
+                      <SelectItem value="always">Always</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+
+          {/* Boiler Type */}
+          <FormField
+            control={form.control}
+            name="boilerType"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Boiler Type</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value ?? undefined}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select boiler type" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="opentherm">Opentherm</SelectItem>
+                    <SelectItem value="on_off">On/Off</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Thermostat Type */}
+          <FormField
+            control={form.control}
+            name="thermostatType"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Thermostat Type</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value ?? undefined}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select thermostat type" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="opentherm_room_temperature">
+                      Opentherm Room Temperature
+                    </SelectItem>
+                    <SelectItem value="opentherm_without_room_temperature">
+                      Opentherm Without Room Temperature
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Number of Heat Pumps */}
+          <FormField
+            control={form.control}
+            name="numberOfHeatPumps"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Number of Heat Pumps</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    min={1}
+                    max={2}
+                    {...field}
+                    value={field.value ?? ""}
+                    onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <Button type="submit" disabled={!form.formState.isDirty || isPending}>
+            {isPending ? "Updating..." : "Update Settings"}
+          </Button>
+        </form>
+      </Form>
+    </div>
+  );
+}
