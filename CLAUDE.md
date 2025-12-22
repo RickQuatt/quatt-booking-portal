@@ -879,12 +879,12 @@ This project uses the **acli (Atlassian Command Line Interface)** for Jira integ
 
 #### Available Skills
 
-| Skill               | Description                                                                              | Usage                     |
-| ------------------- | ---------------------------------------------------------------------------------------- | ------------------------- |
-| `/jira:ticket`      | Create or update QPD tickets for bugs, tasks, and features                               | `/jira:ticket`            |
-| `/jira:release`     | Create or update QPD releases and associated CHG change management tickets               | `/jira:release`           |
-| `/jira:begin-task`  | Start work on a Jira ticket (creates branch, plans, optionally executes with commit/PR) | `/jira:begin-task <ID>`   |
-| `/jira:change`      | Create or update CHG (Software Change Management) tickets for deployments                | `/jira:change`            |
+| Skill              | Description                                                                             | Usage                   |
+| ------------------ | --------------------------------------------------------------------------------------- | ----------------------- |
+| `/jira:ticket`     | Create or update QPD tickets for bugs, tasks, and features                              | `/jira:ticket`          |
+| `/jira:release`    | Create or update QPD releases and associated CHG change management tickets              | `/jira:release`         |
+| `/jira:begin-task` | Start work on a Jira ticket (creates branch, plans, optionally executes with commit/PR) | `/jira:begin-task <ID>` |
+| `/jira:change`     | Create or update CHG (Software Change Management) tickets for deployments               | `/jira:change`          |
 
 #### Default Values
 
