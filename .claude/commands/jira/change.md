@@ -36,8 +36,8 @@ User provided input: **$ARGUMENTS**
 
 1. **UPDATE Mode**: If arguments start with "CHG-" followed by numbers (e.g., "CHG-35 deployment completed")
    - Extract ticket key (CHG-XX) and update text
-   - Use `getJiraIssue` to fetch current ticket details
-   - Add comment with update text using `addCommentToJiraIssue`
+   - Use `acli jira workitem get --issue CHG-XX` to fetch current ticket details
+   - Add comment with update text using `acli jira workitem comment --issue CHG-XX --comment "..."`
 2. **CREATE Mode**: Otherwise, treat as new ticket creation
    - Use entire argument as change title/summary
    - Create new CHG ticket with structured description

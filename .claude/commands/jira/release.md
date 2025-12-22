@@ -85,10 +85,10 @@ User provided input: **$ARGUMENTS**
 
 2. **Find Associated CHG Ticket**:
    - Search CHG project for tickets with summary containing the version
-   - Use pattern: `summary ~ "Cloud Release v{version}"`
+   - Use `acli jira workitem search --jql "project = CHG AND summary ~ 'Cloud Release v{version}'"`
 
 3. **Add Update Comment**:
-   - Use `addCommentToJiraIssue` to add deployment status
+   - Use `acli jira workitem comment --issue CHG-XX --comment "..."` to add deployment status
    - Include deployment timestamp and status information
 
 ### **Release Patterns and Examples**

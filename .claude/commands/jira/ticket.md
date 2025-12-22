@@ -46,8 +46,8 @@ User provided input: **$ARGUMENTS**
 
 1. **UPDATE Mode**: If arguments start with "QPD-" followed by numbers (e.g., "QPD-9999 issue resolved")
    - Extract ticket key (QPD-XXXX) and update text
-   - Use `getJiraIssue` to fetch current ticket details
-   - Add comment with update text using `addCommentToJiraIssue`
+   - Use `acli jira workitem get --issue QPD-XXXX` to fetch current ticket details
+   - Add comment with update text using `acli jira workitem comment --issue QPD-XXXX --comment "..."`
 2. **CREATE Mode**: Otherwise, treat as new ticket creation
    - Use entire argument as issue description
    - Analyze and create new QPD ticket
@@ -137,9 +137,9 @@ User provided input: **$ARGUMENTS**
 
 5. **Handle Sprint Assignment** (only if explicitly requested):
    - If user mentions "current sprint", "SW&I sprint", or similar sprint-related terms:
-     - Search for active SW&I sprints using JQL: `project = QPD AND sprint in openSprints() AND sprint ~ "SW&I" ORDER BY updated DESC`
+     - Search for active SW&I sprints using `acli jira workitem search --jql "project = QPD AND sprint in openSprints() AND sprint ~ 'SW&I' ORDER BY updated DESC"`
      - Find the active sprint (state = "active") with SW&I prefix
-     - Use `editJiraIssue` to update `customfield_10020` with the sprint ID as a number
+     - Use `acli jira workitem update --issue QPD-XXXX --field customfield_10020 --value <sprint-id>` to set the sprint
    - **Important**: Only set sprint when explicitly requested - don't assume all tickets need sprint assignment
 
 ### **UPDATE Mode Instructions**
@@ -149,11 +149,11 @@ User provided input: **$ARGUMENTS**
    - Extract update text (everything after the ticket key)
 
 2. **Fetch existing ticket**:
-   - Use `getJiraIssue` to retrieve current ticket details
+   - Use `acli jira workitem get --issue QPD-XXXX` to retrieve current ticket details
    - Understand the context of what's being updated
 
 3. **Add comment**:
-   - Use `addCommentToJiraIssue` to add the update text as a comment
+   - Use `acli jira workitem comment --issue QPD-XXXX --comment "..."` to add the update text as a comment
    - Format comment with relevant context if needed
 
 ### **Key Requirements**
