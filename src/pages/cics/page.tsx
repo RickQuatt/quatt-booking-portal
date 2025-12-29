@@ -74,7 +74,6 @@ export function CICListPage() {
         subtitle={`${total} CICs found`}
         isLoading={isLoading}
       />
-
       <CICFiltersComponent
         filters={filters}
         onFiltersChange={setFilters}
