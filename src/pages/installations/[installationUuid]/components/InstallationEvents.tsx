@@ -159,7 +159,7 @@ export function InstallationEvents({
                             textRefs.current.delete(event.eventId);
                           }
                         }}
-                        className={`mt-2 whitespace-pre-wrap text-sm text-gray-700 dark:text-gray-300 ${
+                        className={`mt-2 whitespace-pre-wrap break-all text-sm text-gray-700 dark:text-gray-300 ${
                           !isExpanded ? "line-clamp-3" : ""
                         }`}
                       >
