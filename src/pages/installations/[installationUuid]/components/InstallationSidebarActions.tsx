@@ -66,6 +66,8 @@ export function InstallationSidebarActions({
           <Link
             href={`/installations/${installationUuid}/visit-jobs`}
             className="w-full flex items-center justify-center gap-2"
+            target="_blank"
+            rel="noopener noreferrer"
           >
             <ClipboardList className="h-4 w-4" />
             Visit Jobs
