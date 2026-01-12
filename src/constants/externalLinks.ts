@@ -29,7 +29,7 @@ export function getGrafanaDataPerCICLink(id: string) {
   const env = getEnvironment();
 
   if (env.isLocal || env.isDevelopment) {
-    return `https://g-d4ebd27178.grafana-workspace.eu-west-1.amazonaws.com/d/2iE68EiSkB/clickhouse-data-per-cic?var-cic_uuid=${id}&from=now-6h&to=now&orgId=1&refresh=30s`;
+    return `https://g-d4ebd27178.grafana-workspace.eu-west-1.amazonaws.com/d/clickhouse-data-per-cic/clickhouse-data-per-cic?var-cic_uuid=${id}&from=now-6h&to=now&orgId=1&refresh=30s`;
   } else if (env.isStaging) {
     return `https://g-2048f245a4.grafana-workspace.eu-west-1.amazonaws.com/d/clickhouse-data-per-cic/clickhouse-data-per-cic?var-cic_uuid=${id}&from=now-6h&to=now&orgId=1&refresh=30s`;
   }
