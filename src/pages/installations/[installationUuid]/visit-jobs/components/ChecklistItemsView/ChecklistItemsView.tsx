@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { staggerContainerVariants } from "@/lib/animations";
+import { isValidUrl } from "@/utils/urlUtils";
 import { ChecklistItem } from "./ChecklistItem";
 import { ImageLightbox } from "../ImageLightbox";
 
@@ -39,12 +40,7 @@ export function ChecklistItemsView({
     Object.values(data).forEach((value) => {
       const values = Array.isArray(value) ? value : [value];
       values.forEach((v) => {
-        if (
-          typeof v === "string" &&
-          (v.startsWith("http://") ||
-            v.startsWith("https://") ||
-            v.startsWith("/"))
-        ) {
+        if (typeof v === "string" && isValidUrl(v)) {
           images.push(v);
         }
       });

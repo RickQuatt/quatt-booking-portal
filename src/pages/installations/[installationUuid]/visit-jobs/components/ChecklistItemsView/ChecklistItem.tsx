@@ -1,6 +1,11 @@
 import { Badge } from "@/components/ui/Badge";
 import { motion } from "framer-motion";
 import { fadeInVariants } from "@/lib/animations";
+import {
+  isValidUrl,
+  getImageFallbackUrl,
+  IMAGE_CONSTANTS,
+} from "@/utils/urlUtils";
 
 export interface ChecklistItemProps {
   question: string;
@@ -29,26 +34,12 @@ export function ChecklistItem({
   onImageClick,
   className = "",
 }: ChecklistItemProps) {
-  // Helper to check if a string is a URL (including relative URLs)
-  const isUrl = (value: string): boolean => {
-    try {
-      // Check if it's a URL pattern (http://, https://, or starts with /)
-      return (
-        value.startsWith("http://") ||
-        value.startsWith("https://") ||
-        value.startsWith("/")
-      );
-    } catch {
-      return false;
-    }
-  };
-
   // Normalize answer to always be an array
   const answers = Array.isArray(answer) ? answer : [answer];
 
   // Check if all answers are URLs (images)
   const allAnswersAreUrls = answers.every(
-    (a) => typeof a === "string" && isUrl(a),
+    (a) => typeof a === "string" && isValidUrl(a),
   );
 
   return (
@@ -77,12 +68,15 @@ export function ChecklistItem({
                 <img
                   src={url}
                   alt={`${question} - Image ${index + 1}`}
-                  className="h-[120px] w-auto object-cover group-hover:scale-105 transition-transform duration-200"
+                  className="w-auto object-cover group-hover:scale-105 transition-transform duration-200"
+                  style={{ height: `${IMAGE_CONSTANTS.THUMBNAIL_HEIGHT}px` }}
                   loading="lazy"
                   onError={(e) => {
                     // Fallback for failed image loads
-                    (e.target as HTMLImageElement).src =
-                      "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Crect fill='%23f0f0f0' width='120' height='120'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23999' font-size='12'%3EImage not found%3C/text%3E%3C/svg%3E";
+                    (e.target as HTMLImageElement).src = getImageFallbackUrl(
+                      IMAGE_CONSTANTS.FALLBACK_IMAGE_SIZE,
+                      "Image not found",
+                    );
                   }}
                 />
               </button>

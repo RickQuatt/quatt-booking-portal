@@ -135,4 +135,20 @@ describe("ChecklistItem", () => {
     expect(screen.getByText("More text")).toBeInTheDocument();
     expect(screen.queryByRole("img")).not.toBeInTheDocument();
   });
+
+  it("does not treat strings with spaces after / as images", () => {
+    // Improved URL validation should reject "/some random text"
+    render(
+      <ChecklistItem
+        question="Not an image"
+        answer="/some random text with spaces"
+      />,
+    );
+
+    expect(screen.getByText("Not an image")).toBeInTheDocument();
+    expect(
+      screen.getByText("/some random text with spaces"),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("img")).not.toBeInTheDocument();
+  });
 });
