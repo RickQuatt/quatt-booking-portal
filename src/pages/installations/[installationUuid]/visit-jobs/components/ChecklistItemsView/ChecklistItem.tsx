@@ -1,5 +1,3 @@
-import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
 import { motion } from "framer-motion";
 import { fadeInVariants } from "@/lib/animations";
 import { isValidUrl } from "@/utils/urlUtils";
@@ -14,7 +12,7 @@ export interface ChecklistItemProps {
 /**
  * ChecklistItem - Renders a single checklist question-answer pair
  * Detects URLs and displays them as clickable links
- * Displays text values as badges
+ * Displays text values as plain text
  *
  * @example
  * ```tsx
@@ -51,34 +49,26 @@ export function ChecklistItem({
 
           if (isUrl) {
             return (
-              <Button
+              <a
                 key={index}
-                variant="link"
-                size="sm"
-                asChild
-                className="h-auto p-0 text-sm"
+                href={value}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-sm text-primary hover:underline break-all"
               >
-                <a
-                  href={value}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 hover:underline break-all"
-                >
-                  {value}
-                  <ExternalLink className="h-3 w-3 flex-shrink-0" />
-                </a>
-              </Button>
+                {value}
+                <ExternalLink className="h-3 w-3 flex-shrink-0" />
+              </a>
             );
           }
 
           return (
-            <Badge
+            <span
               key={index}
-              variant="outline"
-              className="text-sm font-normal"
+              className="text-sm font-normal text-gray-900 dark:text-gray-100"
             >
               {value || "(empty)"}
-            </Badge>
+            </span>
           );
         })}
       </div>

@@ -3,14 +3,14 @@ import { describe, it, expect } from "vitest";
 import { ChecklistItem } from "./ChecklistItem";
 
 describe("ChecklistItem", () => {
-  it("renders question and text answer as badge", () => {
+  it("renders question and text answer", () => {
     render(<ChecklistItem question="Inspector Name" answer="John Doe" />);
 
     expect(screen.getByText("Inspector Name")).toBeInTheDocument();
     expect(screen.getByText("John Doe")).toBeInTheDocument();
   });
 
-  it("renders multiple text answers as badges", () => {
+  it("renders multiple text answers", () => {
     render(
       <ChecklistItem
         question="Checklist items"
