@@ -42,7 +42,7 @@ export function ChecklistItemsView({
       variants={staggerContainerVariants}
       initial="initial"
       animate="animate"
-      className={`border border-border rounded-lg overflow-hidden bg-white dark:bg-dark-foreground ${className}`}
+      className={`overflow-hidden bg-white dark:bg-dark-foreground ${className}`}
     >
       {entries.map(([question, answer], index) => (
         <div
