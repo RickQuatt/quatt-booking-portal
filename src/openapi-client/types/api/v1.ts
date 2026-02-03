@@ -165,6 +165,7 @@ export interface paths {
                   /** Format: float */
                   minimumCOP: number;
                 };
+                urls: components["schemas"]["AppSettingsUrls"];
               };
             };
           };
@@ -1503,7 +1504,17 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** @description Add a set of devices (devicesConfiguration) on a CIC = Create a commissioning for this configuration of devices */
+    /**
+     * @description Add a set of devices (devicesConfiguration) on a CIC and create a commissioning for this configuration.
+     *
+     *     Supported configurations:
+     *     - **HYBRID**:
+     *       * Feature flag enabled (X-Client-Version >= configured version): Returns 201 with devices (OUTDOOR_UNIT, BOILER, THERMOSTAT, FLOW_TEMPERATURE_SENSOR)
+     *       * Feature flag disabled: Returns 204 NO_CONTENT (legacy behavior)
+     *     - **HYBRID_BETA**: Beta version of HYBRID flow. Always returns 201 with devices (OUTDOOR_UNIT, BOILER, THERMOSTAT, FLOW_TEMPERATURE_SENSOR). No feature flag required.
+     *     - **ALL_ELECTRIC**: Creates OUTDOOR_UNIT, HEAT_CHARGER, HEAT_BATTERY, THERMOSTAT, FLOW_TEMPERATURE_SENSOR (returns 201)
+     *     - **CHILL**: Creates or reuses devices based on legacy migration (returns 201, requires feature flag)
+     */
     post: operations["postDevicesConfiguration"];
     delete?: never;
     options?: never;
@@ -2229,7 +2240,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/admin/installation/{installationUuid}": {
+  "/admin/installation/{installationId}": {
     parameters: {
       query?: never;
       header?: never;
@@ -2247,7 +2258,7 @@ export interface paths {
         query?: never;
         header?: never;
         path: {
-          installationUuid: components["parameters"]["InstallationUuid"];
+          installationId: components["parameters"]["InstallationId"];
         };
         cookie?: never;
       };
@@ -2568,6 +2579,36 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/admin/users/{userId}/referral-email": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options: {
+      parameters: {
+        query?: never;
+        header?: never;
+        path: {
+          userId: components["parameters"]["userId"];
+        };
+        cookie?: never;
+      };
+      requestBody?: never;
+      responses: {
+        204: components["responses"]["CORSPreflightResponse"];
+      };
+    };
+    head?: never;
+    /** @description Update the email address for a user's Referral Rock member */
+    patch: operations["AdminPatchUserReferralEmail"];
+    trace?: never;
+  };
   "/admin/installation/{installationId}/tariff": {
     parameters: {
       query?: never;
@@ -2848,6 +2889,7 @@ export interface paths {
         };
         401: components["responses"]["Unauthorized"];
         403: components["responses"]["Forbidden"];
+        404: components["responses"]["NotFound"];
         500: components["responses"]["Unexpected"];
       };
     };
@@ -3082,6 +3124,51 @@ export interface components {
       status: number;
       /** @example 0.01234 */
       took: number;
+    };
+    /** @description External URLs used by the mobile app */
+    AppSettingsUrls: {
+      /**
+       * Format: uri
+       * @description Privacy policy page
+       * @example https://www.quatt.io/privacy-policy-app
+       */
+      privacyPolicy: string;
+      /**
+       * Format: uri
+       * @description Terms and conditions page
+       * @example https://www.quatt.io/algemene-voorwaarden
+       */
+      termsAndConditions: string;
+      /**
+       * Format: uri
+       * @description Help center page
+       * @example https://www.quatt.io/hulp
+       */
+      helpCenter: string;
+      /**
+       * Format: uri
+       * @description HomeBattery manual PDF
+       * @example https://25848718.fs1.hubspotusercontent-eu1.net/hubfs/25848718/Manuals/Handleiding HomeBattery.pdf
+       */
+      homeBatteryManual: string;
+      /**
+       * Format: uri
+       * @description Purchase page
+       * @example https://www.quatt.io
+       */
+      buyQuatt: string;
+      /**
+       * Format: uri
+       * @description iOS App Store link
+       * @example https://apps.apple.com/app/apple-store/id1626258455
+       */
+      appStoreIos: string;
+      /**
+       * Format: uri
+       * @description Android app store deep link
+       * @example market://details?id=io.quatt.mobile.android
+       */
+      appStoreAndroid: string;
     };
     /**
      * Date
@@ -4758,7 +4845,9 @@ export interface components {
       | "INVALID_CHILL_SETPOINT_MODE"
       | "TRY_TO_SET_THERMOSTAT_TYPE_TO_NULL_ON_EXISTING_INSTALLATION_WITH_THERMOSTAT_TYPE_SET"
       | "RIG_NOT_FOUND"
-      | "UNSUPPORTED_ACTION_ON_RIG";
+      | "UNSUPPORTED_ACTION_ON_RIG"
+      | "REFERRAL_ROCK_API_ERROR"
+      | "REFERRAL_MEMBER_EMAIL_ALREADY_EXISTS";
     ErrorResponse: components["schemas"]["Error"];
     ErrorResponseResult: {
       /** @example Unexpected error */
@@ -4772,11 +4861,11 @@ export interface components {
     allEStatus: components["schemas"]["AllEStatus"];
     BaseDevice: {
       uuid: components["schemas"]["DeviceUuid"];
-      cicUuid?: components["schemas"]["CicUuid"] | null;
+      cicUuid?: components["schemas"]["NullableCicUuid"];
       /** @example OUTDOOR_UNIT_1 */
       name?: string | null;
       status: components["schemas"]["DeviceStatus"];
-      installationUuid?: components["schemas"]["InstallationUuid"] | null;
+      installationUuid?: components["schemas"]["NullableInstallationUuid"];
       /**
        * @description Serial number of the device (optional, omitted if not set)
        * @example HB-L-02-24-0001-00001
@@ -4985,7 +5074,7 @@ export interface components {
      * @example ALL_ELECTRIC
      * @enum {string}
      */
-    DevicesConfiguration: "HYBRID" | "ALL_ELECTRIC" | "CHILL";
+    DevicesConfiguration: "HYBRID" | "HYBRID_BETA" | "ALL_ELECTRIC" | "CHILL";
     /** @example DEV-7f24b2d2-a261-4c53-bc61-4e06a836d690 */
     DeviceUuid: string;
     /** @example HB-M-01-FC12345-12-012345 */
@@ -5165,7 +5254,8 @@ export interface components {
       | components["schemas"]["DeaerationChillFlow"]
       | components["schemas"]["DeaerationChillSolenoid"]
       | components["schemas"]["FlowrateChill"]
-      | components["schemas"]["CoolingChill"];
+      | components["schemas"]["CoolingChill"]
+      | components["schemas"]["BoilerPowerTest"];
     /**
      * @example CHARGING_HEAT_CHARGER
      * @enum {string}
@@ -5190,7 +5280,8 @@ export interface components {
       | "DEAERATION_CHILL_FLOW"
       | "DEAERATION_CHILL_SOLENOID"
       | "FLOWRATE_CHILL"
-      | "COOLING_CHILL";
+      | "COOLING_CHILL"
+      | "BOILER_POWER_TEST";
     /** @example TEST-7f24b2d2-a261-4c53-bc61-4e06a836d690 */
     CommissioningTestUuid: string;
     /** @example COM-7f24b2d2-a261-4c53-bc61-4e06a836d690 */
@@ -6840,7 +6931,10 @@ export interface components {
      * @example 7f24b2d2-a261-4c53-bc61-4e06a836d690
      */
     Uuid: string;
-    /** @example CIC-7f24b2d2-a261-4c53-bc61-4e06a836d690 */
+    /**
+     * @description CIC UUID format with uppercase prefix "CIC-" followed by lowercase UUID (e.g., CIC-86e47370-56da-599d-9ab8-d24bd25ae03a)
+     * @example CIC-7f24b2d2-a261-4c53-bc61-4e06a836d690
+     */
     CicUuid: string;
     AllEStatus: {
       /** @example HB-XL-01-23-4567-89012 */
@@ -7135,6 +7229,11 @@ export interface components {
       totalSavingsYesterday: number | null;
     };
     /**
+     * @description CIC UUID format with uppercase prefix "CIC-" followed by lowercase UUID (e.g., CIC-86e47370-56da-599d-9ab8-d24bd25ae03a)
+     * @example CIC-7f24b2d2-a261-4c53-bc61-4e06a836d690
+     */
+    NullableCicUuid: string | null;
+    /**
      * @example medium
      * @enum {string}
      */
@@ -7256,6 +7355,11 @@ export interface components {
       systemProtections: string[] | null;
     };
     BoilerDevice: components["schemas"]["BaseDevice"] & {
+      /**
+       * @description If true, boiler is on/off type. If false, boiler is OpenTherm type.
+       * @example false
+       */
+      isOnOffBoiler?: boolean;
       /** @enum {string} */
       type: "BOILER";
     };
@@ -7400,6 +7504,7 @@ export interface components {
      */
     Product:
       | "HYBRID"
+      | "HYBRID_BETA"
       | "ALL_ELECTRIC"
       | "CHILL"
       | "HOME_BATTERY"
@@ -7407,6 +7512,13 @@ export interface components {
     UpdateThermostat: {
       /** @example true */
       hasRoomTemperatureControl: boolean;
+    };
+    UpdateBoiler: {
+      /**
+       * @description If true, boiler is on/off type. If false, boiler is OpenTherm type.
+       * @example false
+       */
+      isOnOffBoiler: boolean;
     };
     /**
      * @description The supervisory control mode of the CIC
@@ -7709,6 +7821,23 @@ export interface components {
          */
         outletChTemperature: number | null;
         preCooling: components["schemas"]["PreCooling"];
+        /**
+         * Format: float
+         * @description Current ambient temperature measured by the Chill device in degrees Celsius
+         * @example 21
+         */
+        ambientTemperature: number | null;
+        /**
+         * Format: int32
+         * @description Target temperature in degrees Celsius. Accepts integer values between 16°C and 31°C. We only support integer values because of a limitation on the chill firmware, so this particular field type does not match with the one you see in the async api specs because CIC support float values.
+         * @example 22
+         */
+        targetTemperature: number | null;
+        /**
+         * @description Whether the compressor is currently on
+         * @example true
+         */
+        compressorOn: boolean | null;
       };
     } & {
       /**
@@ -7716,6 +7845,57 @@ export interface components {
        * @enum {string}
        */
       type: "COOLING_CHILL";
+    };
+    BoilerPowerTest: components["schemas"]["BaseCommissioningTest"] & {
+      /**
+       * @description The minimum power in kWh required for the test to pass
+       * @example 4
+       */
+      minimumPower: number;
+      /**
+       * @description The minimum duration in seconds that the power must be sustained
+       * @example 30
+       */
+      minimumPowerDurationInSeconds: number;
+      /** @description The live data from the boiler */
+      liveData: {
+        /** @description The datetime of the last update of the live data */
+        lastUpdatedAt: components["schemas"]["Datetime"];
+        /**
+         * @description The power output of the boiler in kWh
+         * @example 4.5
+         */
+        power: number | null;
+        /**
+         * @description The boiler supply inlet temperature in degrees celsius
+         * @example 45.5
+         */
+        boilerTemperatureIn?: number | null;
+        /**
+         * @description The boiler supply outlet temperature in degrees celsius
+         * @example 50.5
+         */
+        boilerTemperatureOut?: number | null;
+      };
+      /** @description The values that were used to validate the test and saved in the database */
+      validatedData: {
+        /**
+         * @description The measured power of the boiler in kWh
+         * @example 4.5
+         */
+        power: number;
+        /**
+         * @description The expected power of the boiler in kWh
+         * @example 4
+         */
+        expectedPower: number;
+      } | null;
+    } & {
+      /**
+       * @description discriminator enum property added by openapi-typescript
+       * @enum {string}
+       */
+      type: "BOILER_POWER_TEST";
     };
     /**
      * @description Type of command to be sent to the CIC.
@@ -7782,62 +7962,10 @@ export interface components {
     ChillMode: "COOLING" | "HEATING";
     /**
      * Format: int32
-     * @description Target temperature in degrees Celsius. Accepts integer values between 16°C and 31°C
+     * @description Target temperature in degrees Celsius. Accepts integer values between 16°C and 31°C. We only support integer values because of a limitation on the chill firmware, so this particular field type does not match with the one you see in the async api specs because CIC support float values.
      * @example 22
      */
     ChillTargetTemperature: number;
-    /** @description Error condition affecting the Chill device, including a specific error code and human-readable message */
-    ChillError: {
-      /**
-       * @description Specific error code identifying the type of failure or protection that triggered
-       * @example HIGH_VOLT_SWITCH_PROTECTION
-       * @enum {string}
-       */
-      code:
-        | "AMBIENT_TEMPERATURE_SENSOR_FAILURE"
-        | "SUCTION_TEMPERATURE_SENSOR_FAILURE"
-        | "DISCHARGE_TEMPERATURE_SENSOR_FAILURE"
-        | "INLET_CH_TEMPERATURE_SENSOR_FAILURE"
-        | "OUTLET_CH_TEMPERATURE_SENSOR_FAILURE"
-        | "EVAPORATOR_COIL_TEMPERATURE_SENSOR_FAILURE"
-        | "CONDENSOR_OUTLET_TEMPERATURE_SENSOR_FAILURE"
-        | "HUMIDITY_SENSOR_FAILURE"
-        | "SUCTION_PRESSURE_SENSOR_FAILURE"
-        | "DISCHARGE_TEMPERATURE_SENSOR_FAILURE_3X"
-        | "EXCESSIVE_CH_TEMP_DIFF_3X_PROTECTION"
-        | "INLET_CH_TEMP_LIMIT_3X_PROTECTION"
-        | "FAN_FAILURE"
-        | "ABNORMAL_CH_TEMP_DIFF_3X_PROTECTION"
-        | "EEPROM_FAILURE"
-        | "HOST_COMMS_FAILURE"
-        | "DISCHARGE_OVERHEAT_PROTECTION"
-        | "HIGH_PRESSURE_SWITCH_PROTECTION"
-        | "SUCTION_PRESSURE_PROTECTION"
-        | "HIGH_PRESSURE_SWITCH_PROTECTION_3X"
-        | "SUCTION_PRESSURE_PROTECTION_3X"
-        | "REFRIGERANT_EVAPORATOR_COIL_ANTIFREEZE"
-        | "REFRIGERANT_EVAPORATOR_COIL_ANTIFREEZE_3X"
-        | "REFRIGERANT_CONDENSOR_COIL_OVERHEAT"
-        | "HEATING_CONDENSOR_COIL_ANTIFREEZE"
-        | "HEATING_EVAPORATOR_COIL_OVERHEAT"
-        | "HEATING_CONDENSOR_COIL_ANTIFREEZE_3X"
-        | "EXCESSIVE_CH_TEMP_DIFF_PROTECTION"
-        | "INLET_CH_TEMP_LIMIT_PROTECTION"
-        | "ABNORMAL_CH_TEMP_DIFF_PROTECTION"
-        | "PUMP_OVER_VOLTAGE_PROTECTION"
-        | "PUMP_UNDER_VOLTAGE_PROTECTION"
-        | "PUMP_OVER_CURRENT_PROTECTION"
-        | "PUMP_PHASE_LOSS_PROTECTION"
-        | "PUMP_LIGHT_LOAD_PROTECTION"
-        | "PUMP_STALL_PROTECTION"
-        | "WATER_FLOW_SWITCH_PROTECTION"
-        | "PUMP_FAILURE";
-      /**
-       * @description Human-readable description of the error condition for display to users or debugging
-       * @example Invalid Chill device state
-       */
-      message: string;
-    };
     BaseChillState: {
       uuid: components["schemas"]["DeviceUuid"];
       eui64: components["schemas"]["EUI64"];
@@ -7864,11 +7992,6 @@ export interface components {
       mode: components["schemas"]["ChillMode"];
       coolingTargetTemperature: components["schemas"]["ChillTargetTemperature"];
       heatingTargetTemperature: components["schemas"]["ChillTargetTemperature"];
-      /**
-       * @description List of current error conditions affecting the Chill device. Null when no errors are present
-       * @example []
-       */
-      errors: components["schemas"]["ChillError"][] | null;
       lastUpdatedAt: components["schemas"]["Datetime"];
       /**
        * Format: int32
@@ -8021,8 +8144,6 @@ export interface components {
      * @example 7f24b2d2-a261-4c53-bc61-4e06a836d690
      */
     NullableUuid: string | null;
-    /** @example CIC-7f24b2d2-a261-4c53-bc61-4e06a836d690 */
-    NullableCicUuid: string | null;
     /**
      * @description The detailed type of installation
      * @enum {string|null}
@@ -8794,6 +8915,7 @@ export interface components {
      */
     threadDeviceType: "CHILL" | "DONGLE";
     EUI64: components["schemas"]["EUI64"];
+    userId: string;
   };
   requestBodies: never;
   headers: never;
@@ -12105,7 +12227,7 @@ export interface operations {
         "application/json":
           | {
               /** @enum {string} */
-              devicesConfiguration: "HYBRID" | "ALL_ELECTRIC";
+              devicesConfiguration: "HYBRID" | "HYBRID_BETA" | "ALL_ELECTRIC";
             }
           | {
               /** @enum {string} */
@@ -12127,6 +12249,13 @@ export interface operations {
             result: components["schemas"]["Device"][];
           };
         };
+      };
+      /** @description No Content - HYBRID configuration without feature flag enabled (legacy behavior) */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
       401: components["responses"]["Unauthorized"];
       403: components["responses"]["Forbidden"];
@@ -12288,7 +12417,8 @@ export interface operations {
         "application/json":
           | components["schemas"]["UpdateHeatCharger"]
           | components["schemas"]["UpdateHeatBattery"]
-          | components["schemas"]["UpdateThermostat"];
+          | components["schemas"]["UpdateThermostat"]
+          | components["schemas"]["UpdateBoiler"];
       };
     };
     responses: {
@@ -13895,7 +14025,7 @@ export interface operations {
       query?: never;
       header?: never;
       path: {
-        installationUuid: components["parameters"]["InstallationUuid"];
+        installationId: components["parameters"]["InstallationId"];
       };
       cookie?: never;
     };
@@ -13914,6 +14044,7 @@ export interface operations {
         };
       };
       401: components["responses"]["Unauthorized"];
+      403: components["responses"]["Forbidden"];
       404: components["responses"]["NotFound"];
       500: components["responses"]["Unexpected"];
     };
@@ -13934,7 +14065,7 @@ export interface operations {
         "X-Client-Platform"?: components["parameters"]["X-Client-Platform"];
       };
       path: {
-        installationUuid: components["parameters"]["InstallationUuid"];
+        installationId: components["parameters"]["InstallationId"];
       };
       cookie?: never;
     };
@@ -13956,6 +14087,10 @@ export interface operations {
           };
         };
       };
+      400: components["responses"]["BadRequest"];
+      401: components["responses"]["Unauthorized"];
+      403: components["responses"]["Forbidden"];
+      404: components["responses"]["NotFound"];
     };
   };
   AdminGetZuperJobsByInstallationUuid: {
@@ -14490,6 +14625,101 @@ export interface operations {
             result?: {
               /** @enum {string} */
               errorCode?: "SNOWFLAKE_QUERY_FAILED";
+            };
+          };
+        };
+      };
+    };
+  };
+  AdminPatchUserReferralEmail: {
+    parameters: {
+      query?: never;
+      header?: {
+        /**
+         * @description Semantic version of the client application.
+         *     Used by the backend to determine available features based on client version.
+         */
+        "X-Client-Version"?: components["parameters"]["X-Client-Version"];
+        /**
+         * @description Platform identifier for the client application.
+         *     Used by the backend to determine platform-specific feature availability.
+         */
+        "X-Client-Platform"?: components["parameters"]["X-Client-Platform"];
+      };
+      path: {
+        userId: components["parameters"]["userId"];
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        /**
+         * @example {
+         *       "email": "newemail@example.com"
+         *     }
+         */
+        "application/json": {
+          /**
+           * Format: email
+           * @description The new email address to set for the referral member
+           */
+          email: string;
+        };
+      };
+    };
+    responses: {
+      /** @description Referral member email successfully updated */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            meta: components["schemas"]["ResponseMeta"];
+            result: components["schemas"]["ReferralMember"];
+          };
+        };
+      };
+      401: components["responses"]["Unauthorized"];
+      403: components["responses"]["UserHasNoPermission"];
+      /** @description User not found or user has no referral member */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"] & {
+            result?: {
+              /** @enum {string} */
+              errorCode?: "USER_NOT_FOUND" | "USER_NO_REFERRAL";
+            };
+          };
+        };
+      };
+      /** @description A referral member with this email already exists */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"] & {
+            result?: {
+              /** @enum {string} */
+              errorCode?: "REFERRAL_MEMBER_EMAIL_ALREADY_EXISTS";
+            };
+          };
+        };
+      };
+      /** @description Referral Rock API error */
+      502: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"] & {
+            result?: {
+              /** @enum {string} */
+              errorCode?: "REFERRAL_ROCK_API_ERROR";
             };
           };
         };
