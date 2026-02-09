@@ -4,6 +4,7 @@ import { $api } from "@/openapi-client/context";
 
 type BoilerType = components["schemas"]["BoilerType"];
 type CicHealthCheckStatus = components["schemas"]["CicHealthCheckStatus"];
+type CicHealthCheck = components["schemas"]["CicHealthCheck"];
 type DeviceConnectionStatuses =
   components["schemas"]["DeviceConnectionStatuses"];
 type InternetConnectionStatuses =
@@ -74,9 +75,11 @@ const formatStatus = (
 
 /**
  * Format restart status with colored indicator and count
+ * Note: Uses CicHealthCheck.status ("ok" | "warning" | "error")
+ * which differs from CicHealthCheckStatus ("correct" | "warning" | "error" | "notApplicable")
  */
 const formatRestartStatus = (healthCheck: {
-  status: "ok" | "warning" | "error";
+  status: CicHealthCheck["status"];
   count: number;
   message?: string | null;
 }): React.ReactNode => {
