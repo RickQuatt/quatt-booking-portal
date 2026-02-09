@@ -83,19 +83,31 @@ const formatRestartStatus = (healthCheck: {
   count: number;
   message?: string | null;
 }): React.ReactNode => {
-  const isWarning = healthCheck.status === "warning";
-  const icon = isWarning ? "⚠" : "✓";
-  const colorClass = isWarning
-    ? "text-yellow-600 dark:text-yellow-400"
-    : "text-green-600 dark:text-green-400";
+  // Map CicHealthCheck status to icon and color
+  const statusConfig = {
+    ok: {
+      icon: "✓",
+      colorClass: "text-green-600 dark:text-green-400",
+    },
+    warning: {
+      icon: "⚠",
+      colorClass: "text-yellow-600 dark:text-yellow-400",
+    },
+    error: {
+      icon: "✗",
+      colorClass: "text-red-600 dark:text-red-400",
+    },
+  } as const;
+
+  const config = statusConfig[healthCheck.status];
 
   const displayText =
     healthCheck.message ||
     `${healthCheck.count} restart${healthCheck.count !== 1 ? "s" : ""}`;
 
   return (
-    <span className={colorClass}>
-      {icon} {displayText}
+    <span className={config.colorClass}>
+      {config.icon} {displayText}
     </span>
   );
 };
