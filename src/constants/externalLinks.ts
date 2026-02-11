@@ -16,12 +16,15 @@ export const getEnvironment = (): {
   const url = window.location.href;
   return {
     isLocal: url.includes("localhost"),
-    isDevelopment: url.includes("internal-support-develop"),
+    isDevelopment:
+      url.includes("internal-support-develop") ||
+      url.includes("quatt-support-dashboard.pages.dev"),
     isStaging: url.includes("internal-support-staging"),
     isProduction:
       !url.includes("localhost") &&
       !url.includes("internal-support-develop") &&
-      !url.includes("internal-support-staging"),
+      !url.includes("internal-support-staging") &&
+      !url.includes("quatt-support-dashboard.pages.dev"),
   };
 };
 
