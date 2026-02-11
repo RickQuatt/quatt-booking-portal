@@ -95,6 +95,23 @@ export function getZuperJobLink(jobUid: string) {
   return `https://app.zuperpro.com/jobs/${jobUid}/details`;
 }
 
+export function getGrafanaChillStatsDashboardLink(
+  cicId: string,
+  serialNumber: string,
+  eui64: string,
+) {
+  const env = getEnvironment();
+  const params = `orgId=1&refresh=30s&var-cic_uuid=${cicId}&var-serialNumber=${serialNumber}&var-eui64=${eui64}`;
+
+  if (env.isLocal || env.isDevelopment) {
+    return `https://g-d4ebd27178.grafana-workspace.eu-west-1.amazonaws.com/d/chill-stats-dashboard/chill-stats-dashboard?${params}`;
+  }
+  if (env.isStaging) {
+    return `https://g-2048f245a4.grafana-workspace.eu-west-1.amazonaws.com/d/chill-stats-dashboard/chill-stats-dashboard?${params}`;
+  }
+  return `https://g-736ff2fef7.grafana-workspace.eu-west-1.amazonaws.com/d/chill-stats-dashboard/chill-stats-dashboard?${params}`;
+}
+
 export function getRetoolBatteryDashboardLink(batterySn: string) {
   return `https://quatt.retool.com/app/battery-dashboard?_environment=production&battery_sn=${batterySn}`;
 }

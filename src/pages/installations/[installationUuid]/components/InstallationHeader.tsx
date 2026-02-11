@@ -18,6 +18,7 @@ import {
   getGrafanaDiagnosticsLink,
   getGrafanaAllEDashboardLink,
   getRetoolBatteryDashboardLink,
+  getGrafanaChillStatsDashboardLink,
 } from "@/constants/externalLinks";
 
 type AdminInstallationDetail = components["schemas"]["AdminInstallationDetail"];
@@ -69,6 +70,9 @@ export function InstallationHeader({
     (d) => d.type === "HOME_BATTERY",
   );
   const batterySn = batteryDevice?.serialNumber;
+
+  // Check if Chill installation
+  const chillDevice = installation.devices?.find((d) => d.type === "CHILL");
 
   // Check if All-Electric installation
   const isAllElectric =
@@ -270,6 +274,26 @@ export function InstallationHeader({
                 </a>
               </Button>
             )}
+            {installation.activeCic &&
+              chillDevice &&
+              "serialNumber" in chillDevice &&
+              "eui64" in chillDevice && (
+                <Button variant="outline" size="sm" disabled={isLoading}>
+                  <a
+                    href={getGrafanaChillStatsDashboardLink(
+                      installation.activeCic,
+                      chillDevice.serialNumber as string,
+                      chillDevice.eui64 as string,
+                    )}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                    Grafana - Chill Stats
+                  </a>
+                </Button>
+              )}
             {isHomeBattery && batterySn && (
               <Button variant="outline" size="sm" disabled={isLoading}>
                 <a
