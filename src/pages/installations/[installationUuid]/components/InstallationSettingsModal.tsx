@@ -79,29 +79,28 @@ export function InstallationSettingsModal({
       .number()
       .optional()
       .nullable()
-      .refine(
-        (val) => {
-          if (val === null || val === undefined) return true;
-          const config = installation?.chMaxWaterTemperature;
-          if (!config) return true;
-          return val >= config.minValue && val <= config.maxValue;
-        },
-        {
-          message: `Value must be between ${installation?.chMaxWaterTemperature?.minValue}°C and ${installation?.chMaxWaterTemperature?.maxValue}°C`,
-        },
-      )
-      .refine(
-        (val) => {
-          if (val === null || val === undefined) return true;
-          const config = installation?.chMaxWaterTemperature;
-          if (!config) return true;
-          // Validate increment
-          return (val - config.minValue) % config.increment === 0;
-        },
-        {
-          message: `Value must be in increments of ${installation?.chMaxWaterTemperature?.increment}°C`,
-        },
-      ),
+      .superRefine((val, ctx) => {
+        if (val === null || val === undefined) return;
+        const config = installation?.chMaxWaterTemperature;
+        if (!config) return;
+
+        // Validate min/max range
+        if (val < config.minValue || val > config.maxValue) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `Value must be between ${config.minValue}°C and ${config.maxValue}°C`,
+          });
+        }
+
+        // Ensure value is at a valid increment step from minValue
+        // e.g., if min=40, increment=5, valid values are 40, 45, 50, etc.
+        if ((val - config.minValue) % config.increment !== 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `Value must be in increments of ${config.increment}°C`,
+          });
+        }
+      }),
   });
 
   type InstallationSettingsFormData = z.infer<
