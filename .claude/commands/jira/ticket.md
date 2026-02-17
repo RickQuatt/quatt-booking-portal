@@ -1,5 +1,5 @@
 ---
-allowed-tools: mcp__atlassian-jira__createJiraIssue, mcp__atlassian-jira__updateJiraIssue, mcp__atlassian-jira__getJiraIssue, mcp__atlassian-jira__addCommentToJiraIssue, Grep, Read, Glob
+allowed-tools: Bash, Grep, Read, Glob
 argument-hint: [QPD-XXXX update-text OR new-issue-description]
 description: Create or update QPD (Quatt Product Development) tickets for bugs, tasks, and features
 ---
@@ -46,8 +46,8 @@ User provided input: **$ARGUMENTS**
 
 1. **UPDATE Mode**: If arguments start with "QPD-" followed by numbers (e.g., "QPD-9999 issue resolved")
    - Extract ticket key (QPD-XXXX) and update text
-   - Use `getJiraIssue` to fetch current ticket details
-   - Add comment with update text using `addCommentToJiraIssue`
+   - Use `acli jira workitem get --issue QPD-XXXX` to fetch current ticket details
+   - Add comment with update text using `acli jira workitem comment --issue QPD-XXXX --comment "..."`
 2. **CREATE Mode**: Otherwise, treat as new ticket creation
    - Use entire argument as issue description
    - Analyze and create new QPD ticket
@@ -137,9 +137,9 @@ User provided input: **$ARGUMENTS**
 
 5. **Handle Sprint Assignment** (only if explicitly requested):
    - If user mentions "current sprint", "SW&I sprint", or similar sprint-related terms:
-     - Search for active SW&I sprints using JQL: `project = QPD AND sprint in openSprints() AND sprint ~ "SW&I" ORDER BY updated DESC`
+     - Search for active SW&I sprints using `acli jira workitem search --jql "project = QPD AND sprint in openSprints() AND sprint ~ 'SW&I' ORDER BY updated DESC"`
      - Find the active sprint (state = "active") with SW&I prefix
-     - Use `editJiraIssue` to update `customfield_10020` with the sprint ID as a number
+     - Use `acli jira workitem update --issue QPD-XXXX --field customfield_10020 --value <sprint-id>` to set the sprint
    - **Important**: Only set sprint when explicitly requested - don't assume all tickets need sprint assignment
 
 ### **UPDATE Mode Instructions**
@@ -149,11 +149,11 @@ User provided input: **$ARGUMENTS**
    - Extract update text (everything after the ticket key)
 
 2. **Fetch existing ticket**:
-   - Use `getJiraIssue` to retrieve current ticket details
+   - Use `acli jira workitem get --issue QPD-XXXX` to retrieve current ticket details
    - Understand the context of what's being updated
 
 3. **Add comment**:
-   - Use `addCommentToJiraIssue` to add the update text as a comment
+   - Use `acli jira workitem comment --issue QPD-XXXX --comment "..."` to add the update text as a comment
    - Format comment with relevant context if needed
 
 ### **Key Requirements**
@@ -161,15 +161,33 @@ User provided input: **$ARGUMENTS**
 - Be discerning and accurate - no wild goose chases
 - Focus on the actual problem, not speculation
 - Keep descriptions factual and actionable
-- Use the MCP Jira integration for all operations
+- Use the `acli` command-line tool for all Jira operations
 - If additional research reveals more information, update the ticket with relevant details
 
-### **Available MCP Actions**
+### **Available ACLI Commands**
 
-- `createJiraIssue`: Create new tickets
-- `getJiraIssue`: Retrieve existing ticket details
-- `addCommentToJiraIssue`: Add comments to existing tickets
-- `updateJiraIssue`: Update ticket fields if needed
+Use the `acli` command-line tool via Bash for all Jira operations:
+
+- `acli jira workitem create`: Create new tickets
+- `acli jira workitem get`: Retrieve existing ticket details
+- `acli jira workitem comment`: Add comments to existing tickets
+- `acli jira workitem update`: Update ticket fields
+
+**ACLI Command Format Examples:**
+
+```bash
+# Create a bug ticket
+acli jira workitem create --project QPD --type Bug --summary "..." --description "..." --parent QPD-152 --priority Medium
+
+# Get ticket details
+acli jira workitem get --issue QPD-9999
+
+# Add comment to ticket
+acli jira workitem comment --issue QPD-9999 --comment "..."
+
+# Update ticket fields
+acli jira workitem update --issue QPD-9999 --field priority --value High
+```
 
 ### **After Operation**
 
