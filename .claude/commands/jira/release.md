@@ -1,5 +1,5 @@
 ---
-allowed-tools: mcp__atlassian-jira__createJiraIssue, mcp__atlassian-jira__updateJiraIssue, mcp__atlassian-jira__getJiraIssue, mcp__atlassian-jira__addCommentToJiraIssue, mcp__atlassian-jira__searchJiraIssuesUsingJql
+allowed-tools: Bash, Grep, Read, Glob
 argument-hint: [Cloud v2.15.0 release-notes OR existing-version-update]
 description: Create or update QPD releases and associated CHG change management tickets
 ---
@@ -85,10 +85,10 @@ User provided input: **$ARGUMENTS**
 
 2. **Find Associated CHG Ticket**:
    - Search CHG project for tickets with summary containing the version
-   - Use pattern: `summary ~ "Cloud Release v{version}"`
+   - Use `acli jira workitem search --jql "project = CHG AND summary ~ 'Cloud Release v{version}'"`
 
 3. **Add Update Comment**:
-   - Use `addCommentToJiraIssue` to add deployment status
+   - Use `acli jira workitem comment --issue CHG-XX --comment "..."` to add deployment status
    - Include deployment timestamp and status information
 
 ### **Release Patterns and Examples**
@@ -105,13 +105,31 @@ User provided input: **$ARGUMENTS**
 - Issue reports: "rollback initiated due to database connection issues"
 - Post-deployment: "all systems healthy, monitoring for 24h"
 
-### **Available MCP Actions**
+### **Available ACLI Commands**
 
-- `createJiraIssue`: Create CHG change tickets
-- `searchJiraIssuesUsingJql`: Find existing versions and CHG tickets
-- `getJiraIssue`: Retrieve ticket details
-- `addCommentToJiraIssue`: Add deployment updates
-- `updateJiraIssue`: Update ticket fields if needed
+Use the `acli` command-line tool via Bash for all Jira operations:
+
+- `acli jira workitem create`: Create CHG change tickets
+- `acli jira workitem search`: Find existing versions and CHG tickets using JQL
+- `acli jira workitem get`: Retrieve ticket details
+- `acli jira workitem comment`: Add deployment updates
+- `acli jira workitem update`: Update ticket fields
+
+**ACLI Command Format Examples:**
+
+```bash
+# Create a CHG ticket
+acli jira workitem create --project CHG --type Change --summary "Quatt Cloud Release v2.15.0" --description "..." --priority Medium
+
+# Search for CHG tickets
+acli jira workitem search --jql "project = CHG AND summary ~ 'Cloud Release v2.15.0'"
+
+# Get CHG ticket details
+acli jira workitem get --issue CHG-35
+
+# Add comment to CHG ticket
+acli jira workitem comment --issue CHG-35 --comment "Deployed successfully"
+```
 
 ### **Key Requirements**
 
