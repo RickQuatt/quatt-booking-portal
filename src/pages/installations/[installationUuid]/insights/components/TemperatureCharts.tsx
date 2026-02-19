@@ -13,12 +13,12 @@ import {
   type ScriptableContext,
 } from "chart.js";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { format } from "date-fns";
+import { format, addHours, addDays, addMonths, addYears } from "date-fns";
 import type {
   InsightsResponse,
   TimeGranularity,
 } from "../types/insights.types";
-import { CHART_COLORS } from "../utils/insightsConstants";
+import { CHART_COLORS, INSIGHTS_TIME_UNITS } from "../utils/insightsConstants";
 
 ChartJS.register(
   CategoryScale,
@@ -30,6 +30,73 @@ ChartJS.register(
   Filler,
 );
 
+/**
+ * Helper to add units based on time unit type
+ */
+function addUnits(
+  date: Date,
+  amount: number,
+  unit: "hour" | "day" | "week" | "month" | "year",
+): Date {
+  switch (unit) {
+    case "hour":
+      return addHours(date, amount);
+    case "day":
+      return addDays(date, amount);
+    case "week":
+      return addDays(date, amount * 7);
+    case "month":
+      return addMonths(date, amount);
+    case "year":
+      return addYears(date, amount);
+  }
+}
+
+/**
+ * Helper to check if two dates match for the given unit
+ */
+function isSameUnit(
+  a: Date,
+  b: Date,
+  unit: "hour" | "day" | "week" | "month" | "year",
+): boolean {
+  const formatMap = {
+    hour: "yyyy-MM-dd HH",
+    day: "yyyy-MM-dd",
+    week: "yyyy-MM-dd",
+    month: "yyyy-MM",
+    year: "yyyy",
+  };
+  return format(a, formatMap[unit]) === format(b, formatMap[unit]);
+}
+
+/**
+ * Calculate the number of ticks for the full period
+ */
+function getNumTicks(timeGranularity: TimeGranularity, fromDate: Date): number {
+  switch (timeGranularity) {
+    case "day":
+      return 24; // 24 hours
+    case "week":
+      return 7; // 7 days
+    case "month": {
+      const year = fromDate.getFullYear();
+      const month = fromDate.getMonth();
+      return new Date(year, month + 1, 0).getDate();
+    }
+    case "year":
+      return 12; // 12 months
+    case "all": {
+      const now = new Date();
+      return (
+        Math.floor(
+          (now.getTime() - fromDate.getTime()) / (365.25 * 24 * 60 * 60 * 1000),
+        ) + 1
+      );
+    }
+  }
+}
+
 interface OutsideTemperatureChartProps {
   data: NonNullable<InsightsResponse["outsideTemperatureGraph"]>;
   timeGranularity: TimeGranularity;
@@ -39,11 +106,18 @@ export function OutsideTemperatureChart({
   data,
   timeGranularity,
 }: OutsideTemperatureChartProps) {
-  const validData = data.filter(Boolean);
   const isDay = timeGranularity === "day";
 
   const chartData = useMemo(() => {
-    if (validData.length === 0) return null;
+    if (data.length === 0) return null;
+
+    // Find first valid entry to get the start date
+    const firstEntry = data.find((d) => d);
+    if (!firstEntry) return null;
+
+    const fromDate = new Date(firstEntry.timestamp);
+    const timeUnit = INSIGHTS_TIME_UNITS[timeGranularity];
+    const numTicks = getNumTicks(timeGranularity, fromDate);
 
     // Format labels based on time granularity
     const getLabelFormat = () => {
@@ -63,9 +137,27 @@ export function OutsideTemperatureChart({
       }
     };
 
-    const labels = validData.map((d) =>
-      d ? format(new Date(d.timestamp), getLabelFormat()) : "",
-    );
+    const labelFormat = getLabelFormat();
+
+    // Generate full period labels and match data
+    const labels: string[] = [];
+    const temperatures: (number | null)[] = [];
+    const minTemps: (number | null)[] = [];
+    const maxTemps: (number | null)[] = [];
+
+    for (let i = 0; i < numTicks; i++) {
+      const tickDate = addUnits(fromDate, i, timeUnit);
+      labels.push(format(tickDate, labelFormat));
+
+      // Find matching data point
+      const dataPoint = data.find(
+        (d) => d && isSameUnit(new Date(d.timestamp), tickDate, timeUnit),
+      );
+
+      temperatures.push(dataPoint?.temperatureOutside ?? null);
+      minTemps.push(dataPoint?.minTemperatureOutside ?? null);
+      maxTemps.push(dataPoint?.maxTemperatureOutside ?? null);
+    }
 
     if (isDay) {
       return {
@@ -73,12 +165,13 @@ export function OutsideTemperatureChart({
         datasets: [
           {
             label: "Temperature",
-            data: validData.map((d) => d?.temperatureOutside ?? null),
+            data: temperatures,
             borderColor: CHART_COLORS.tempMild,
             backgroundColor: "rgba(0, 204, 136, 0.1)",
             fill: true,
             tension: 0.4,
             pointRadius: 0,
+            spanGaps: true,
           },
         ],
       };
@@ -89,11 +182,10 @@ export function OutsideTemperatureChart({
       datasets: [
         {
           label: "Temperature Range",
-          data: validData.map((d) =>
-            d?.minTemperatureOutside != null && d?.maxTemperatureOutside != null
-              ? [d.minTemperatureOutside, d.maxTemperatureOutside]
-              : null,
-          ) as ([number, number] | null)[],
+          data: minTemps.map((min, idx) => {
+            const max = maxTemps[idx];
+            return min != null && max != null ? [min, max] : null;
+          }) as ([number, number] | null)[],
           backgroundColor: (context: ScriptableContext<"bar">) => {
             // Create gradient from cold (blue) to warm (yellow)
             const chart = context.chart;
@@ -115,7 +207,7 @@ export function OutsideTemperatureChart({
         },
       ],
     };
-  }, [validData, isDay]);
+  }, [data, timeGranularity, isDay]);
 
   const lineOptions = useMemo<ChartOptions<"line">>(
     () => ({
@@ -124,7 +216,7 @@ export function OutsideTemperatureChart({
       scales: {
         x: {
           grid: { display: false },
-          ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: 12 },
+          ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: 24 },
         },
         y: {
           title: { display: true, text: "°C" },
@@ -151,7 +243,7 @@ export function OutsideTemperatureChart({
       scales: {
         x: {
           grid: { display: false },
-          ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: 12 },
+          ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: 24 },
         },
         y: {
           title: { display: true, text: "°C" },
@@ -163,15 +255,12 @@ export function OutsideTemperatureChart({
         tooltip: {
           callbacks: {
             label: (context) => {
-              const dataIndex = context.dataIndex;
-              const dataPoint = validData[dataIndex];
+              const value = context.parsed.y;
 
-              if (!dataPoint) return "";
+              if (!value || !Array.isArray(value)) return "";
 
-              const min = dataPoint.minTemperatureOutside?.toFixed(1);
-              const max = dataPoint.maxTemperatureOutside?.toFixed(1);
-
-              return `${min}°C - ${max}°C`;
+              const [min, max] = value;
+              return `${min?.toFixed(1)}°C - ${max?.toFixed(1)}°C`;
             },
             title: (tooltipItems) => {
               return tooltipItems[0]?.label || "";
@@ -180,7 +269,7 @@ export function OutsideTemperatureChart({
         },
       },
     }),
-    [validData],
+    [],
   );
 
   if (!chartData) return null;
@@ -214,36 +303,60 @@ interface RoomTemperatureChartProps {
 }
 
 export function RoomTemperatureChart({ data }: RoomTemperatureChartProps) {
-  const validData = data.filter(Boolean);
-
   const chartData = useMemo(() => {
-    if (validData.length === 0) return null;
+    if (data.length === 0) return null;
+
+    // Find first valid entry to get the start date
+    const firstEntry = data.find((d) => d);
+    if (!firstEntry) return null;
+
+    const fromDate = new Date(firstEntry.timestamp);
+    const numTicks = 24; // Always 24 hours for day view
+
+    // Generate full period (24 hours)
+    const labels: string[] = [];
+    const roomTemps: (number | null)[] = [];
+    const setpoints: (number | null)[] = [];
+
+    for (let i = 0; i < numTicks; i++) {
+      const tickDate = addHours(fromDate, i);
+      labels.push(format(tickDate, "HH:mm"));
+
+      // Find matching data point
+      const dataPoint = data.find(
+        (d) => d && isSameUnit(new Date(d.timestamp), tickDate, "hour"),
+      );
+
+      roomTemps.push(dataPoint?.roomTemperature ?? null);
+      setpoints.push(dataPoint?.roomSetpoint ?? null);
+    }
+
     return {
-      labels: validData.map((d) =>
-        d ? format(new Date(d.timestamp), "HH:mm") : "",
-      ),
+      labels,
       datasets: [
         {
           label: "Room Temperature",
-          data: validData.map((d) => d?.roomTemperature ?? null),
+          data: roomTemps,
           borderColor: CHART_COLORS.roomTemp,
           backgroundColor: "rgba(0, 206, 209, 0.1)",
           fill: true,
           tension: 0.4,
           pointRadius: 0,
+          spanGaps: true,
         },
         {
           label: "Setpoint",
-          data: validData.map((d) => d?.roomSetpoint ?? null),
+          data: setpoints,
           borderColor: CHART_COLORS.roomSetpoint,
           borderDash: [5, 5],
           fill: false,
           tension: 0,
           pointRadius: 0,
+          spanGaps: true,
         },
       ],
     };
-  }, [validData]);
+  }, [data]);
 
   const options = useMemo<ChartOptions<"line">>(
     () => ({
@@ -252,7 +365,7 @@ export function RoomTemperatureChart({ data }: RoomTemperatureChartProps) {
       scales: {
         x: {
           grid: { display: false },
-          ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: 12 },
+          ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: 24 },
         },
         y: {
           title: { display: true, text: "°C" },
@@ -311,14 +424,36 @@ interface WaterTemperatureChartProps {
 export function WaterTemperatureChart({ data }: WaterTemperatureChartProps) {
   const chartData = useMemo(() => {
     if (data.length === 0) return null;
+
+    // Find first valid entry to get the start date
+    const firstEntry = data.find((d) => d);
+    if (!firstEntry) return null;
+
+    const fromDate = new Date(firstEntry.timestamp);
+    const numTicks = 24; // Always 24 hours for day view
+
+    // Generate full period (24 hours)
+    const labels: string[] = [];
+    const waterTemps: (number | null)[] = [];
+
+    for (let i = 0; i < numTicks; i++) {
+      const tickDate = addHours(fromDate, i);
+      labels.push(format(tickDate, "HH:mm"));
+
+      // Find matching data point
+      const dataPoint = data.find(
+        (d) => d && isSameUnit(new Date(d.timestamp), tickDate, "hour"),
+      );
+
+      waterTemps.push(dataPoint?.waterTemperature ?? null);
+    }
+
     return {
-      labels: data.map((d) =>
-        d ? format(new Date(d.timestamp), "HH:mm") : "",
-      ),
+      labels,
       datasets: [
         {
           label: "Water Temperature",
-          data: data.map((d) => d?.waterTemperature ?? null),
+          data: waterTemps,
           borderColor: CHART_COLORS.waterTemp,
           backgroundColor: "rgba(255, 140, 66, 0.1)",
           fill: true,
@@ -338,7 +473,7 @@ export function WaterTemperatureChart({ data }: WaterTemperatureChartProps) {
       scales: {
         x: {
           grid: { display: false },
-          ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: 12 },
+          ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: 24 },
         },
         y: {
           title: { display: true, text: "°C" },
