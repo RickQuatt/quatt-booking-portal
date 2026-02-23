@@ -77,5 +77,8 @@ const categoryToKpis = getEntries(kpiToCategory).reduce(
 );
 
 export function categoryToKpiLabels(category: CicHealthCheckCategory) {
-  return categoryToKpis[category].map((kpi) => kpiToLabel[kpi]).join(", ");
+  return categoryToKpis[category]
+    .filter((kpi) => kpi !== "numberOfRestarts") // Filter out as it's not implemented
+    .map((kpi) => kpiToLabel[kpi])
+    .join(", ");
 }
