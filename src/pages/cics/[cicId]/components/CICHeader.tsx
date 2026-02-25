@@ -242,17 +242,6 @@ export function CICHeader({
                 Grafana - Unified Dashboard (BETA)
               </a>
             </Button>
-            <Button variant="outline" size="sm" disabled={isLoading}>
-              <a
-                href={getGrafanaUnifiedDashboardLink(cicData.id)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2"
-              >
-                <ExternalLink className="h-4 w-4" />
-                Grafana - Unified Dashboard (BETA)
-              </a>
-            </Button>
             {isAllE && (
               <Button variant="outline" size="sm" disabled={isLoading}>
                 <a

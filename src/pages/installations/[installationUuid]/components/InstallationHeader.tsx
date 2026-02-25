@@ -275,19 +275,6 @@ export function InstallationHeader({
                 </a>
               </Button>
             )}
-            {installation.activeCic && (
-              <Button variant="outline" size="sm" disabled={isLoading}>
-                <a
-                  href={getGrafanaUnifiedDashboardLink(installation.activeCic)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2"
-                >
-                  <ExternalLink className="h-4 w-4" />
-                  Grafana - Unified Dashboard (BETA)
-                </a>
-              </Button>
-            )}
             {installation.activeCic && isAllElectric && (
               <Button variant="outline" size="sm" disabled={isLoading}>
                 <a
