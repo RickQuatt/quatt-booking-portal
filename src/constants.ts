@@ -22,7 +22,7 @@ export const kpiToLabel = {
   cpuTemperature: "CPU temperature",
   loadAverage: "Load average",
   watchdog: "Watchdog",
-  minimumCop: "Minimum COP is too high",
+  minimumCop: "Tariff COP optimization",
   supervisoryControlMode: "Controller in normal operation",
   heatpumpErrors: "Error flag from heatpump",
   numberOfRestarts: "Number of restarts",
@@ -77,5 +77,8 @@ const categoryToKpis = getEntries(kpiToCategory).reduce(
 );
 
 export function categoryToKpiLabels(category: CicHealthCheckCategory) {
-  return categoryToKpis[category].map((kpi) => kpiToLabel[kpi]).join(", ");
+  return categoryToKpis[category]
+    .filter((kpi) => kpi !== "numberOfRestarts") // Filter out as it's not implemented
+    .map((kpi) => kpiToLabel[kpi])
+    .join(", ");
 }

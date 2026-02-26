@@ -90,7 +90,7 @@ export function KpiHealthChart({ data }: KpiHealthChartProps) {
                 case "watchdog":
                   return "Last value of watchdog code is within the defined limits";
                 case "minimumCop":
-                  return 'Verify if customer has not disabled the "use tariff-based optimization" feature AND minimum COP based on user tarrifs has a correct value';
+                  return "Green: tariff COP optimization is active. Warning: heat pump currently limited (boiler is cheaper). Error: minimumCOP not set (tariff optimization disabled or not configured).";
                 case "supervisoryControlMode":
                   return "Controller is in normal operation mode";
                 case "heatpumpErrors":
@@ -125,7 +125,10 @@ export function KpiHealthChart({ data }: KpiHealthChartProps) {
     [textColor],
   );
 
-  const kpis = React.useMemo(() => getKeys(data), [data]);
+  const kpis = React.useMemo(() => {
+    // Filter out numberOfRestarts as it's always "notApplicable" (not implemented)
+    return getKeys(data).filter((key) => key !== "numberOfRestarts");
+  }, [data]);
 
   const chartData = React.useMemo(() => {
     const labels = kpis.map((key) => kpiToLabel[key]);

@@ -160,7 +160,7 @@ export function useInsightsPresenter({
   // HP percentage
   const hpPercentage = calculateHpPercentage(
     insights?.totalHpHeat,
-    insights?.totalBoilerHeat,
+    insights?.totalBoilerHeat ?? undefined,
   );
 
   // Formatted values
@@ -222,7 +222,7 @@ export function useInsightsPresenter({
     totalHeatProduced: insights?.totalHpHeat,
     quattHeatProduced: insights?.totalHpHeat,
     quattElectricityConsumed: insights?.totalHpElectric,
-    boilerHeatProduced: insights?.totalBoilerHeat,
+    boilerHeatProduced: insights?.totalBoilerHeat ?? undefined,
     estimatedGasUsage: insights?.totalBoilerGas
       ? roundLargeMeasurement(insights.totalBoilerGas)
       : null,

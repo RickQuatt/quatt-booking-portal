@@ -4248,6 +4248,7 @@ export interface components {
        * @example true
        */
       hasChills: boolean;
+      chMaxWaterTemperature: components["schemas"]["ChMaxWaterTemperatureConfig"];
     };
     InstallerCic: components["schemas"]["MeCic"] & {
       zipCode: components["schemas"]["NullableZipCode"];
@@ -4559,6 +4560,8 @@ export interface components {
       deviceConnectionStatuses: components["schemas"]["DeviceConnectionStatuses"];
       internetConnectionStatuses: components["schemas"]["InternetConnectionStatuses"];
       devices?: components["schemas"]["Device"][];
+      chMaxWaterTemperature: components["schemas"]["ChMaxWaterTemperatureConfig"];
+      lowLevelBoilerControl: components["schemas"]["LowLevelBoilerControlConfig"];
     };
     AdminInstallationsList: {
       cicId?: components["schemas"]["CicUuid"];
@@ -4756,6 +4759,7 @@ export interface components {
          * @example Havenstraat 23
          */
         name?: string | null;
+        chMaxWaterTemperature?: components["schemas"]["UpdateChMaxWaterTemperature"];
       };
     UpdateInstallerCic: components["schemas"]["UpdateMeCic"] & {
       /** @example Hoofdweg */
@@ -4811,7 +4815,16 @@ export interface components {
       boilerType?: components["schemas"]["BoilerType"];
       thermostatType?: components["schemas"]["ThermostatType"];
       numberOfHeatPumps?: number;
+      chMaxWaterTemperature?: components["schemas"]["UpdateChMaxWaterTemperature"];
     };
+    /** @description Max water temperature update. Only the value field can be set. */
+    UpdateChMaxWaterTemperature: {
+      /**
+       * @description New max water temperature setpoint
+       * @example 55
+       */
+      value?: number;
+    } | null;
     /**
      * @description Connected when we can reach the cloud
      * @enum {string|null}
@@ -4876,6 +4889,8 @@ export interface components {
       | "USER_HAS_NO_PAIRED_CIC"
       | "CIC_NOT_FOUND"
       | "CIC_UPDATE_ERROR"
+      | "CIC_NOT_IN_OPERATIONAL_MODE"
+      | "CIC_SUPERVISORY_CONTROL_MODE_UNAVAILABLE"
       | "USER_CLIENT_DELETE_ERROR"
       | "INSTALLER_NOT_FOUND"
       | "INSTALLER_WITH_CODE_EXISTS"
@@ -4990,8 +5005,8 @@ export interface components {
       | "THREAD_DEVICE_EUI64_NOT_FOUND"
       | "DEVICE_IS_LINKED_TO_ANOTHER_INSTALLATION"
       | "HOUSE_DOES_NOT_HAVE_HOME_BATTERY"
-      | "THREAD_DEVICE_NOT_FOUND_IN_INSTALLATION"
-      | "THREAD_DEVICE_NOT_FOUND_IN_CIC_STATS"
+      | "DEVICE_NOT_FOUND_IN_INSTALLATION"
+      | "DEVICE_NOT_FOUND_IN_CIC_STATS"
       | "DEVICE_CREDENTIALS_NOT_FOUND"
       | "NO_INSTALLATION_FOUND_FOR_DEVICE"
       | "UNKNOWN_INSTALLATION_TYPE"
@@ -5045,7 +5060,6 @@ export interface components {
       | "COMMISSIONING_ALREADY_RUNNING_ON_INSTALLATION"
       | "NO_DEVICES_CONFIGURATION_FOUND"
       | "MISSING_ON_FAILURE_CONFIGURATION"
-      | "THREAD_DEVICE_NOT_FOUND"
       | "CHILL_INTERFACE_BOARD_ALREADY_ASSIGNED"
       | "CHILL_INTERFACE_BOARD_NOT_IN_INVENTORY"
       | "CHILL_DEVICE_NOT_FOUND"
@@ -5065,8 +5079,13 @@ export interface components {
       | "RIG_NOT_FOUND"
       | "UNSUPPORTED_ACTION_ON_RIG"
       | "CANNOT_UNPAIR_DEVICE_DURING_COMMISSIONING"
+      | "CANNOT_UPDATE_BOILER_TYPE_DURING_COMMISSIONING"
+      | "CANNOT_PAIR_DEVICE_DURING_COMMISSIONING"
       | "REFERRAL_ROCK_API_ERROR"
-      | "REFERRAL_MEMBER_ASSIGNED_TO_ANOTHER_USER";
+      | "REFERRAL_MEMBER_ASSIGNED_TO_ANOTHER_USER"
+      | "INVALID_MAX_WATER_TEMPERATURE"
+      | "INVALID_MAX_WATER_TEMPERATURE_FOR_INSTALLATION"
+      | "INVALID_SOLAR_CAPACITY";
     ErrorResponse: components["schemas"]["Error"];
     ErrorResponseResult: {
       /** @example Unexpected error */
@@ -5154,11 +5173,7 @@ export interface components {
       buildingUuid?: string | null;
       /** @example HB-123456 */
       serialNumber: string;
-      /**
-       * @description Check code for the home battery
-       * @example ABC123
-       */
-      checkCode?: string;
+      checkCode?: components["schemas"]["HomeBatteryCheckCode"];
       /**
        * @description Access key UUID for the home battery
        * @example a1b2c3d4-e5f6-7890-abcd-ef1234567890
@@ -6708,8 +6723,7 @@ export interface components {
     HomeBatteryPair: {
       /** @description Serial number of the home battery */
       serialNumber: string;
-      /** @description Check code of the home battery */
-      checkCode: string;
+      checkCode: components["schemas"]["HomeBatteryCheckCode"];
       /** @description Access key UUID of the home battery */
       accessKeyUuid: string;
     };
@@ -7016,7 +7030,7 @@ export interface components {
      *         },
      *         "result": {
      *           "error": "The Thread device with EUI-64 021A7DFFFEDA7113 was not found in the installation with UUID INS-b9cfd47a-dc69-4f1e-937c-c104bdb6d808",
-     *           "errorCode": "THREAD_DEVICE_NOT_FOUND_IN_INSTALLATION"
+     *           "errorCode": "DEVICE_NOT_FOUND_IN_INSTALLATION"
      *         }
      *       }
      *     }
@@ -7026,10 +7040,10 @@ export interface components {
         /** @example The Thread device with EUI-64 021A7DFFFEDA7113 was not found in the installation with UUID INS-b9cfd47a-dc69-4f1e-937c-c104bdb6d808 */
         error?: string;
         /**
-         * @example THREAD_DEVICE_NOT_FOUND_IN_INSTALLATION
+         * @example DEVICE_NOT_FOUND_IN_INSTALLATION
          * @enum {string}
          */
-        errorCode?: "THREAD_DEVICE_NOT_FOUND_IN_INSTALLATION";
+        errorCode?: "DEVICE_NOT_FOUND_IN_INSTALLATION";
       };
     };
     /**
@@ -7195,6 +7209,39 @@ export interface components {
       blockedControlActions?: string[] | null;
       controlDegradationReasons?: string[] | null;
       degradedAllECounters?: string[] | null;
+    } | null;
+    /** @description Max water temperature configuration. Null when feature not supported by firmware. */
+    ChMaxWaterTemperatureConfig: {
+      /**
+       * @description Current max water temperature setpoint in degrees Celsius
+       * @example 55
+       */
+      value: number;
+      /**
+       * @description Minimum allowed value for this installation
+       * @example 40
+       */
+      minValue: number;
+      /**
+       * @description Maximum allowed value for this installation (depends on installation type and ODU)
+       * @example 70
+       */
+      maxValue: number;
+      /**
+       * @description Step size for changes
+       * @example 1
+       */
+      increment: number;
+      /**
+       * @description True if installation has on/off boiler (affects recommendations)
+       * @example false
+       */
+      hasOnOffBoiler: boolean;
+      /**
+       * @description Warning threshold - if value exceeds this, heat pump physical limit is exceeded
+       * @example 55
+       */
+      heatpumpMaxTemperatureWarning: number | null;
     } | null;
     /** @enum {string|null} */
     HybridCommissioningHeatPumpTestLevel: "medium" | "maximum" | null;
@@ -7617,11 +7664,6 @@ export interface components {
        */
       imbalanceSavingsCentsInclVat: number;
       /**
-       * @description Sum of all savings (incl. VAT) in cents
-       * @example 12345
-       */
-      totalSavingsCentsInclVat: number;
-      /**
        * @description Home Battery savings (excl. VAT) in cents
        * @example 5000
        */
@@ -7637,10 +7679,25 @@ export interface components {
        */
       imbalanceSavingsCentsExclVat: number;
       /**
+       * @description Sum of all savings (incl. VAT) in cents
+       * @example 12345
+       */
+      totalSavingsCentsInclVat: number;
+      /**
        * @description Sum of all savings (excl. VAT) in cents
        * @example 12345
        */
       totalSavingsCentsExclVat: number;
+      /**
+       * @description Sum of imbalance + home battery savings (incl. VAT) in cents. Used when solar toggle is off.
+       * @example 8345
+       */
+      totalSavingsWithoutSolarCentsInclVat: number;
+      /**
+       * @description Sum of imbalance + home battery savings (excl. VAT) in cents. Used when solar toggle is off.
+       * @example 6895
+       */
+      totalSavingsWithoutSolarCentsExclVat: number;
     };
     /** @description Cumulative savings with period information */
     CumulativeSavings: components["schemas"]["SavingsAggregated"] & {
@@ -7819,6 +7876,11 @@ export interface components {
      */
     HeatBatterySize: "medium" | "large" | "extra_large";
     /**
+     * @description Check code of the home battery (exactly 6 alphanumeric characters)
+     * @example ED1341
+     */
+    HomeBatteryCheckCode: string;
+    /**
      * @description Connection status of thread device:
      *     - connected: Device is actively communicating
      *     - pending: Device recently paired, waiting for first connection
@@ -7991,7 +8053,7 @@ export interface components {
      *         },
      *         "result": {
      *           "error": "The device of type 'CHILL' with serial number 'CH-CB-01-251025-1234' was not found",
-     *           "errorCode": "THREAD_DEVICE_NOT_FOUND"
+     *           "errorCode": "DEVICE_NOT_FOUND"
      *         }
      *       }
      *     }
@@ -8001,10 +8063,10 @@ export interface components {
         /** @example The device of type 'CHILL' with serial number 'CH-CB-01-251025-1234' was not found */
         error?: string;
         /**
-         * @example THREAD_DEVICE_NOT_FOUND
+         * @example DEVICE_NOT_FOUND
          * @enum {string}
          */
-        errorCode?: "THREAD_DEVICE_NOT_FOUND";
+        errorCode?: "DEVICE_NOT_FOUND";
       };
     };
     /**
@@ -8035,32 +8097,6 @@ export interface components {
     };
     ThreadDeviceInListWithStatus: components["schemas"]["ThreadDeviceInList"] & {
       status: components["schemas"]["DeviceStatus"];
-    };
-    /**
-     * @example {
-     *       "summary": "Thread devices not supported",
-     *       "value": {
-     *         "meta": {
-     *           "status": 422,
-     *           "took": 0.123
-     *         },
-     *         "result": {
-     *           "error": "The device with EUI-64 '021A7DFFFEDA7113' does not support the role 'RCP'",
-     *           "errorCode": "THREAD_DEVICE_REQUESTED_ROLE_NOT_SUPPORTED"
-     *         }
-     *       }
-     *     }
-     */
-    ErrorThreadDeviceRoleNotSupported: components["schemas"]["Error"] & {
-      result?: {
-        /** @example The device with EUI-64 '021A7DFFFEDA7113' does not support the role 'RCP' */
-        error?: string;
-        /**
-         * @example THREAD_DEVICE_REQUESTED_ROLE_NOT_SUPPORTED
-         * @enum {string}
-         */
-        errorCode?: "THREAD_DEVICE_REQUESTED_ROLE_NOT_SUPPORTED";
-      };
     };
     /**
      * @example {
@@ -8212,11 +8248,7 @@ export interface components {
     HomeBatterySetupInput: {
       houseId: components["schemas"]["HouseID"];
       accessKeyUuid: components["schemas"]["DeviceHomeBatteryUuid"];
-      /**
-       * @description Check code of the home battery
-       * @example CHK123
-       */
-      checkCode: string;
+      checkCode: components["schemas"]["HomeBatteryCheckCode"];
       /**
        * @description Serial number of the home battery
        * @example SN123456789
@@ -8627,6 +8659,11 @@ export interface components {
       | "WARNING_TANK_FULL"
       | "WARNING_TANK_MISSING"
       | "WARNING_IN_MAINTENANCE"
+      | "WARNING_NOT_HEATING_SUPPLY_TEMPERATURE_TOO_HIGH"
+      | "WARNING_NOT_HEATING_SUPPLY_TEMPERATURE_TOO_LOW"
+      | "WARNING_NOT_COOLING_SUPPLY_TEMPERATURE_TOO_HIGH"
+      | "WARNING_NOT_COOLING_SUPPLY_TEMPERATURE_TOO_LOW"
+      | "WARNING_INSUFFICIENT_SUPPORT_CAPACITY"
       | "ERROR";
     ChillStateConnected: components["schemas"]["BaseChillState"] & {
       status: components["schemas"]["ChillConnectedStatus"];
@@ -8749,6 +8786,19 @@ export interface components {
       | "CHILL_ALL_ELECTRIC_DUO"
       | "HOME_BATTERY"
       | null;
+    /** @description Low level boiler control configuration. Always present for all installations. Read-only - changed via backend script. */
+    LowLevelBoilerControlConfig: {
+      /**
+       * @description Whether low level boiler control is enabled
+       * @example true
+       */
+      enabled: boolean;
+      /**
+       * @description Indicates if the installation uses a room temperature thermostat (opentherm_room_temperature). When false, this feature will not affect system behavior.
+       * @example true
+       */
+      isRoomTemperatureThermostat: boolean;
+    };
     /**
      * @description Type of event in the support system
      * @example EVENT_HUBSPOT_TICKET
@@ -9194,8 +9244,8 @@ export interface components {
             to: components["schemas"]["Datetime"];
             totalHpHeat: number;
             totalHpElectric: number;
-            totalBoilerHeat?: number;
-            totalBoilerGas?: number;
+            totalBoilerHeat?: number | null;
+            totalBoilerGas?: number | null;
             savingsCo2: number;
             savingsGas: number;
             savingsMoney: number | null;
@@ -9209,15 +9259,15 @@ export interface components {
             graph?: ({
               hpElectric: number;
               hpHeat: number;
-              boilerHeat?: number;
-              boilerGas?: number;
+              boilerHeat?: number | null;
+              boilerGas?: number | null;
               cop: number | null;
               timestamp: components["schemas"]["Datetime"];
             } | null)[];
             outsideTemperatureGraph?:
               | ({
-                  minTemperatureOutside?: number;
-                  maxTemperatureOutside?: number;
+                  minTemperatureOutside?: number | null;
+                  maxTemperatureOutside?: number | null;
                   temperatureOutside: number | null;
                   timestamp: components["schemas"]["Datetime"];
                 } | null)[]
@@ -10885,6 +10935,8 @@ export interface operations {
            *           "solarSavingsCentsExclVat": 3305,
            *           "imbalanceSavingsCentsExclVat": 2764,
            *           "totalSavingsCentsExclVat": 10201,
+           *           "totalSavingsWithoutSolarCentsInclVat": 8345,
+           *           "totalSavingsWithoutSolarCentsExclVat": 6896,
            *           "period": {
            *             "from": "2025-06-15T00:00:00Z",
            *             "to": "2026-01-26T23:59:59Z"
@@ -10899,7 +10951,9 @@ export interface operations {
            *           "homeBatterySavingsCentsExclVat": 82,
            *           "solarSavingsCentsExclVat": 66,
            *           "imbalanceSavingsCentsExclVat": 45,
-           *           "totalSavingsCentsExclVat": 193
+           *           "totalSavingsCentsExclVat": 193,
+           *           "totalSavingsWithoutSolarCentsInclVat": 154,
+           *           "totalSavingsWithoutSolarCentsExclVat": 127
            *         },
            *         "lastUpdatedAt": "2026-01-27T00:00:00Z"
            *       }
@@ -10994,7 +11048,9 @@ export interface operations {
            *           "homeBatterySavingsCentsExclVat": 24793,
            *           "solarSavingsCentsExclVat": 19835,
            *           "imbalanceSavingsCentsExclVat": 14876,
-           *           "totalSavingsCentsExclVat": 59504
+           *           "totalSavingsCentsExclVat": 59504,
+           *           "totalSavingsWithoutSolarCentsInclVat": 48000,
+           *           "totalSavingsWithoutSolarCentsExclVat": 39669
            *         },
            *         "timeseries": [
            *           {
@@ -11007,7 +11063,9 @@ export interface operations {
            *             "homeBatterySavingsCentsExclVat": 2066,
            *             "solarSavingsCentsExclVat": 1653,
            *             "imbalanceSavingsCentsExclVat": 1239,
-           *             "totalSavingsCentsExclVat": 4958
+           *             "totalSavingsCentsExclVat": 4958,
+           *             "totalSavingsWithoutSolarCentsInclVat": 4000,
+           *             "totalSavingsWithoutSolarCentsExclVat": 3305
            *           },
            *           {
            *             "startAt": "2026-02-01T00:00:00+01:00",
@@ -11019,7 +11077,9 @@ export interface operations {
            *             "homeBatterySavingsCentsExclVat": 2149,
            *             "solarSavingsCentsExclVat": 1736,
            *             "imbalanceSavingsCentsExclVat": 1322,
-           *             "totalSavingsCentsExclVat": 5207
+           *             "totalSavingsCentsExclVat": 5207,
+           *             "totalSavingsWithoutSolarCentsInclVat": 4200,
+           *             "totalSavingsWithoutSolarCentsExclVat": 3471
            *           }
            *         ]
            *       }
@@ -11117,7 +11177,9 @@ export interface operations {
            *           "homeBatterySavingsCentsExclVat": 2066,
            *           "solarSavingsCentsExclVat": 1653,
            *           "imbalanceSavingsCentsExclVat": 1239,
-           *           "totalSavingsCentsExclVat": 4958
+           *           "totalSavingsCentsExclVat": 4958,
+           *           "totalSavingsWithoutSolarCentsInclVat": 4000,
+           *           "totalSavingsWithoutSolarCentsExclVat": 3305
            *         },
            *         "timeseries": [
            *           {
@@ -11130,7 +11192,9 @@ export interface operations {
            *             "homeBatterySavingsCentsExclVat": 82,
            *             "solarSavingsCentsExclVat": 66,
            *             "imbalanceSavingsCentsExclVat": 41,
-           *             "totalSavingsCentsExclVat": 189
+           *             "totalSavingsCentsExclVat": 189,
+           *             "totalSavingsWithoutSolarCentsInclVat": 150,
+           *             "totalSavingsWithoutSolarCentsExclVat": 123
            *           },
            *           {
            *             "startAt": "2026-01-28T00:00:00+01:00",
@@ -11142,7 +11206,9 @@ export interface operations {
            *             "homeBatterySavingsCentsExclVat": 82,
            *             "solarSavingsCentsExclVat": 66,
            *             "imbalanceSavingsCentsExclVat": 41,
-           *             "totalSavingsCentsExclVat": 189
+           *             "totalSavingsCentsExclVat": 189,
+           *             "totalSavingsWithoutSolarCentsInclVat": 150,
+           *             "totalSavingsWithoutSolarCentsExclVat": 123
            *           }
            *         ]
            *       }
@@ -13589,9 +13655,15 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json":
-            | components["schemas"]["ErrorDeviceIsLinkedToAnotherInstallation"]
-            | components["schemas"]["ErrorInstallationAlreadyHasPairedRcp"];
+          "application/json": components["schemas"]["Error"] & {
+            result?: {
+              /** @enum {string} */
+              errorCode?:
+                | "DEVICE_IS_LINKED_TO_ANOTHER_INSTALLATION"
+                | "INSTALLATION_ALREADY_HAS_PAIRED_RCP"
+                | "CANNOT_PAIR_DEVICE_DURING_COMMISSIONING";
+            };
+          };
         };
       };
       /** @description Unprocessable Entity */
@@ -13838,10 +13910,16 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json":
-            | components["schemas"]["ErrorDeviceIsLinkedToAnotherInstallation"]
-            | components["schemas"]["ErrorInstallationAlreadyHasPairedRcp"]
-            | components["schemas"]["ErrorThreadDeviceRoleNotSupported"];
+          "application/json": components["schemas"]["Error"] & {
+            result?: {
+              /** @enum {string} */
+              errorCode?:
+                | "DEVICE_IS_LINKED_TO_ANOTHER_INSTALLATION"
+                | "INSTALLATION_ALREADY_HAS_PAIRED_RCP"
+                | "THREAD_DEVICE_REQUESTED_ROLE_NOT_SUPPORTED"
+                | "CANNOT_PAIR_DEVICE_DURING_COMMISSIONING";
+            };
+          };
         };
       };
       /** @description Unprocessable Entity */
@@ -14214,6 +14292,7 @@ export interface operations {
       401: components["responses"]["Unauthorized"];
       403: components["responses"]["Forbidden"];
       404: components["responses"]["NotFound"];
+      409: components["responses"]["Conflict"];
       500: components["responses"]["Unexpected"];
     };
   };
@@ -15340,6 +15419,22 @@ export interface operations {
       401: components["responses"]["Unauthorized"];
       403: components["responses"]["UserHasNoPermission"];
       404: components["responses"]["NotFound"];
+      /** @description CIC is not in an operational mode (e.g. commissioning in progress or not configured) */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"] & {
+            result?: {
+              /** @enum {string} */
+              errorCode?:
+                | "CIC_NOT_IN_OPERATIONAL_MODE"
+                | "CIC_SUPERVISORY_CONTROL_MODE_UNAVAILABLE";
+            };
+          };
+        };
+      };
       500: components["responses"]["Unexpected"];
     };
   };
@@ -15394,6 +15489,22 @@ export interface operations {
           };
         };
       };
+      /** @description CIC is not in an operational mode (e.g. commissioning in progress or not configured) */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"] & {
+            result?: {
+              /** @enum {string} */
+              errorCode?:
+                | "CIC_NOT_IN_OPERATIONAL_MODE"
+                | "CIC_SUPERVISORY_CONTROL_MODE_UNAVAILABLE";
+            };
+          };
+        };
+      };
       500: components["responses"]["Unexpected"];
     };
   };
@@ -15439,6 +15550,22 @@ export interface operations {
       401: components["responses"]["Unauthorized"];
       403: components["responses"]["UserHasNoPermission"];
       404: components["responses"]["NotFound"];
+      /** @description CIC is not in an operational mode (e.g. commissioning in progress or not configured) */
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Error"] & {
+            result?: {
+              /** @enum {string} */
+              errorCode?:
+                | "CIC_NOT_IN_OPERATIONAL_MODE"
+                | "CIC_SUPERVISORY_CONTROL_MODE_UNAVAILABLE";
+            };
+          };
+        };
+      };
       500: components["responses"]["Unexpected"];
     };
   };
