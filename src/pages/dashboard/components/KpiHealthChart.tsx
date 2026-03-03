@@ -95,8 +95,6 @@ export function KpiHealthChart({ data }: KpiHealthChartProps) {
                   return "Controller is in normal operation mode";
                 case "heatpumpErrors":
                   return "Check if the heatpump(s) reports any errors";
-                case "numberOfRestarts":
-                  return "Check estimated number of restarts in the last 24 hours";
               }
             },
           },
@@ -125,10 +123,7 @@ export function KpiHealthChart({ data }: KpiHealthChartProps) {
     [textColor],
   );
 
-  const kpis = React.useMemo(() => {
-    // Filter out numberOfRestarts as it's always "notApplicable" (not implemented)
-    return getKeys(data).filter((key) => key !== "numberOfRestarts");
-  }, [data]);
+  const kpis = React.useMemo(() => getKeys(data), [data]);
 
   const chartData = React.useMemo(() => {
     const labels = kpis.map((key) => kpiToLabel[key]);

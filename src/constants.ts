@@ -25,7 +25,6 @@ export const kpiToLabel = {
   minimumCop: "Tariff COP optimization",
   supervisoryControlMode: "Controller in normal operation",
   heatpumpErrors: "Error flag from heatpump",
-  numberOfRestarts: "Number of restarts",
 } satisfies { [p in keyof CicHealthChecksByKpi]: string };
 
 export const labelToKpi = invert(kpiToLabel);
@@ -60,7 +59,6 @@ export const kpiToCategory = {
   minimumCop: "controller",
   supervisoryControlMode: "controller",
   heatpumpErrors: "heatpump",
-  numberOfRestarts: "cic_software",
 } satisfies { [p in keyof CicHealthChecksByKpi]: CicHealthCheckCategory };
 
 const categoryToKpis = getEntries(kpiToCategory).reduce(
@@ -73,12 +71,9 @@ const categoryToKpis = getEntries(kpiToCategory).reduce(
     acc[category].push(kpi);
     return acc;
   },
-  {} as { [p in CicHealthCheckCategory]: (keyof CicHealthChecksByKpi)[] },
+  {} as Record<CicHealthCheckCategory, (keyof CicHealthChecksByKpi)[]>,
 );
 
 export function categoryToKpiLabels(category: CicHealthCheckCategory) {
-  return categoryToKpis[category]
-    .filter((kpi) => kpi !== "numberOfRestarts") // Filter out as it's not implemented
-    .map((kpi) => kpiToLabel[kpi])
-    .join(", ");
+  return categoryToKpis[category].map((kpi) => kpiToLabel[kpi]).join(", ");
 }

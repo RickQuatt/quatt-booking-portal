@@ -11,7 +11,6 @@ export function ReplaceChillInterfaceBoardPage() {
   const queryParams = useMemo(() => {
     const params = new URLSearchParams(searchString);
     return {
-      installationUuid: params.get("installationUuid") || "",
       deviceUuid: params.get("deviceUuid") || "",
     };
   }, [searchString]);
@@ -30,7 +29,6 @@ export function ReplaceChillInterfaceBoardPage() {
 
       <div className="mx-auto max-w-3xl">
         <ReplaceChillInterfaceBoardForm
-          defaultInstallationUuid={queryParams.installationUuid}
           defaultDeviceUuid={queryParams.deviceUuid}
         />
       </div>

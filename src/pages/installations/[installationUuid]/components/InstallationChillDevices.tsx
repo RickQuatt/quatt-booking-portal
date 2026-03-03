@@ -30,20 +30,14 @@ type ChillDevice = components["schemas"]["ChillDevice"];
 
 export interface InstallationChillDevicesProps {
   installation: AdminInstallationDetail;
-  installationUuid: string;
 }
 
 interface ChillDeviceCardProps {
   device: ChillDevice;
-  installationUuid: string;
   index: number;
 }
 
-function ChillDeviceCard({
-  device,
-  installationUuid,
-  index,
-}: ChillDeviceCardProps) {
+function ChillDeviceCard({ device, index }: ChillDeviceCardProps) {
   const { metrics } = device;
   const deviceName = device.name || device.serialNumber;
   const title = `🌡️ Chill Device${index > 0 ? ` #${index + 1}` : ""} - ${deviceName}`;
@@ -76,7 +70,7 @@ function ChillDeviceCard({
               />
               <div className="pt-2">
                 <Link
-                  href={`/replace-chill-interface-board?installationUuid=${installationUuid}&deviceUuid=${device.uuid}`}
+                  href={`/replace-chill-interface-board?deviceUuid=${device.uuid}`}
                 >
                   <Button variant="outline" size="sm">
                     Replace Interface Board
@@ -245,7 +239,6 @@ function ChillDeviceCard({
  */
 export function InstallationChillDevices({
   installation,
-  installationUuid,
 }: InstallationChillDevicesProps) {
   const { chillDevices } = useChillDevices(installation);
 
@@ -256,12 +249,7 @@ export function InstallationChillDevices({
   return (
     <>
       {chillDevices.map((device, index) => (
-        <ChillDeviceCard
-          key={device.uuid}
-          device={device}
-          installationUuid={installationUuid}
-          index={index}
-        />
+        <ChillDeviceCard key={device.uuid} device={device} index={index} />
       ))}
     </>
   );

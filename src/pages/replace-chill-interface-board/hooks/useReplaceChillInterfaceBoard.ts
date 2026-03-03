@@ -14,7 +14,7 @@ export function useReplaceChillInterfaceBoard({
 }: UseReplaceChillInterfaceBoardOptions = {}) {
   const mutation = $api.useMutation(
     "post",
-    "/admin/installation/{installationUuid}/device/{deviceUuid}/replace-chill-interface-board",
+    "/admin/device/{deviceUuid}/replace-chill-interface-board",
     {
       onSuccess: (response) => {
         toast.success("Chill interface board replaced successfully");
@@ -34,9 +34,6 @@ export function useReplaceChillInterfaceBoard({
             case "DEVICE_NOT_FOUND":
               toast.error("Device not found");
               break;
-            case "INSTALLATION_NOT_FOUND":
-              toast.error("Installation not found");
-              break;
             case "BOARD_NOT_FOUND":
               toast.error("Interface board not found in inventory");
               break;
@@ -49,16 +46,12 @@ export function useReplaceChillInterfaceBoard({
     },
   );
 
-  const replaceBoard = (
-    installationUuid: string,
-    deviceUuid: string,
-    newBoardEui64: string,
-  ) => {
+  const replaceBoard = (deviceUuid: string, newBoardSerialNumber: string) => {
     mutation.mutate({
       params: {
-        path: { installationUuid, deviceUuid },
+        path: { deviceUuid },
       },
-      body: { newBoardEui64 },
+      body: { newBoardSerialNumber },
     });
   };
 
