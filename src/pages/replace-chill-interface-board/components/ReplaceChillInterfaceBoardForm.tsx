@@ -29,21 +29,16 @@ import { useReplaceChillInterfaceBoard } from "../hooks/useReplaceChillInterface
 type ChillInterfaceBoard = components["schemas"]["ChillInterfaceBoard"];
 
 const replaceChillBoardSchema = z.object({
-  installationUuid: z.string().min(1, "Installation UUID is required"),
   deviceUuid: z.string().min(1, "Device UUID is required"),
-  newBoardEui64: z
+  newBoardSerialNumber: z
     .string()
-    .min(1, "New board EUI-64 is required")
-    .regex(
-      /^[0-9A-Fa-f]{16}$/,
-      "Must be exactly 16 hexadecimal characters (e.g., FEDCBA9876543210)",
-    ),
+    .min(1, "New board serial number is required")
+    .max(32, "Serial number must be at most 32 characters"),
 });
 
 type ReplaceChillBoardFormData = z.infer<typeof replaceChillBoardSchema>;
 
 interface ReplaceChillInterfaceBoardFormProps {
-  defaultInstallationUuid?: string;
   defaultDeviceUuid?: string;
 }
 
@@ -106,7 +101,6 @@ function BoardDetails({
 }
 
 export function ReplaceChillInterfaceBoardForm({
-  defaultInstallationUuid = "",
   defaultDeviceUuid = "",
 }: ReplaceChillInterfaceBoardFormProps) {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -116,9 +110,8 @@ export function ReplaceChillInterfaceBoardForm({
   const form = useForm<ReplaceChillBoardFormData>({
     resolver: zodResolver(replaceChillBoardSchema),
     defaultValues: {
-      installationUuid: defaultInstallationUuid,
       deviceUuid: defaultDeviceUuid,
-      newBoardEui64: "",
+      newBoardSerialNumber: "",
     },
   });
 
@@ -136,11 +129,7 @@ export function ReplaceChillInterfaceBoardForm({
 
   const handleConfirm = () => {
     if (!pendingData) return;
-    replaceBoard(
-      pendingData.installationUuid,
-      pendingData.deviceUuid,
-      pendingData.newBoardEui64.toUpperCase(),
-    );
+    replaceBoard(pendingData.deviceUuid, pendingData.newBoardSerialNumber);
     setIsConfirmOpen(false);
     setPendingData(null);
   };
@@ -148,9 +137,8 @@ export function ReplaceChillInterfaceBoardForm({
   const handleReset = () => {
     reset();
     form.reset({
-      installationUuid: "",
       deviceUuid: "",
-      newBoardEui64: "",
+      newBoardSerialNumber: "",
     });
   };
 
@@ -195,27 +183,6 @@ export function ReplaceChillInterfaceBoardForm({
               >
                 <FormField
                   control={form.control}
-                  name="installationUuid"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Installation UUID</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          placeholder="e.g., INS-12345678-1234-1234-1234-123456789012"
-                          className="font-mono text-sm"
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        The installation that the chill device belongs to
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
                   name="deviceUuid"
                   render={({ field }) => (
                     <FormItem>
@@ -237,23 +204,20 @@ export function ReplaceChillInterfaceBoardForm({
 
                 <FormField
                   control={form.control}
-                  name="newBoardEui64"
+                  name="newBoardSerialNumber"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>New Board EUI-64</FormLabel>
+                      <FormLabel>New Board Serial Number</FormLabel>
                       <FormControl>
                         <Input
                           {...field}
-                          onChange={(e) =>
-                            field.onChange(e.target.value.toUpperCase())
-                          }
-                          placeholder="e.g., FEDCBA9876543210"
-                          className="font-mono text-sm uppercase"
+                          placeholder="e.g., CHIB01-20250925-B01-000001"
+                          className="font-mono text-sm"
                         />
                       </FormControl>
                       <FormDescription>
-                        EUI-64 identifier of the new interface board from
-                        inventory (16 hex characters)
+                        Serial number printed on the new interface board from
+                        inventory
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -284,19 +248,13 @@ export function ReplaceChillInterfaceBoardForm({
           {pendingData && (
             <div className="space-y-2 rounded-lg border p-3 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-500">Installation</span>
-                <span className="font-mono">
-                  {pendingData.installationUuid}
-                </span>
-              </div>
-              <div className="flex justify-between">
                 <span className="text-gray-500">Device</span>
                 <span className="font-mono">{pendingData.deviceUuid}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">New Board EUI-64</span>
+                <span className="text-gray-500">New Board Serial Number</span>
                 <span className="font-mono">
-                  {pendingData.newBoardEui64.toUpperCase()}
+                  {pendingData.newBoardSerialNumber}
                 </span>
               </div>
             </div>
