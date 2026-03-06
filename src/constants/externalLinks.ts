@@ -28,7 +28,10 @@ export const getEnvironment = (): {
   };
 };
 
-function buildGrafanaUrl(dashboardPath: string, params: string): string {
+function buildFallbackGrafanaUrl(
+  dashboardPath: string,
+  params: string,
+): string {
   const env = getEnvironment();
   const baseUrl =
     env.isLocal || env.isDevelopment
@@ -39,22 +42,74 @@ function buildGrafanaUrl(dashboardPath: string, params: string): string {
   return `${baseUrl}/d/${dashboardPath}?${params}`;
 }
 
-export function getGrafanaDataPerCICLink(id: string) {
-  return buildGrafanaUrl(
+function buildPrimaryGrafanaUrl(dashboardPath: string, params: string): string {
+  const env = getEnvironment();
+  const baseUrl =
+    env.isLocal || env.isDevelopment
+      ? "https://grafana.eu-west-1.develop.aws-grafana-observability.quatt.dev"
+      : env.isStaging
+        ? "https://grafana.eu-west-1.staging.aws-grafana-observability.quatt.dev"
+        : "https://grafana.eu-west-1.production.aws-grafana-observability.quatt.dev";
+  return `${baseUrl}/d/${dashboardPath}?${params}`;
+}
+
+// Primary Grafana links (new observability platform)
+export function getPrimaryGrafanaDataPerCICLink(id: string) {
+  return buildPrimaryGrafanaUrl(
+    "data-per-cic_sf/data-per-cic",
+    `var-cic_uuid=${id}&from=now-6h&to=now&orgId=1&refresh=30s`,
+  );
+}
+
+export function getPrimaryGrafanaAllEDashboardLink(id: string) {
+  return buildPrimaryGrafanaUrl(
+    "all-e-dashboard_sf/all-e-dashboard",
+    `var-cic_uuid=${id}&from=now-6h&to=now&orgId=1&refresh=30s`,
+  );
+}
+
+export function getPrimaryGrafanaDiagnosticsLink(id: string) {
+  return buildPrimaryGrafanaUrl(
+    "diagnostics_sf/diagnostics",
+    `var-cic_uuid=${id}&from=now-6h&to=now&orgId=1&refresh=30s`,
+  );
+}
+
+export function getPrimaryGrafanaChillStatsDashboardLink(
+  cicId: string,
+  serialNumber: string,
+  eui64: string,
+) {
+  return buildPrimaryGrafanaUrl(
+    "chill-stats-dashboard_sf/chill-stats-dashboard",
+    `orgId=1&refresh=30s&var-cic_uuid=${cicId}&var-serialNumber=${serialNumber}&var-eui64=${eui64}`,
+  );
+}
+
+export function getPrimaryGrafanaThreadDeviceDashboardLink(id: string) {
+  return buildPrimaryGrafanaUrl(
+    "thread-device-dashboard_sf/thread-device-dashboard",
+    `var-cic_uuid=${id}&from=now-6h&to=now&orgId=1&refresh=30s`,
+  );
+}
+
+// Fallback Grafana links (legacy AWS Managed Grafana)
+export function getFallbackGrafanaDataPerCICLink(id: string) {
+  return buildFallbackGrafanaUrl(
     "clickhouse-data-per-cic/clickhouse-data-per-cic",
     `var-cic_uuid=${id}&from=now-6h&to=now&orgId=1&refresh=30s`,
   );
 }
 
-export function getGrafanaAllEDashboardLink(id: string) {
-  return buildGrafanaUrl(
+export function getFallbackGrafanaAllEDashboardLink(id: string) {
+  return buildFallbackGrafanaUrl(
     "all-e-dashboard/all-e-dashboard",
     `var-cic_uuid=${id}&from=now-6h&to=now&orgId=1&refresh=30s`,
   );
 }
 
-export function getGrafanaDiagnosticsLink(id: string) {
-  return buildGrafanaUrl(
+export function getFallbackGrafanaDiagnosticsLink(id: string) {
+  return buildFallbackGrafanaUrl(
     "clickhouse-diagnostics/clickhouse-diagnostics",
     `var-cic_uuid=${id}&from=now-6h&to=now&orgId=1&refresh=30s`,
   );
@@ -95,21 +150,14 @@ export function getZuperJobLink(jobUid: string) {
   return `https://app.zuperpro.com/jobs/${jobUid}/details`;
 }
 
-export function getGrafanaChillStatsDashboardLink(
+export function getFallbackGrafanaChillStatsDashboardLink(
   cicId: string,
   serialNumber: string,
   eui64: string,
 ) {
-  return buildGrafanaUrl(
+  return buildFallbackGrafanaUrl(
     "chill-stats-dashboard/chill-stats-dashboard",
     `orgId=1&refresh=30s&var-cic_uuid=${cicId}&var-serialNumber=${serialNumber}&var-eui64=${eui64}`,
-  );
-}
-
-export function getGrafanaUnifiedDashboardLink(cicId: string) {
-  return buildGrafanaUrl(
-    "unified-customer-dashboard/unified-customer-dashboard",
-    `orgId=1&refresh=30s&var-cic_uuid=${cicId}`,
   );
 }
 

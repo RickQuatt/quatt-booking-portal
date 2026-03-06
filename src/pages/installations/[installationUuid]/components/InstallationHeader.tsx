@@ -14,12 +14,15 @@ import {
   getHubspotSearchOrderLink,
   getHubspotDealLink,
   getMenderLink,
-  getGrafanaDataPerCICLink,
-  getGrafanaDiagnosticsLink,
-  getGrafanaAllEDashboardLink,
+  getFallbackGrafanaDataPerCICLink,
+  getFallbackGrafanaDiagnosticsLink,
+  getFallbackGrafanaAllEDashboardLink,
+  getFallbackGrafanaChillStatsDashboardLink,
+  getPrimaryGrafanaDataPerCICLink,
+  getPrimaryGrafanaDiagnosticsLink,
+  getPrimaryGrafanaAllEDashboardLink,
+  getPrimaryGrafanaChillStatsDashboardLink,
   getRetoolBatteryDashboardLink,
-  getGrafanaChillStatsDashboardLink,
-  getGrafanaUnifiedDashboardLink,
 } from "@/constants/externalLinks";
 
 type AdminInstallationDetail = components["schemas"]["AdminInstallationDetail"];
@@ -239,54 +242,90 @@ export function InstallationHeader({
             {installation.activeCic && (
               <Button variant="outline" size="sm" disabled={isLoading}>
                 <a
-                  href={getGrafanaDataPerCICLink(installation.activeCic)}
+                  href={getPrimaryGrafanaDataPerCICLink(installation.activeCic)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2"
                 >
                   <ExternalLink className="h-4 w-4" />
-                  Grafana - Data per CIC
+                  Grafana - Data per CIC (primary)
                 </a>
               </Button>
             )}
             {installation.activeCic && (
               <Button variant="outline" size="sm" disabled={isLoading}>
                 <a
-                  href={getGrafanaDiagnosticsLink(installation.activeCic)}
+                  href={getFallbackGrafanaDataPerCICLink(
+                    installation.activeCic,
+                  )}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2"
                 >
                   <ExternalLink className="h-4 w-4" />
-                  Grafana - Diagnostics
+                  Grafana - Data per CIC (fallback)
                 </a>
               </Button>
             )}
             {installation.activeCic && (
               <Button variant="outline" size="sm" disabled={isLoading}>
                 <a
-                  href={getGrafanaUnifiedDashboardLink(installation.activeCic)}
+                  href={getPrimaryGrafanaDiagnosticsLink(
+                    installation.activeCic,
+                  )}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2"
                 >
                   <ExternalLink className="h-4 w-4" />
-                  Grafana - Unified Dashboard (BETA)
+                  Grafana - Diagnostics (primary)
+                </a>
+              </Button>
+            )}
+            {installation.activeCic && (
+              <Button variant="outline" size="sm" disabled={isLoading}>
+                <a
+                  href={getFallbackGrafanaDiagnosticsLink(
+                    installation.activeCic,
+                  )}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2"
+                >
+                  <ExternalLink className="h-4 w-4" />
+                  Grafana - Diagnostics (fallback)
                 </a>
               </Button>
             )}
             {installation.activeCic && isAllElectric && (
-              <Button variant="outline" size="sm" disabled={isLoading}>
-                <a
-                  href={getGrafanaAllEDashboardLink(installation.activeCic)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2"
-                >
-                  <ExternalLink className="h-4 w-4" />
-                  Grafana - All-E Dashboard
-                </a>
-              </Button>
+              <>
+                <Button variant="outline" size="sm" disabled={isLoading}>
+                  <a
+                    href={getPrimaryGrafanaAllEDashboardLink(
+                      installation.activeCic,
+                    )}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                    Grafana - All-E Dashboard (primary)
+                  </a>
+                </Button>
+                <Button variant="outline" size="sm" disabled={isLoading}>
+                  <a
+                    href={getFallbackGrafanaAllEDashboardLink(
+                      installation.activeCic,
+                    )}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                    Grafana - All-E Dashboard (fallback)
+                  </a>
+                </Button>
+              </>
             )}
             {installation.activeCic &&
               chillDevice &&
@@ -296,21 +335,38 @@ export function InstallationHeader({
               "eui64" in chillDevice &&
               typeof chillDevice.eui64 === "string" &&
               chillDevice.eui64 && (
-                <Button variant="outline" size="sm" disabled={isLoading}>
-                  <a
-                    href={getGrafanaChillStatsDashboardLink(
-                      installation.activeCic,
-                      chillDevice.serialNumber,
-                      chillDevice.eui64,
-                    )}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2"
-                  >
-                    <ExternalLink className="h-4 w-4" />
-                    Grafana - Chill Stats
-                  </a>
-                </Button>
+                <>
+                  <Button variant="outline" size="sm" disabled={isLoading}>
+                    <a
+                      href={getPrimaryGrafanaChillStatsDashboardLink(
+                        installation.activeCic,
+                        chillDevice.serialNumber,
+                        chillDevice.eui64,
+                      )}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2"
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                      Grafana - Chill Stats (primary)
+                    </a>
+                  </Button>
+                  <Button variant="outline" size="sm" disabled={isLoading}>
+                    <a
+                      href={getFallbackGrafanaChillStatsDashboardLink(
+                        installation.activeCic,
+                        chillDevice.serialNumber,
+                        chillDevice.eui64,
+                      )}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2"
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                      Grafana - Chill Stats (fallback)
+                    </a>
+                  </Button>
+                </>
               )}
             <Link href={`/installations/${installation.externalId}/insights`}>
               <Button variant="outline" size="sm" disabled={isLoading}>

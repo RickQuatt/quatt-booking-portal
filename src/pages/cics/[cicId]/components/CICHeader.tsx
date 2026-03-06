@@ -7,9 +7,10 @@ import { ExternalLink, ClipboardCopy } from "lucide-react";
 import { toast } from "@/lib/toast";
 import { formatDateDistance } from "@/utils/formatDate";
 import {
-  getGrafanaAllEDashboardLink,
-  getGrafanaDataPerCICLink,
-  getGrafanaUnifiedDashboardLink,
+  getFallbackGrafanaAllEDashboardLink,
+  getFallbackGrafanaDataPerCICLink,
+  getPrimaryGrafanaAllEDashboardLink,
+  getPrimaryGrafanaDataPerCICLink,
   getHubspotSearchOrderLink,
   getMenderLink,
 } from "@/constants/externalLinks";
@@ -222,38 +223,51 @@ export function CICHeader({
             )}
             <Button variant="outline" size="sm" disabled={isLoading}>
               <a
-                href={getGrafanaDataPerCICLink(cicData.id)}
+                href={getPrimaryGrafanaDataPerCICLink(cicData.id)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2"
               >
                 <ExternalLink className="h-4 w-4" />
-                Grafana - Data per CIC
+                Grafana - Data per CIC (primary)
               </a>
             </Button>
             <Button variant="outline" size="sm" disabled={isLoading}>
               <a
-                href={getGrafanaUnifiedDashboardLink(cicData.id)}
+                href={getFallbackGrafanaDataPerCICLink(cicData.id)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2"
               >
                 <ExternalLink className="h-4 w-4" />
-                Grafana - Unified Dashboard (BETA)
+                Grafana - Data per CIC (fallback)
               </a>
             </Button>
             {isAllE && (
-              <Button variant="outline" size="sm" disabled={isLoading}>
-                <a
-                  href={getGrafanaAllEDashboardLink(cicData.id)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2"
-                >
-                  <ExternalLink className="h-4 w-4" />
-                  Grafana - All-E Dashboard
-                </a>
-              </Button>
+              <>
+                <Button variant="outline" size="sm" disabled={isLoading}>
+                  <a
+                    href={getPrimaryGrafanaAllEDashboardLink(cicData.id)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                    Grafana - All-E Dashboard (primary)
+                  </a>
+                </Button>
+                <Button variant="outline" size="sm" disabled={isLoading}>
+                  <a
+                    href={getFallbackGrafanaAllEDashboardLink(cicData.id)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                    Grafana - All-E Dashboard (fallback)
+                  </a>
+                </Button>
+              </>
             )}
             <Button variant="outline" size="sm" disabled={isLoading}>
               <Link

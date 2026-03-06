@@ -2,7 +2,8 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Link } from "wouter";
 import { formatDate, formatDateDistance } from "@/utils/formatDate";
 import {
-  getGrafanaDataPerCICLink,
+  getFallbackGrafanaDataPerCICLink,
+  getPrimaryGrafanaDataPerCICLink,
   getMenderLink,
 } from "@/constants/externalLinks";
 import { Button } from "@/components/ui/Button";
@@ -143,11 +144,26 @@ export const cicColumns: ColumnDef<AdminCic>[] = [
     },
   },
   {
-    id: "grafana",
-    header: "Grafana",
+    id: "grafana-primary",
+    header: "Grafana (primary)",
     cell: ({ row }) => {
       const id = row.original.id;
-      const grafanaLink = getGrafanaDataPerCICLink(id);
+      const grafanaLink = getPrimaryGrafanaDataPerCICLink(id);
+      return (
+        <Button variant="outline" size="sm" className="h-8 w-full px-2">
+          <a href={grafanaLink} target="_blank" rel="noopener noreferrer">
+            <ExternalLink className="h-3 w-3" />
+          </a>
+        </Button>
+      );
+    },
+  },
+  {
+    id: "grafana-fallback",
+    header: "Grafana (fallback)",
+    cell: ({ row }) => {
+      const id = row.original.id;
+      const grafanaLink = getFallbackGrafanaDataPerCICLink(id);
       return (
         <Button variant="outline" size="sm" className="h-8 w-full px-2">
           <a href={grafanaLink} target="_blank" rel="noopener noreferrer">
