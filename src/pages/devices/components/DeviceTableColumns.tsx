@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/Badge";
 import { formatDate } from "@/utils/formatDate";
 import type { components } from "@/openapi-client/types/api/v1";
 import { DeviceType, DeviceStatus } from "@/constants/enums";
+import { DeviceQRCode } from "./DeviceQRCode";
 
 type DeviceItem = components["schemas"]["AdminDeviceListItem"];
 type DeviceStatusType = components["schemas"]["DeviceStatus"];
@@ -75,6 +76,17 @@ export const deviceColumns: ColumnDef<DeviceItem>[] = [
       const serialNumber = row.getValue("serialNumber") as string | null;
       return <span className="text-sm">{serialNumber || "—"}</span>;
     },
+  },
+  {
+    id: "qrCode",
+    header: "QR Code",
+    cell: ({ row }) => (
+      <DeviceQRCode
+        type={row.original.type}
+        serialNumber={row.original.serialNumber}
+      />
+    ),
+    enableSorting: false,
   },
   {
     accessorKey: "eui64",

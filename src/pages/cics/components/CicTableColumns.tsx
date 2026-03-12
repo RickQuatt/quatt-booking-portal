@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/Badge";
 import { ExternalLink } from "lucide-react";
 import type { components } from "@/openapi-client/types/api/v1";
 import { ConnectionStatus } from "@/constants/enums";
+import { QRCodeCell } from "@/pages/devices/components/DeviceQRCode";
 
 type AdminCic = components["schemas"]["AdminCic"];
 type ConnectionStatusType = components["schemas"]["ConnectionStatus"];
@@ -45,6 +46,15 @@ export const cicColumns: ColumnDef<AdminCic>[] = [
         </Link>
       );
     },
+  },
+  {
+    id: "qrCode",
+    header: "QR Code",
+    cell: ({ row }) => {
+      const id = row.original.id;
+      return <QRCodeCell value={`https://app.quatt.io/cic/${id}`} />;
+    },
+    enableSorting: false,
   },
   {
     accessorKey: "cableConnectionStatus",
