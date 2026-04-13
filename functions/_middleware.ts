@@ -2,20 +2,18 @@ import { jwtVerify } from "jose";
 
 interface Env {
   SESSION_SECRET: string;
-  VITE_FIREBASE_CONFIG_JSON: string;
+  GOOGLE_CLIENT_ID: string;
+  APP_NAME?: string;
 }
 
-/**
- * Generate login page HTML with Firebase config injected
- */
-function getLoginPageHTML(firebaseConfig: string): string {
+function getLoginPageHTML(googleClientId: string, appName: string): string {
   return `
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quatt Support Dashboard - Login</title>
+  <title>${appName} - Login</title>
   <link rel="icon" type="image/png" href="/favicon.png" />
   <link rel="apple-touch-icon" href="/favicon.png" />
   <style>
@@ -38,127 +36,73 @@ function getLoginPageHTML(firebaseConfig: string): string {
       max-width: 400px;
     }
     h1 {
-      margin: 0 0 24px 0;
+      margin: 0 0 8px 0;
       font-size: 24px;
       color: #333;
     }
-    button {
-      background: #d9ff5c;
-      color: #071413;
-      border: 2px solid #071413;
-      padding: 12px 24px;
-      font-size: 16px;
-      font-weight: 600;
-      border-radius: 20px;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.1s;
-    }
-    button:hover {
-      background: #c4e852;
-      transform: translateY(-1px);
-    }
-    button:disabled {
-      background: #ccc;
+    p {
       color: #666;
-      cursor: not-allowed;
-      transform: none;
+      margin: 0 0 24px 0;
     }
     .error {
       color: #d93025;
       margin-top: 16px;
       font-size: 14px;
     }
+    #g_id_onload, .g_id_signin {
+      display: flex;
+      justify-content: center;
+    }
   </style>
-  <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-    import { getAuth, signInWithPopup, GoogleAuthProvider } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-
-    // Initialize Firebase (config injected from environment)
-    let auth;
-    try {
-      const firebaseConfig = JSON.parse('${firebaseConfig}');
-      const app = initializeApp(firebaseConfig);
-      auth = getAuth(app);
-    } catch (error) {
-      console.error('Failed to initialize Firebase:', error);
+  <script src="https://accounts.google.com/gsi/client" async></script>
+  <script>
+    async function handleCredentialResponse(response) {
       const errorDiv = document.getElementById('error');
-      if (errorDiv) {
-        errorDiv.textContent = 'Firebase configuration error. Please check server logs.';
-      }
-      throw error;
-    }
-
-    // Validate return URL to prevent open redirect vulnerabilities
-    // Note: This is a browser-side duplicate of the server-side validation
-    function isValidReturnUrl(url) {
-      if (!url) return false;
-
-      // Must start with / but not // (prevents protocol-relative URLs)
-      if (!url.startsWith('/') || url.startsWith('//')) {
-        return false;
-      }
-
-      // Prevent path traversal
-      if (url.includes('..')) {
-        return false;
-      }
-
-      // Validate URL structure and ensure it's relative to current origin
       try {
-        const parsed = new URL(url, window.location.origin);
-        // Ensure the parsed URL is still on the same origin
-        return parsed.origin === window.location.origin;
-      } catch {
-        return false;
-      }
-    }
+        errorDiv.textContent = 'Signing in...';
+        errorDiv.style.color = '#666';
 
-    async function signInWithGoogle() {
-      const button = document.getElementById('loginButton');
-      const errorDiv = document.getElementById('error');
-
-      try {
-        button.disabled = true;
-        button.textContent = 'Signing in...';
-        errorDiv.textContent = '';
-
-        const provider = new GoogleAuthProvider();
-        const result = await signInWithPopup(auth, provider);
-        const idToken = await result.user.getIdToken();
-
-        // Create session cookie
-        const response = await fetch('/api/create-session', {
+        const res = await fetch('/api/create-session', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ idToken }),
+          body: JSON.stringify({ credential: response.credential }),
           credentials: 'include'
         });
 
-        if (!response.ok) {
-          throw new Error('Failed to create session');
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.error || 'Login failed');
         }
 
-        // Redirect to the original URL if provided and valid, otherwise go to root
         const urlParams = new URLSearchParams(window.location.search);
         const returnUrl = urlParams.get('returnUrl');
-        const safeReturnUrl = returnUrl && isValidReturnUrl(returnUrl) ? returnUrl : '/';
-        window.location.href = safeReturnUrl;
+        window.location.href = returnUrl && returnUrl.startsWith('/') && !returnUrl.startsWith('//') ? returnUrl : '/';
       } catch (error) {
         console.error('Login error:', error);
-        errorDiv.textContent = 'Login failed. Please try again.';
-        button.disabled = false;
-        button.textContent = 'Sign in with Google';
+        errorDiv.style.color = '#d93025';
+        errorDiv.textContent = error.message || 'Login failed. Please try again.';
       }
     }
 
-    window.signInWithGoogle = signInWithGoogle;
+    window.onload = function () {
+      google.accounts.id.initialize({
+        client_id: '${googleClientId}',
+        callback: handleCredentialResponse,
+        auto_select: true,
+      });
+      google.accounts.id.renderButton(
+        document.getElementById('g_id_signin'),
+        { theme: 'outline', size: 'large', width: 300, text: 'signin_with' }
+      );
+      google.accounts.id.prompt();
+    };
   </script>
 </head>
 <body>
   <div class="login-container">
-    <h1>Quatt Support Dashboard</h1>
-    <p>Please sign in to continue</p>
-    <button id="loginButton" onclick="signInWithGoogle()">Sign in with Google</button>
+    <h1>${appName}</h1>
+    <p>Sign in with your Quatt account to continue</p>
+    <div id="g_id_signin"></div>
     <div id="error" class="error"></div>
   </div>
 </body>
@@ -166,7 +110,6 @@ function getLoginPageHTML(firebaseConfig: string): string {
 `;
 }
 
-// Public paths that don't require authentication
 const PUBLIC_PATHS = [
   "/favicon.ico",
   "/favicon.png",
@@ -174,64 +117,23 @@ const PUBLIC_PATHS = [
   "/robots.txt",
 ];
 
-/**
- * Validate return URL to prevent open redirect vulnerabilities
- * Only allows safe relative URLs within the application
- *
- * Security checks:
- * - Must be relative path starting with /
- * - Must not be protocol-relative (//)
- * - Must not contain path traversal (..)
- * - Must parse as valid URL structure
- *
- * Note: This validation is duplicated in browser-side code (login page HTML)
- * for defense-in-depth, as both contexts need independent validation.
- */
 function isValidReturnUrl(url: string): boolean {
   if (!url) return false;
+  if (!url.startsWith("/") || url.startsWith("//")) return false;
+  if (url.includes("..")) return false;
+  if (url.length > 2048) return false;
 
-  // Must start with / but not // (prevents protocol-relative URLs)
-  if (!url.startsWith("/") || url.startsWith("//")) {
-    return false;
-  }
-
-  // Prevent path traversal attacks
-  if (url.includes("..")) {
-    return false;
-  }
-
-  // Additional validation: ensure reasonable path length
-  if (url.length > 2048) {
-    return false;
-  }
-
-  // Validate URL structure by parsing with a dummy base
   try {
     const parsed = new URL(url, "https://dummy.example.com");
-
-    // Ensure the URL is still on the dummy origin (not redirected externally)
-    if (parsed.origin !== "https://dummy.example.com") {
-      return false;
-    }
-
-    // Ensure path hasn't been manipulated by URL parsing
-    // (e.g., encoded characters that could bypass validation)
-    const pathWithQuery = url.split("#")[0]; // Remove fragment
-    if (parsed.pathname !== pathWithQuery.split("?")[0]) {
-      // Path was normalized differently than expected
-      return false;
-    }
-
+    if (parsed.origin !== "https://dummy.example.com") return false;
+    const pathWithQuery = url.split("#")[0];
+    if (parsed.pathname !== pathWithQuery.split("?")[0]) return false;
     return true;
   } catch {
-    // Invalid URL structure
     return false;
   }
 }
 
-/**
- * Create login redirect URL with return path
- */
 function createLoginRedirectUrl(
   request: Request,
   currentPath: string,
@@ -239,25 +141,19 @@ function createLoginRedirectUrl(
 ): URL {
   const loginUrl = new URL("/", request.url);
   const returnUrl = currentPath + search;
-  // Only set returnUrl if it's valid
   if (isValidReturnUrl(returnUrl)) {
     loginUrl.searchParams.set("returnUrl", returnUrl);
   }
   return loginUrl;
 }
 
-/**
- * Verify session JWT token
- */
 async function verifySessionToken(sessionToken: string, sessionSecret: string) {
   try {
     const secret = new TextEncoder().encode(sessionSecret);
-
     const { payload } = await jwtVerify(sessionToken, secret, {
-      issuer: "quatt-support-dashboard",
-      audience: "quatt-support-dashboard",
+      issuer: "quatt-internal-tool",
+      audience: "quatt-internal-tool",
     });
-
     return payload;
   } catch (error) {
     console.error("Session verification error:", error);
@@ -265,9 +161,6 @@ async function verifySessionToken(sessionToken: string, sessionSecret: string) {
   }
 }
 
-/**
- * Extract session cookie from request
- */
 function getSessionCookie(request: Request): string | null {
   const cookieHeader = request.headers.get("Cookie");
   if (!cookieHeader) return null;
@@ -276,7 +169,6 @@ function getSessionCookie(request: Request): string | null {
   const sessionCookie = cookies.find((c) => c.startsWith("session="));
 
   if (!sessionCookie) return null;
-
   return sessionCookie.split("=")[1];
 }
 
@@ -288,68 +180,39 @@ export const onRequest = async (context: {
   const { request, next, env } = context;
   const url = new URL(request.url);
 
-  // Allow public paths
   if (PUBLIC_PATHS.includes(url.pathname)) {
     return next();
   }
 
-  // Allow the session creation endpoint
   if (url.pathname === "/api/create-session") {
     return next();
   }
 
-  // Get Firebase config from environment
-  const firebaseConfigJson = env.VITE_FIREBASE_CONFIG_JSON as
-    | string
-    | undefined;
+  const googleClientId = env.GOOGLE_CLIENT_ID as string | undefined;
 
-  if (!firebaseConfigJson) {
-    console.error("VITE_FIREBASE_CONFIG_JSON not configured");
-    console.error("Available env keys:", Object.keys(env));
+  if (!googleClientId) {
+    console.error("GOOGLE_CLIENT_ID not configured");
     return new Response(
-      "Server configuration error: Firebase config not set. Please add VITE_FIREBASE_CONFIG_JSON to Cloudflare environment variables.",
-      {
-        status: 500,
-        headers: { "Content-Type": "text/plain" },
-      },
+      "Server configuration error: GOOGLE_CLIENT_ID not set. Please add it to Cloudflare environment variables.",
+      { status: 500, headers: { "Content-Type": "text/plain" } },
     );
   }
 
-  // Validate it's valid JSON
-  try {
-    JSON.parse(firebaseConfigJson);
-  } catch (e) {
-    console.error("Invalid VITE_FIREBASE_CONFIG_JSON:", e);
-    return new Response(
-      "Server configuration error: Invalid Firebase config JSON",
-      {
-        status: 500,
-        headers: { "Content-Type": "text/plain" },
-      },
-    );
-  }
-
-  // Get session cookie
   const sessionCookie = getSessionCookie(request);
+  const appName = (env.APP_NAME as string | undefined) || "Quatt Internal Tool";
 
-  // No session cookie - show login page for root, block everything else
   if (!sessionCookie) {
-    console.log("No session cookie found for:", url.pathname);
-
-    // For root path, show our simple login page
     if (url.pathname === "/" || url.pathname === "/index.html") {
-      return new Response(getLoginPageHTML(firebaseConfigJson), {
+      return new Response(getLoginPageHTML(googleClientId, appName), {
         status: 200,
         headers: { "Content-Type": "text/html" },
       });
     }
 
-    // Block ALL other paths including /assets/* - redirect to login with return URL
     const loginUrl = createLoginRedirectUrl(request, url.pathname, url.search);
     return Response.redirect(loginUrl, 303);
   }
 
-  // Get session secret from environment
   const sessionSecret = env.SESSION_SECRET as string | undefined;
 
   if (!sessionSecret) {
@@ -360,47 +223,27 @@ export const onRequest = async (context: {
     });
   }
 
-  // Verify session cookie
-  const payload = await verifySessionToken(
-    sessionCookie,
-    sessionSecret as string,
-  );
+  const payload = await verifySessionToken(sessionCookie, sessionSecret);
 
   if (!payload) {
-    console.log("Invalid session cookie for:", url.pathname);
-
-    // Clear invalid cookie
     const headers = new Headers();
     headers.set(
       "Set-Cookie",
       "session=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; Secure; SameSite=Strict",
     );
 
-    // Show login page again
     if (url.pathname === "/" || url.pathname === "/index.html") {
       headers.set("Content-Type", "text/html");
-      return new Response(getLoginPageHTML(firebaseConfigJson), {
+      return new Response(getLoginPageHTML(googleClientId, appName), {
         status: 200,
         headers,
       });
     }
 
-    // Block other paths - redirect to login with return URL
     const loginUrl = createLoginRedirectUrl(request, url.pathname, url.search);
     headers.set("Location", loginUrl.toString());
-    return new Response(null, {
-      status: 303,
-      headers,
-    });
+    return new Response(null, { status: 303, headers });
   }
 
-  console.log(
-    "Valid session for user:",
-    payload.uid,
-    "accessing:",
-    url.pathname,
-  );
-
-  // Valid session, allow the request to proceed to the actual app
   return next();
 };

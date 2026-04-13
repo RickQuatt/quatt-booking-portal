@@ -12,8 +12,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/Table";
-import { ScrollIndicatorWrapper } from "@/components/shared/ScrollIndicatorWrapper";
-
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
@@ -45,7 +43,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="w-full">
-      <ScrollIndicatorWrapper className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-dark-foreground shadow-sm">
+      <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-dark-foreground shadow-sm">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -97,7 +95,7 @@ export function DataTable<TData, TValue>({
             )}
           </TableBody>
         </Table>
-      </ScrollIndicatorWrapper>
+      </div>
     </div>
   );
 }

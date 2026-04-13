@@ -190,32 +190,3 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
     opacity: 0.9;
   }
 } */
-
-/* Driver.js Tour Popover Customization */
-.driver-popover {
-  border-radius: 0.5rem !important;
-  border: 2px solid hsl(var(--border)) !important;
-}
-
-.driver-popover-footer {
-  gap: 3rem !important;
-}
-
-.driver-popover-footer button {
-  border-radius: 9999px !important;
-  background-color: var(--color-quatt-primary) !important;
-  color: var(--color-quatt-dark) !important;
-  font-weight: 600 !important;
-  border: none !important;
-  padding: 0.5rem 1rem !important;
-}
-
-.driver-popover-next-btn button:hover,
-.driver-popover-next-btn button:focus {
-  background-color: var(--color-quatt-primary) !important;
-  filter: brightness(0.95) !important;
-}
-
-.driver-popover-progress-text {
-  color: hsl(var(--muted-foreground)) !important;
-}

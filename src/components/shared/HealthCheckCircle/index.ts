@@ -1,1 +1,0 @@
-export { HealthCheckCircle } from "./HealthCheckCircle";

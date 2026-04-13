@@ -12,7 +12,9 @@ export function Loader() {
     return () => clearTimeout(timer);
   }, []);
 
-  if (!shouldShow) return null;
+  if (!shouldShow) {
+    return null;
+  }
 
   return (
     <div className="flex h-full w-full items-center justify-center p-8">

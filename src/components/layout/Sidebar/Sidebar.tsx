@@ -1,75 +1,27 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { ExternalLink, PanelLeft, PanelLeftClose, Info } from "lucide-react";
-import Confetti from "react-confetti";
+import {
+  PanelLeft,
+  PanelLeftClose,
+  LogOut,
+  Home,
+  type LucideIcon,
+} from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { ThemeToggle } from "@/components/shared/ThemeToggle";
 import { Badge } from "@/components/ui/Badge";
 import { Brand } from "@/components/shared/Brand";
 import { cn } from "@/lib/utils";
-import {
-  LayoutDashboard,
-  Cpu,
-  Users,
-  Home,
-  DollarSign,
-  Smartphone,
-  LogOut,
-  type LucideIcon,
-} from "lucide-react";
-import { logout } from "@/firebase";
-import { useTour } from "@/hooks/useTour";
-import { SIDEBAR_TOUR_ID, sidebarTourSteps } from "./sidebarTourSteps";
-
-const legacyDashboardUrl = "https://refactor.quatt-support-dashboard.pages.dev";
 
 interface NavItem {
   label: string;
   href: string;
   icon: LucideIcon;
-  tourId: string;
 }
 
-const navigationItems: NavItem[] = [
-  {
-    label: "CIC Dashboard",
-    href: "/dashboard",
-    icon: LayoutDashboard,
-    tourId: "nav-cic-dashboard",
-  },
-  { label: "CIC List", href: "/cics", icon: Cpu, tourId: "nav-cic-list" },
-  {
-    label: "Installers",
-    href: "/installers",
-    icon: Users,
-    tourId: "nav-installers",
-  },
-  {
-    label: "Installations",
-    href: "/installations",
-    icon: Home,
-    tourId: "nav-installations",
-  },
-  {
-    label: "Dynamic Pricing",
-    href: "/dynamic-pricing",
-    icon: DollarSign,
-    tourId: "nav-dynamic-pricing",
-  },
-  {
-    label: "Devices",
-    href: "/devices",
-    icon: Smartphone,
-    tourId: "nav-devices",
-  },
-  {
-    label: "Legacy Dashboard",
-    href: "https://refactor.quatt-support-dashboard.pages.dev/",
-    icon: Home,
-    tourId: "nav-legacy",
-  },
-];
+// Add your navigation items here
+const navigationItems: NavItem[] = [{ label: "Home", href: "/", icon: Home }];
 
 const sidebarVariants = {
   expanded: {
@@ -128,29 +80,12 @@ const staggerItemVariants = {
 
 export interface SidebarProps {
   className?: string;
+  onLogout?: () => void;
 }
 
-/**
- * Modern animated sidebar with collapsible states
- *
- * Features:
- * - Smooth width transitions (expanded: 256px, collapsed: 64px)
- * - Active route highlighting with left border accent
- * - Integrated theme toggle
- * - Environment badge display
- * - Responsive mobile drawer on <768px
- * - Persists state in localStorage
- * - Keyboard accessible navigation
- *
- * @example
- * ```tsx
- * <Sidebar />
- * ```
- */
-export const Sidebar = ({ className }: SidebarProps) => {
+export const Sidebar = ({ className, onLogout }: SidebarProps) => {
   const [location] = useLocation();
   const [isExpanded, setIsExpanded] = useState(() => {
-    // Restore from localStorage or default to true
     if (typeof window !== "undefined") {
       const stored = localStorage.getItem("sidebar-expanded");
       return stored ? JSON.parse(stored) : true;
@@ -160,12 +95,6 @@ export const Sidebar = ({ className }: SidebarProps) => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
-  const currentPath = location;
-
-  navigationItems[navigationItems.length - 1].href =
-    `${legacyDashboardUrl}${currentPath}`;
-
-  // Detect mobile viewport
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -175,14 +104,12 @@ export const Sidebar = ({ className }: SidebarProps) => {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // Persist sidebar state
   useEffect(() => {
     if (typeof window !== "undefined") {
       localStorage.setItem("sidebar-expanded", JSON.stringify(isExpanded));
     }
   }, [isExpanded]);
 
-  // Close mobile drawer on route change
   useEffect(() => {
     if (isMobile) {
       setIsMobileOpen(false);
@@ -198,17 +125,21 @@ export const Sidebar = ({ className }: SidebarProps) => {
   };
 
   const isActiveRoute = (href: string) => {
-    if (href === "/dashboard") {
-      return location === "/dashboard" || location === "/";
+    if (href === "/") {
+      return location === "/";
     }
     return location.startsWith(href);
   };
 
-  // Mobile: Render as overlay drawer
+  const handleLogout = () => {
+    document.cookie = "session=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    window.location.href = "/";
+    onLogout?.();
+  };
+
   if (isMobile) {
     return (
       <>
-        {/* Fixed mobile header bar */}
         <header className="fixed top-0 left-0 right-0 z-30 h-14 bg-white dark:bg-dark-foreground border-b border-gray-200 dark:border-gray-800 shadow-sm">
           <div className="h-full flex items-center px-4 gap-3">
             <Button
@@ -223,7 +154,6 @@ export const Sidebar = ({ className }: SidebarProps) => {
           </div>
         </header>
 
-        {/* Backdrop */}
         <AnimatePresence>
           {isMobileOpen && (
             <motion.div
@@ -237,7 +167,6 @@ export const Sidebar = ({ className }: SidebarProps) => {
           )}
         </AnimatePresence>
 
-        {/* Mobile drawer */}
         <AnimatePresence>
           {isMobileOpen && (
             <motion.aside
@@ -256,6 +185,7 @@ export const Sidebar = ({ className }: SidebarProps) => {
                 isExpanded={true}
                 isActiveRoute={isActiveRoute}
                 onToggle={handleToggle}
+                onLogout={handleLogout}
                 isMobile={true}
               />
             </motion.aside>
@@ -265,7 +195,6 @@ export const Sidebar = ({ className }: SidebarProps) => {
     );
   }
 
-  // Desktop: Render as fixed sidebar
   return (
     <motion.aside
       variants={sidebarVariants}
@@ -282,6 +211,7 @@ export const Sidebar = ({ className }: SidebarProps) => {
         isExpanded={isExpanded}
         isActiveRoute={isActiveRoute}
         onToggle={handleToggle}
+        onLogout={handleLogout}
         isMobile={false}
       />
     </motion.aside>
@@ -292,6 +222,7 @@ interface SidebarContentProps {
   isExpanded: boolean;
   isActiveRoute: (href: string) => boolean;
   onToggle: () => void;
+  onLogout: () => void;
   isMobile: boolean;
 }
 
@@ -299,76 +230,26 @@ const SidebarContent = ({
   isExpanded,
   isActiveRoute,
   onToggle,
+  onLogout,
   isMobile,
 }: SidebarContentProps) => {
   const environment = import.meta.env.ENV;
-  const [showConfetti, setShowConfetti] = useState(false);
-  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
-
-  // Track window size for confetti
-  useEffect(() => {
-    const updateSize = () => {
-      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
-    };
-    updateSize();
-    window.addEventListener("resize", updateSize);
-    return () => window.removeEventListener("resize", updateSize);
-  }, []);
-
-  // Tour functionality
-  const { startTour, hasCompleted } = useTour({
-    tourId: SIDEBAR_TOUR_ID,
-    steps: sidebarTourSteps,
-  });
-
-  // Auto-start tour on first visit (desktop only) with confetti
-  useEffect(() => {
-    if (!isMobile && !hasCompleted) {
-      const timer = setTimeout(() => {
-        setShowConfetti(true);
-        startTour();
-        // Stop confetti after 5 seconds
-        setTimeout(() => setShowConfetti(false), 10000);
-      }, 500);
-      return () => clearTimeout(timer);
-    }
-  }, [isMobile, hasCompleted, startTour]);
 
   return (
     <>
-      {/* Confetti for first-time tour */}
-      {showConfetti && (
-        <Confetti
-          width={windowSize.width}
-          height={windowSize.height}
-          recycle={false}
-          numberOfPieces={5000}
-          style={{ position: "fixed", top: 0, left: 0, zIndex: 10001 }}
-        />
-      )}
-      {/* Logo/Header space */}
       <div className="h-16 flex items-center border-b border-gray-200 dark:border-gray-800 px-3 relative">
-        {/* Desktop collapsed state: Center toggle button */}
         {!isMobile && !isExpanded ? (
-          <>
-            {/* <Brand
-              className="absolute left-1 pointer-events-none"
-              type="logo"
-            /> */}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onToggle}
-              className="mx-auto"
-              aria-label="Expand sidebar"
-              data-tour="sidebar-toggle"
-            >
-              <PanelLeft className="h-5 w-5" />
-            </Button>
-          </>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onToggle}
+            className="mx-auto"
+            aria-label="Expand sidebar"
+          >
+            <PanelLeft className="h-5 w-5" />
+          </Button>
         ) : (
           <>
-            {/* Logo */}
             <motion.div
               variants={navTextVariants}
               animate={isExpanded ? "expanded" : "collapsed"}
@@ -377,7 +258,6 @@ const SidebarContent = ({
               <Brand className="h-8 w-auto" />
             </motion.div>
 
-            {/* Toggle button (desktop expanded or mobile) */}
             <AnimatePresence>
               {isExpanded && (
                 <motion.div
@@ -394,7 +274,6 @@ const SidebarContent = ({
                     aria-label={
                       isMobile ? "Close navigation" : "Collapse sidebar"
                     }
-                    data-tour="sidebar-toggle"
                   >
                     <PanelLeftClose className="h-4 w-4" />
                   </Button>
@@ -405,7 +284,6 @@ const SidebarContent = ({
         )}
       </div>
 
-      {/* Navigation items */}
       <motion.nav
         variants={staggerContainerVariants}
         initial="initial"
@@ -416,7 +294,6 @@ const SidebarContent = ({
           {navigationItems.map((item) => {
             const Icon = item.icon;
             const isActive = isActiveRoute(item.href);
-            const isExternal = item.href.startsWith("http");
             return (
               <motion.li key={item.href} variants={staggerItemVariants}>
                 <Button
@@ -426,63 +303,31 @@ const SidebarContent = ({
                   )}
                   variant="ghost"
                 >
-                  {isExternal ? (
-                    <a
-                      href={item.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={cn(
-                        "w-full flex items-center rounded-lg relative",
-                        "transition-all duration-200",
-                        "hover:bg-gray-100 dark:hover:bg-gray-800",
-                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50",
-                        isActive && [
-                          "bg-primary/10 dark:bg-primary/20 text-primary font-medium",
-                          "before:absolute before:left-0 before:top-1 before:bottom-1 before:w-1 before:bg-primary before:rounded-r",
-                        ],
-                        isExpanded ? "gap-3 px-3 py-2" : "justify-center p-2",
-                      )}
-                      aria-current={isActive ? "page" : undefined}
-                      title={!isExpanded ? item.label : undefined}
-                      data-tour={item.tourId}
+                  <Link
+                    href={item.href}
+                    className={cn(
+                      "w-full flex items-center rounded-lg relative",
+                      "transition-all duration-200",
+                      "hover:bg-gray-100 dark:hover:bg-gray-800",
+                      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50",
+                      isActive && [
+                        "bg-primary/10 dark:bg-primary/20 text-primary font-medium",
+                        "before:absolute before:left-0 before:top-1 before:bottom-1 before:w-1 before:bg-primary before:rounded-r",
+                      ],
+                      isExpanded ? "gap-3 px-3 py-2" : "justify-center p-2",
+                    )}
+                    aria-current={isActive ? "page" : undefined}
+                    title={!isExpanded ? item.label : undefined}
+                  >
+                    <Icon className="h-5 w-5 shrink-0" />
+                    <motion.span
+                      variants={navTextVariants}
+                      animate={isExpanded ? "expanded" : "collapsed"}
+                      className="overflow-hidden whitespace-nowrap text-sm font-medium"
                     >
-                      <ExternalLink className="h-4 w-4 shrink-0" />
-                      <motion.span
-                        variants={navTextVariants}
-                        animate={isExpanded ? "expanded" : "collapsed"}
-                        className="overflow-hidden whitespace-nowrap text-sm font-medium"
-                      >
-                        {item.label}
-                      </motion.span>
-                    </a>
-                  ) : (
-                    <Link
-                      href={item.href}
-                      className={cn(
-                        "w-full flex items-center rounded-lg relative",
-                        "transition-all duration-200",
-                        "hover:bg-gray-100 dark:hover:bg-gray-800",
-                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50",
-                        isActive && [
-                          "bg-primary/10 dark:bg-primary/20 text-primary font-medium",
-                          "before:absolute before:left-0 before:top-1 before:bottom-1 before:w-1 before:bg-primary before:rounded-r",
-                        ],
-                        isExpanded ? "gap-3 px-3 py-2" : "justify-center p-2",
-                      )}
-                      aria-current={isActive ? "page" : undefined}
-                      title={!isExpanded ? item.label : undefined}
-                      data-tour={item.tourId}
-                    >
-                      <Icon className="h-5 w-5 shrink-0" />
-                      <motion.span
-                        variants={navTextVariants}
-                        animate={isExpanded ? "expanded" : "collapsed"}
-                        className="overflow-hidden whitespace-nowrap text-sm font-medium"
-                      >
-                        {item.label}
-                      </motion.span>
-                    </Link>
-                  )}
+                      {item.label}
+                    </motion.span>
+                  </Link>
                 </Button>
               </motion.li>
             );
@@ -490,67 +335,35 @@ const SidebarContent = ({
         </ul>
       </motion.nav>
 
-      {/* Footer: Theme toggle, Tour, Logout + Environment */}
       <div className="border-t border-gray-200 dark:border-gray-800 p-4 space-y-3">
         {isExpanded ? (
-          /* Expanded: horizontal layout */
           <div className="flex items-center justify-between">
-            <div data-tour="theme-toggle">
-              <ThemeToggle expanded={true} />
-            </div>
-            <div className="flex gap-1">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={startTour}
-                title="Take a tour"
-                aria-label="Take a tour"
-                data-tour="tour-info"
-              >
-                <Info className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={logout}
-                title="Logout"
-                aria-label="Logout"
-                data-tour="logout-btn"
-              >
-                <LogOut className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        ) : (
-          /* Collapsed: vertical centered stack */
-          <div className="flex flex-col items-center gap-2">
-            <div data-tour="theme-toggle">
-              <ThemeToggle expanded={false} />
-            </div>
+            <ThemeToggle expanded={true} />
             <Button
               variant="ghost"
               size="icon"
-              onClick={startTour}
-              title="Take a tour"
-              aria-label="Take a tour"
-              data-tour="tour-info"
-            >
-              <Info className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={logout}
+              onClick={onLogout}
               title="Logout"
               aria-label="Logout"
-              data-tour="logout-btn"
+            >
+              <LogOut className="h-4 w-4" />
+            </Button>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center gap-2">
+            <ThemeToggle expanded={false} />
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onLogout}
+              title="Logout"
+              aria-label="Logout"
             >
               <LogOut className="h-4 w-4" />
             </Button>
           </div>
         )}
 
-        {/* Environment badge - only when expanded */}
         {isExpanded && environment && (
           <motion.div
             variants={navTextVariants}

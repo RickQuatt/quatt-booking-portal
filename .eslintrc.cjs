@@ -1,11 +1,11 @@
 module.exports = {
+  root: true,
   env: { browser: true, es2020: true, node: true },
   extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:react-hooks/recommended",
     "prettier",
-    "plugin:storybook/recommended",
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: { ecmaVersion: "latest", sourceType: "module" },
@@ -13,5 +13,7 @@ module.exports = {
   rules: {
     "react-refresh/only-export-components": "warn",
     "@typescript-eslint/no-empty-interface": "off",
+    "curly": "error",
+    "no-console": "warn",
   },
 };
