@@ -115,7 +115,7 @@
     "lint-staged": "^15.5.2",
     "msw": "^2.12.2",
     "playwright": "^1.56.1",
-    "postcss": "^8.5.6",
+    "postcss": "^8.5.9",
     "postcss-nesting": "^12.1.5",
     "prettier": "^3.6.2",
     "storybook": "^10.1.0",
