@@ -17,18 +17,17 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    // Check if middleware already handled authentication (session cookie exists)
-    const hasSessionCookie = document.cookie.includes("session=");
-
-    if (hasSessionCookie) {
-      setIsAuthenticated(true);
-      setLoading(false);
-      return;
-    }
-
-    // If running in plain Vite dev mode (no middleware), show unauthenticated state
-    // In production, the middleware would have already redirected to login
-    setLoading(false);
+    // Verify auth via /api/me -- the session cookie is HttpOnly so JS can't read it directly.
+    // In production, Cloudflare middleware blocks unauthenticated users before they reach this app.
+    // This check handles dev mode and confirms the session is valid.
+    fetch("/api/me")
+      .then((r) => {
+        if (r.ok) {
+          setIsAuthenticated(true);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, []);
 
   if (loading) {
