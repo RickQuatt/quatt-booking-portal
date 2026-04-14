@@ -9,6 +9,7 @@ import { PartnerDetailPage } from "./pages/partners/[id]/page";
 import { CallsPage } from "./pages/calls/page";
 import { DashboardPage } from "./pages/dashboard/page";
 import { ScorecardPage } from "./pages/scorecard/page";
+import { TasksPage } from "./pages/tasks/page";
 
 const queryClient = new QueryClient();
 
@@ -57,9 +58,9 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="flex min-h-screen">
+      <div className="min-h-screen flex flex-col">
         <Sidebar />
-        <main className="flex-1 overflow-auto md:ml-0 mt-14 md:mt-0 p-4 md:p-6">
+        <main className="flex-1 overflow-auto p-4 md:p-6">
           <Route path="/">
             <Redirect to="/partners" />
           </Route>
@@ -68,6 +69,7 @@ function App() {
           <Route path="/calls" component={CallsPage} />
           <Route path="/dashboard" component={DashboardPage} />
           <Route path="/scorecard" component={ScorecardPage} />
+          <Route path="/tasks" component={TasksPage} />
         </main>
       </div>
       <Toaster />
