@@ -1,10 +1,14 @@
 import { useState, useEffect } from "react";
-import { Route } from "wouter";
+import { Route, Redirect } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Loader } from "@/components/shared/Loader";
 import { Toaster } from "@/components/ui/Sonner";
-import { HomePage } from "./pages/home/page";
+import { PartnersPage } from "./pages/partners/page";
+import { PartnerDetailPage } from "./pages/partners/[id]/page";
+import { CallsPage } from "./pages/calls/page";
+import { DashboardPage } from "./pages/dashboard/page";
+import { ScorecardPage } from "./pages/scorecard/page";
 
 const queryClient = new QueryClient();
 
@@ -56,10 +60,15 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <div className="flex min-h-screen">
         <Sidebar />
-        <main className="flex-1 overflow-auto md:ml-0 mt-14 md:mt-0">
-          {/* Add your routes here */}
-          <Route path="/" component={HomePage} />
-          <Route path="/home" component={HomePage} />
+        <main className="flex-1 overflow-auto md:ml-0 mt-14 md:mt-0 p-4 md:p-6">
+          <Route path="/">
+            <Redirect to="/partners" />
+          </Route>
+          <Route path="/partners" component={PartnersPage} />
+          <Route path="/partners/:id" component={PartnerDetailPage} />
+          <Route path="/calls" component={CallsPage} />
+          <Route path="/dashboard" component={DashboardPage} />
+          <Route path="/scorecard" component={ScorecardPage} />
         </main>
       </div>
       <Toaster />

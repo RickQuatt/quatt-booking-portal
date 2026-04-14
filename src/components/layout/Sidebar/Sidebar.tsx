@@ -5,7 +5,10 @@ import {
   PanelLeft,
   PanelLeftClose,
   LogOut,
-  Home,
+  Users,
+  Phone,
+  BarChart3,
+  LayoutDashboard,
   type LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -20,8 +23,12 @@ interface NavItem {
   icon: LucideIcon;
 }
 
-// Add your navigation items here
-const navigationItems: NavItem[] = [{ label: "Home", href: "/", icon: Home }];
+const navigationItems: NavItem[] = [
+  { label: "Partners", href: "/partners", icon: Users },
+  { label: "Calls", href: "/calls", icon: Phone },
+  { label: "Scorecard", href: "/scorecard", icon: BarChart3 },
+  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+];
 
 const sidebarVariants = {
   expanded: {

@@ -117,6 +117,12 @@ const PUBLIC_PATHS = [
   "/robots.txt",
 ];
 
+// Webhook endpoints bypass auth (they use their own token validation)
+const WEBHOOK_PATHS = [
+  "/api/aircall/webhook",
+  "/api/sync/webhook",
+];
+
 function isValidReturnUrl(url: string): boolean {
   if (!url) return false;
   if (!url.startsWith("/") || url.startsWith("//")) return false;
@@ -180,12 +186,32 @@ export const onRequest = async (context: {
   const { request, next, env } = context;
   const url = new URL(request.url);
 
+  // Add security headers to all responses
+  const addSecurityHeaders = (response: Response): Response => {
+    const headers = new Headers(response.headers);
+    headers.set("X-Frame-Options", "DENY");
+    headers.set("X-Content-Type-Options", "nosniff");
+    headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+    headers.set("X-XSS-Protection", "0");
+    headers.set("Permissions-Policy", "camera=(), microphone=(self), geolocation=()");
+    return new Response(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers,
+    });
+  };
+
   if (PUBLIC_PATHS.includes(url.pathname)) {
-    return next();
+    return addSecurityHeaders(await next());
   }
 
   if (url.pathname === "/api/create-session") {
     return next();
+  }
+
+  // Webhook endpoints bypass auth (use their own token validation)
+  if (WEBHOOK_PATHS.includes(url.pathname)) {
+    return addSecurityHeaders(await next());
   }
 
   const googleClientId = env.GOOGLE_CLIENT_ID as string | undefined;
@@ -245,5 +271,5 @@ export const onRequest = async (context: {
     return new Response(null, { status: 303, headers });
   }
 
-  return next();
+  return addSecurityHeaders(await next());
 };

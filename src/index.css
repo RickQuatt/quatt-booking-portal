@@ -190,3 +190,64 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
     opacity: 0.9;
   }
 } */
+
+/* ===== AM Toolkit: Brand colors & theme extensions ===== */
+@theme {
+  /* Brand Primary */
+  --color-quatt-orange: #FF6933;
+  --color-quatt-forest: #081412;
+  --color-quatt-ink: #131A20;
+  --color-quatt-neon: #D9FF5C;
+  --color-quatt-green: #1A7A6B;
+
+  /* Backgrounds */
+  --color-quatt-bg: #F5F3F2;
+  --color-quatt-grey: #EDEDED;
+  --color-quatt-offwhite: #F7F7F7;
+
+  /* Text */
+  --color-quatt-text-secondary: #6B7280;
+  --color-quatt-text-muted: #9CA3AF;
+  --color-quatt-text-disabled: #D1D5DB;
+
+  /* Primary text */
+  --color-quatt-black: #131A20;
+
+  /* Borders */
+  --color-quatt-border-light: rgba(0, 0, 0, 0.06);
+  --color-quatt-border-mid: rgba(0, 0, 0, 0.12);
+  --color-quatt-error-border: #FECACA;
+
+  /* Status */
+  --color-quatt-red: #DC2626;
+  --color-quatt-yellow: #F59E0B;
+  --color-quatt-error-text: #DC2626;
+  --color-quatt-error-bg: #FEF2F2;
+  --color-quatt-success-bg: #ECFDF5;
+  --color-quatt-success-text: #047857;
+  --color-quatt-warning-bg: #FFFBEB;
+  --color-quatt-warning-text: #B45309;
+  --color-quatt-selected-bg: #ECFDF5;
+
+  /* Shadows */
+  --shadow-card: 0px 2px 8px rgba(8, 20, 18, 0.08), 0px 1px 2px rgba(8, 20, 18, 0.04);
+  --shadow-card-hover: 0px 4px 16px rgba(8, 20, 18, 0.12), 0px 2px 4px rgba(8, 20, 18, 0.06);
+}
+
+/* AM Toolkit: Milestone colors */
+.milestone-0 { background-color: #E5E7EB; color: #374151; }
+.milestone-1 { background-color: #DBEAFE; color: #1D4ED8; }
+.milestone-2 { background-color: #D1FAE5; color: #047857; }
+.milestone-3 { background-color: #FEF3C7; color: #B45309; }
+.milestone-4 { background-color: #FCE7F3; color: #BE185D; }
+.milestone-5 { background-color: #D9FF5C; color: #081412; }
+
+/* AM Toolkit: Priority borders */
+.priority-high { border-left: 3px solid #DC2626; }
+.priority-medium { border-left: 3px solid #F59E0B; }
+.priority-low { border-left: 3px solid transparent; }
+
+/* AM Toolkit: Safe area for iPhone home indicator */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
