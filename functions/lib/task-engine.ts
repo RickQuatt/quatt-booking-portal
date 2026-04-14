@@ -30,6 +30,9 @@ export function computeTasks(
   partner: AmPartner,
   hasRecentContact: boolean,
 ): ComputedTask[] {
+  // Lost partners get no tasks -- they're done
+  if (partner.deal_stage === "Lost") return [];
+
   const tasks: ComputedTask[] = [];
   const base = {
     partner_id: partner.id,
@@ -106,8 +109,8 @@ export function computeTasks(
     });
   }
 
-  // 4. Training inplannen -- agreement signed, training not yet booked
-  if (partner.agreement_signed && !partner.training_booked) {
+  // 4. Training inplannen -- agreement signed, training not yet booked (and not already completed)
+  if (partner.agreement_signed && !partner.training_booked && !partner.training_completed) {
     tasks.push({
       ...base,
       type: "training_inplannen",
@@ -186,10 +189,12 @@ export function computeTasks(
   // EERSTE BESTELLING -- The critical moment
   // ─────────────────────────────────────────────────────────
 
-  // 8. Eerste installatie bezoek plannen -- just placed first order
+  // 8. Eerste installatie bezoek plannen -- just placed first order (active partners only)
   if (
     partner.has_ordered &&
     partner.current_milestone === 3 &&
+    partner.deal_stage !== "Inactive" &&
+    partner.deal_stage !== "Lost" &&
     dam <= 7
   ) {
     tasks.push({
@@ -214,6 +219,8 @@ export function computeTasks(
   if (
     partner.has_ordered &&
     partner.current_milestone === 3 &&
+    partner.deal_stage !== "Inactive" &&
+    partner.deal_stage !== "Lost" &&
     dam > 7 &&
     dam <= 21
   ) {
@@ -337,7 +344,10 @@ export function computeTasks(
   // 13. Kwaliteitscheck starten -- partner at M4 (3+ orders), not yet checked
   if (
     partner.current_milestone === 4 &&
-    (!partner.quality_check_status || partner.quality_check_status === "pending")
+    partner.deal_stage === "Active" &&
+    partner.quality_check_status !== "passed" &&
+    partner.quality_check_status !== "failed" &&
+    partner.quality_check_status !== "retraining"
   ) {
     tasks.push({
       ...base,
