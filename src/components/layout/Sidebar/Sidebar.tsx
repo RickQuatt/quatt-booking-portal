@@ -22,6 +22,7 @@ interface NavItem {
   label: string;
   href: string;
   icon: LucideIcon;
+  adminOnly?: boolean;
 }
 
 const navigationItems: NavItem[] = [
@@ -29,7 +30,7 @@ const navigationItems: NavItem[] = [
   { label: "Taken", href: "/tasks", icon: ClipboardList },
   { label: "Calls", href: "/calls", icon: Phone },
   { label: "Scorecard", href: "/scorecard", icon: BarChart3 },
-  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard, adminOnly: true },
 ];
 
 export interface SidebarProps {
@@ -51,6 +52,10 @@ export const Sidebar = ({ className, onLogout }: SidebarProps) => {
     if (href === "/") return location === "/";
     return location.startsWith(href);
   };
+
+  const visibleItems = navigationItems.filter(
+    (item) => !item.adminOnly || user?.role === "admin",
+  );
 
   const handleLogout = () => {
     document.cookie =
@@ -76,7 +81,7 @@ export const Sidebar = ({ className, onLogout }: SidebarProps) => {
 
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-1 flex-1 ml-4">
-          {navigationItems.map((item) => {
+          {visibleItems.map((item) => {
             const Icon = item.icon;
             const isActive = isActiveRoute(item.href);
             return (
@@ -159,7 +164,7 @@ export const Sidebar = ({ className, onLogout }: SidebarProps) => {
           />
           <div className="absolute left-0 right-0 top-14 z-50 md:hidden bg-white dark:bg-dark-foreground border-b border-gray-200 dark:border-gray-800 shadow-lg">
             <nav className="p-2">
-              {navigationItems.map((item) => {
+              {visibleItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = isActiveRoute(item.href);
                 return (

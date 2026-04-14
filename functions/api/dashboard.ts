@@ -17,6 +17,11 @@ export const onRequestGet = async (context: CFContext) => {
   const auth = await requireAuth(request, env);
   if (isResponse(auth)) return auth;
 
+  // Dashboard is admin-only (Rick's management view)
+  if (auth.role !== "admin") {
+    return json({ error: "Dashboard is alleen toegankelijk voor admins" }, 403);
+  }
+
   const supabase = createServiceClient(env);
 
   let query = supabase
