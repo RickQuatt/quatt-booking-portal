@@ -36,13 +36,29 @@ function normalizePhone(phone: string): string {
   return phone.replace(/[\s\-()]/g, "");
 }
 
+function timingSafeCompare(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  const encoder = new TextEncoder();
+  const bufA = encoder.encode(a);
+  const bufB = encoder.encode(b);
+  let result = 0;
+  for (let i = 0; i < bufA.length; i++) {
+    result |= bufA[i] ^ bufB[i];
+  }
+  return result === 0;
+}
+
 export const onRequestPost = async (context: CFContext) => {
   const { request, env } = context;
   const body: AircallWebhookPayload = await request.json();
 
-  // Validate webhook token
+  // Validate webhook token -- fail closed if not configured
   const webhookToken = env.AIRCALL_WEBHOOK_TOKEN;
-  if (webhookToken && body.token !== webhookToken) {
+  if (!webhookToken) {
+    console.error("AIRCALL_WEBHOOK_TOKEN not configured");
+    return json({ error: "Server misconfigured" }, 500);
+  }
+  if (!body.token || !timingSafeCompare(body.token, webhookToken)) {
     console.error("Aircall webhook: invalid token");
     return json({ error: "Invalid token" }, 401);
   }

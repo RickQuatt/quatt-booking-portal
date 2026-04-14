@@ -156,7 +156,8 @@ export const onRequestPost = async (context: {
       `session=${sessionToken}`,
       "Path=/",
       `Max-Age=${expiresIn}`,
-      ...(isProduction ? ["HttpOnly", "Secure"] : []),
+      "HttpOnly",
+      ...(isProduction ? ["Secure"] : []),
       "SameSite=Lax",
     ].join("; ");
 

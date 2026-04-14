@@ -71,8 +71,12 @@ export const onRequestPost = async (context: CFContext) => {
   const body = await request.json();
   const { content, note_type, outcome } = body;
 
+  const VALID_NOTE_TYPES = ["call", "email", "meeting", "note", "milestone", "order", "aircall_call"];
   if (!content || !note_type) {
     return json({ error: "content and note_type required" }, 400);
+  }
+  if (!VALID_NOTE_TYPES.includes(note_type)) {
+    return json({ error: "Invalid note_type" }, 400);
   }
 
   const authorEmail = auth.email;

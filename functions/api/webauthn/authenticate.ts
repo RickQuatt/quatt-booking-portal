@@ -151,7 +151,8 @@ async function verifyAuthentication(
     `session=${sessionToken}`,
     "Path=/",
     `Max-Age=${SEVEN_DAYS_S}`,
-    ...(isProduction ? ["HttpOnly", "Secure"] : []),
+    "HttpOnly",
+    ...(isProduction ? ["Secure"] : []),
     "SameSite=Lax",
   ].join("; ");
 

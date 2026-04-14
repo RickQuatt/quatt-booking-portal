@@ -206,7 +206,7 @@ export const onRequest = async (context: {
   }
 
   if (url.pathname === "/api/create-session") {
-    return next();
+    return addSecurityHeaders(await next());
   }
 
   // Webhook endpoints bypass auth (use their own token validation)

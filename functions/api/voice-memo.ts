@@ -16,6 +16,19 @@ export const onRequestPost = async (context: CFContext) => {
     return json({ error: "audio and companyId required" }, 400);
   }
 
+  // Validate file type and size
+  if (!audio.type.startsWith("audio/")) {
+    return json({ error: "Only audio files allowed" }, 400);
+  }
+  if (audio.size > 10 * 1024 * 1024) {
+    return json({ error: "File too large (max 10MB)" }, 400);
+  }
+
+  // Validate companyId format (UUID)
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(companyId)) {
+    return json({ error: "Invalid companyId" }, 400);
+  }
+
   const supabase = createServiceClient(env);
 
   // Ownership check
