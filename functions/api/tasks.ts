@@ -1,10 +1,12 @@
-import type { CFContext, Env } from "../lib/types";
+import type { CFContext } from "../lib/types";
 import { json } from "../lib/types";
 import { requireAuth, isResponse } from "../lib/auth";
 import { createServiceClient } from "../lib/supabase";
 import { computeMilestone, computePriority } from "../lib/partner-types";
 import type { AmPartner } from "../lib/partner-types";
 import { computeTasks } from "../lib/task-engine";
+import { curateTasks, groupTasks } from "../lib/task-curator";
+import { getTeamMember } from "../lib/team";
 
 function diffDays(date: string | null, now: Date): number {
   if (!date) return 999;
@@ -17,6 +19,9 @@ export const onRequestGet = async (context: CFContext) => {
   const { request, env } = context;
   const auth = await requireAuth(request, env);
   if (isResponse(auth)) return auth;
+
+  const url = new URL(request.url);
+  const view = url.searchParams.get("view") || "today";
 
   const supabase = createServiceClient(env);
 
@@ -61,6 +66,9 @@ export const onRequestGet = async (context: CFContext) => {
     }
   }
 
+  // Build postcode map for proximity lookups
+  const partnerPostcodes = new Map<string, string | null>();
+
   // Compute tasks for each partner
   const allTasks = [];
   for (const row of companies || []) {
@@ -84,15 +92,19 @@ export const onRequestGet = async (context: CFContext) => {
       current_milestone: milestone,
     });
 
+    const postcode = (c.business_address as Record<string, string>)?.postal_code || null;
+    const partnerId = c.id as string;
+    partnerPostcodes.set(partnerId, postcode);
+
     const partner: AmPartner = {
-      id: c.id as string,
+      id: partnerId,
       hubspot_deal_id: c.hubspot_deal_id as string | null,
       name: c.name as string,
       contact_name: (c.contact_name as string) || null,
       contact_email: null,
       contact_phone: (c.contact_phone as string) || null,
       city: (c.business_address as Record<string, string>)?.city || null,
-      postcode: (c.business_address as Record<string, string>)?.postal_code || null,
+      postcode,
       region: null,
       current_milestone: milestone,
       agreement_signed: (c.onboarding_agreement_signed as boolean) || false,
@@ -137,5 +149,18 @@ export const onRequestGet = async (context: CFContext) => {
     return a.partner_name.localeCompare(b.partner_name);
   });
 
-  return json({ tasks: allTasks });
+  if (view === "all") {
+    const groups = groupTasks(allTasks);
+    return json({ view: "all", total: allTasks.length, groups });
+  }
+
+  // Default: curated "today" view
+  const teamMember = getTeamMember(auth.email);
+  const curated = curateTasks({
+    tasks: allTasks,
+    amPostcodePrefix: teamMember?.homePostcodePrefix ?? null,
+    partnerPostcodes,
+  });
+
+  return json({ view: "today", total: allTasks.length, tasks: curated });
 };

@@ -7,6 +7,7 @@ export interface TeamMember {
   hubspotOwnerId: string | null;
   assignedAmValue: string | null;
   aircallUserId: number | null;
+  homePostcodePrefix: string | null;
 }
 
 const TEAM: TeamMember[] = [
@@ -17,6 +18,7 @@ const TEAM: TeamMember[] = [
     hubspotOwnerId: null,
     assignedAmValue: null,
     aircallUserId: 1737571,
+    homePostcodePrefix: null,
   },
   {
     email: "daniel.m@quatt.io",
@@ -25,6 +27,7 @@ const TEAM: TeamMember[] = [
     hubspotOwnerId: "1605866474",
     assignedAmValue: "daniel",
     aircallUserId: null, // calls from personal 06, no Aircall needed
+    homePostcodePrefix: null, // handles large installers, not region-based
   },
   {
     email: "ralph@quatt.io",
@@ -33,6 +36,7 @@ const TEAM: TeamMember[] = [
     hubspotOwnerId: "1157994210",
     assignedAmValue: "ralph",
     aircallUserId: 1749312,
+    homePostcodePrefix: "1", // Amsterdam area
   },
   {
     email: "mitchell.k@quatt.io",
@@ -41,6 +45,7 @@ const TEAM: TeamMember[] = [
     hubspotOwnerId: "2128536513",
     assignedAmValue: "mitchell",
     aircallUserId: 1875284,
+    homePostcodePrefix: "3", // South Holland area
   },
 ];
 

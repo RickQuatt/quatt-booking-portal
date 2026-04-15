@@ -1,38 +1,45 @@
 import { useState, useEffect } from "react";
-import { Link } from "wouter";
-import { Phone, ChevronDown, ChevronUp } from "lucide-react";
-import { useAuth, apiFetch } from "@/hooks/useAuth";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { apiFetch } from "@/hooks/useAuth";
+import { TaskCard } from "@/components/shared/TaskCard";
+import type { TaskCardData } from "@/components/shared/TaskCard";
 
-interface ComputedTask {
-  type: string;
+interface TaskGroup {
+  category: string;
   label: string;
-  partner_id: string;
-  partner_name: string;
-  contact_name: string | null;
-  contact_phone: string | null;
-  priority: "high" | "normal";
-  due_context: string;
-  suggested_action: string;
-  assigned_am: string | null;
+  tasks: TaskCardData[];
+}
+
+interface TodayResponse {
+  view: "today";
+  total: number;
+  tasks: TaskCardData[];
+}
+
+interface AllResponse {
+  view: "all";
+  total: number;
+  groups: TaskGroup[];
 }
 
 export function TasksPage() {
-  const { user } = useAuth();
-  const [tasks, setTasks] = useState<ComputedTask[]>([]);
+  const [tab, setTab] = useState<"today" | "all">("today");
+  const [todayData, setTodayData] = useState<TodayResponse | null>(null);
+  const [allData, setAllData] = useState<AllResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [expandedTasks, setExpandedTasks] = useState<Set<string>>(new Set());
 
+  // Load today view on mount
   useEffect(() => {
     async function load() {
       try {
-        const res = await apiFetch("/api/tasks");
+        const res = await apiFetch("/api/tasks?view=today");
         if (!res.ok) {
           setError("Kon taken niet laden");
           return;
         }
         const data = await res.json();
-        setTasks(data.tasks || []);
+        setTodayData(data);
       } catch {
         setError("Kon taken niet laden");
       } finally {
@@ -41,6 +48,22 @@ export function TasksPage() {
     }
     load();
   }, []);
+
+  // Lazy-load all tasks when tab switches
+  useEffect(() => {
+    if (tab !== "all" || allData) return;
+    async function loadAll() {
+      try {
+        const res = await apiFetch("/api/tasks?view=all");
+        if (!res.ok) return;
+        const data = await res.json();
+        setAllData(data);
+      } catch {
+        // Silently fail -- today view still works
+      }
+    }
+    loadAll();
+  }, [tab, allData]);
 
   if (loading) {
     return (
@@ -58,164 +81,189 @@ export function TasksPage() {
     );
   }
 
-  const highPriority = tasks.filter((t) => t.priority === "high");
-  const normalPriority = tasks.filter((t) => t.priority === "normal");
+  const todayCount = todayData?.tasks.length ?? 0;
+  const totalCount = todayData?.total ?? 0;
 
-  const toggleExpand = (key: string) => {
-    setExpandedTasks((prev) => {
+  return (
+    <div>
+      <h1 className="text-xl font-bold tracking-[-0.04em] text-quatt-ink dark:text-foreground">
+        Taken
+      </h1>
+
+      {/* Tab bar */}
+      <div className="flex gap-1 mt-3 bg-quatt-bg-subtle dark:bg-muted rounded-lg p-1">
+        <button
+          onClick={() => setTab("today")}
+          className={`flex-1 text-sm font-medium px-3 py-1.5 rounded-md transition-all ${
+            tab === "today"
+              ? "bg-white dark:bg-card text-quatt-ink dark:text-foreground shadow-sm"
+              : "text-quatt-text-secondary hover:text-quatt-ink dark:hover:text-foreground"
+          }`}
+        >
+          Vandaag ({todayCount})
+        </button>
+        <button
+          onClick={() => setTab("all")}
+          className={`flex-1 text-sm font-medium px-3 py-1.5 rounded-md transition-all ${
+            tab === "all"
+              ? "bg-white dark:bg-card text-quatt-ink dark:text-foreground shadow-sm"
+              : "text-quatt-text-secondary hover:text-quatt-ink dark:hover:text-foreground"
+          }`}
+        >
+          Alle taken ({totalCount})
+        </button>
+      </div>
+
+      {/* Today tab */}
+      {tab === "today" && (
+        <TodayView tasks={todayData?.tasks ?? []} total={totalCount} onViewAll={() => setTab("all")} />
+      )}
+
+      {/* All tasks tab */}
+      {tab === "all" && (
+        <AllTasksView groups={allData?.groups ?? []} loading={!allData} />
+      )}
+    </div>
+  );
+}
+
+function TodayView({
+  tasks,
+  total,
+  onViewAll,
+}: {
+  tasks: TaskCardData[];
+  total: number;
+  onViewAll: () => void;
+}) {
+  if (tasks.length === 0) {
+    return (
+      <div className="mt-8 text-center">
+        <p className="text-quatt-text-secondary">
+          Geen openstaande taken -- alles bijgewerkt!
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-4 space-y-2">
+      {tasks.map((task, i) => (
+        <TaskCard key={`${task.partner_id}-${task.type}-${i}`} task={task} />
+      ))}
+
+      {total > tasks.length && (
+        <button
+          onClick={onViewAll}
+          className="w-full text-center text-sm text-quatt-text-secondary hover:text-quatt-ink dark:hover:text-foreground py-3 transition-colors"
+        >
+          Nog {total - tasks.length} taken bekijken
+        </button>
+      )}
+    </div>
+  );
+}
+
+function AllTasksView({ groups, loading }: { groups: TaskGroup[]; loading: boolean }) {
+  const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set());
+
+  if (loading) {
+    return (
+      <div className="mt-8 flex justify-center">
+        <div className="w-6 h-6 border-2 border-quatt-orange border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (groups.length === 0) {
+    return (
+      <div className="mt-8 text-center">
+        <p className="text-quatt-text-secondary">Geen taken gevonden</p>
+      </div>
+    );
+  }
+
+  const toggleGroup = (category: string) => {
+    setExpandedGroups((prev) => {
       const next = new Set(prev);
-      if (next.has(key)) {
-        next.delete(key);
+      if (next.has(category)) {
+        next.delete(category);
       } else {
-        next.add(key);
+        next.add(category);
       }
       return next;
     });
   };
 
-  const handleDial = async (phone: string) => {
-    if (!user?.hasAircall) {
-      window.location.href = `tel:${phone}`;
-      return;
+  // Group tasks within each group by type
+  function getSubGroups(tasks: TaskCardData[]): { type: string; label: string; tasks: TaskCardData[] }[] {
+    const byType = new Map<string, TaskCardData[]>();
+    for (const task of tasks) {
+      const existing = byType.get(task.type) ?? [];
+      existing.push(task);
+      byType.set(task.type, existing);
     }
-    await apiFetch("/api/aircall/dial", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ phoneNumber: phone }),
-    });
-  };
-
-  const TaskCard = ({ task }: { task: ComputedTask }) => {
-    const taskKey = `${task.partner_id}-${task.type}`;
-    const isExpanded = expandedTasks.has(taskKey);
-
-    return (
-      <div
-        className={`bg-white rounded-[14px] border shadow-card transition-all ${
-          task.priority === "high"
-            ? "border-quatt-red/30"
-            : "border-quatt-border-light"
-        }`}
-      >
-        <div className="p-4">
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                {task.priority === "high" && (
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-quatt-red bg-quatt-red/10 px-1.5 py-0.5 rounded">
-                    Urgent
-                  </span>
-                )}
-                <span className="text-sm font-semibold text-quatt-ink truncate">
-                  {task.label}
-                </span>
-              </div>
-              <Link
-                href={`/partners/${task.partner_id}`}
-                className="text-sm text-quatt-orange hover:underline"
-              >
-                {task.partner_name}
-                {task.contact_name &&
-                  task.contact_name !== task.partner_name && (
-                    <span className="text-quatt-text-secondary">
-                      {" "}
-                      ({task.contact_name})
-                    </span>
-                  )}
-              </Link>
-              <p className="text-xs text-quatt-text-secondary mt-1">
-                {task.due_context}
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5 shrink-0">
-              {task.contact_phone && (
-                <button
-                  onClick={() => handleDial(task.contact_phone!)}
-                  className="p-2 rounded-lg bg-quatt-green/10 text-quatt-green hover:bg-quatt-green/20 transition-colors"
-                  title={`Bel ${task.contact_phone}`}
-                >
-                  <Phone className="h-4 w-4" />
-                </button>
-              )}
-              <button
-                onClick={() => toggleExpand(taskKey)}
-                className="p-2 rounded-lg hover:bg-quatt-bg-subtle transition-colors text-quatt-text-secondary"
-                title={isExpanded ? "Inklappen" : "Wat moet ik doen?"}
-              >
-                {isExpanded ? (
-                  <ChevronUp className="h-4 w-4" />
-                ) : (
-                  <ChevronDown className="h-4 w-4" />
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {isExpanded && task.suggested_action && (
-          <div className="px-4 pb-4 pt-0">
-            <div className="border-t border-quatt-border-light pt-3">
-              <p className="text-xs font-semibold text-quatt-ink mb-1.5">
-                Wat moet ik doen?
-              </p>
-              <div className="text-xs text-quatt-text-secondary leading-relaxed whitespace-pre-line">
-                {task.suggested_action}
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  };
+    return Array.from(byType.entries()).map(([type, typeTasks]) => ({
+      type,
+      label: typeTasks[0].label,
+      tasks: typeTasks,
+    }));
+  }
 
   return (
-    <div>
-      <h1 className="text-xl font-bold tracking-[-0.04em] text-quatt-ink">
-        Taken
-      </h1>
-      <p className="text-sm text-quatt-text-secondary mt-0.5">
-        {tasks.length} openstaande {tasks.length === 1 ? "taak" : "taken"}
-      </p>
+    <div className="mt-4 space-y-3">
+      {groups.map((group) => {
+        const isExpanded = expandedGroups.has(group.category);
+        const subGroups = getSubGroups(group.tasks);
 
-      {tasks.length === 0 && (
-        <div className="mt-8 text-center">
-          <p className="text-quatt-text-secondary">
-            Geen openstaande taken -- alles bijgewerkt!
-          </p>
-        </div>
-      )}
+        return (
+          <div
+            key={group.category}
+            className="bg-white dark:bg-card rounded-[14px] border border-quatt-border-light dark:border-border overflow-hidden"
+          >
+            <button
+              onClick={() => toggleGroup(group.category)}
+              className="w-full flex items-center justify-between p-4 hover:bg-quatt-bg-subtle/50 dark:hover:bg-muted/50 transition-colors"
+            >
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-semibold text-quatt-ink dark:text-foreground">
+                  {group.label}
+                </span>
+                <span className="text-xs bg-quatt-bg-subtle dark:bg-muted text-quatt-text-secondary px-2 py-0.5 rounded-full">
+                  {group.tasks.length}
+                </span>
+              </div>
+              {isExpanded ? (
+                <ChevronUp className="h-4 w-4 text-quatt-text-secondary" />
+              ) : (
+                <ChevronDown className="h-4 w-4 text-quatt-text-secondary" />
+              )}
+            </button>
 
-      {highPriority.length > 0 && (
-        <div className="mt-4">
-          <h2 className="text-sm font-semibold text-quatt-red mb-2">
-            Urgent ({highPriority.length})
-          </h2>
-          <div className="space-y-2">
-            {highPriority.map((task, i) => (
-              <TaskCard
-                key={`${task.partner_id}-${task.type}-${i}`}
-                task={task}
-              />
-            ))}
+            {isExpanded && (
+              <div className="px-4 pb-4 space-y-3">
+                {subGroups.map((sub) => (
+                  <div key={sub.type}>
+                    {subGroups.length > 1 && (
+                      <p className="text-xs font-medium text-quatt-text-secondary mb-1.5">
+                        {sub.label} ({sub.tasks.length})
+                      </p>
+                    )}
+                    <div className="space-y-2">
+                      {sub.tasks.map((task, i) => (
+                        <TaskCard
+                          key={`${task.partner_id}-${task.type}-${i}`}
+                          task={task}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-        </div>
-      )}
-
-      {normalPriority.length > 0 && (
-        <div className="mt-4">
-          <h2 className="text-sm font-semibold text-quatt-ink mb-2">
-            Normaal ({normalPriority.length})
-          </h2>
-          <div className="space-y-2">
-            {normalPriority.map((task, i) => (
-              <TaskCard
-                key={`${task.partner_id}-${task.type}-${i}`}
-                task={task}
-              />
-            ))}
-          </div>
-        </div>
-      )}
+        );
+      })}
     </div>
   );
 }
