@@ -1,5 +1,5 @@
 import { jwtVerify } from "jose";
-import { getTeamMember } from "./team";
+import { getTeamMember, getAllAMs } from "./team";
 import type { Env } from "./types";
 import { json } from "./types";
 
@@ -69,6 +69,7 @@ export async function getAuthorizedUser(
 
 /**
  * Returns the authorized user or a 401/403 Response.
+ * Admins can pass ?viewAs=ralph to see another AM's data.
  */
 export async function requireAuth(
   request: Request,
@@ -89,7 +90,19 @@ export async function requireAuth(
     return json({ error: "Access restricted to AM Toolkit team members" }, 403);
   }
 
-  const scopeFilter = member.role === "admin" ? null : member.assignedAmValue;
+  let scopeFilter = member.role === "admin" ? null : member.assignedAmValue;
+
+  // Admin impersonation: ?viewAs=ralph
+  if (member.role === "admin") {
+    const url = new URL(request.url);
+    const viewAs = url.searchParams.get("viewAs");
+    if (viewAs) {
+      const validAMs = getAllAMs().map((m) => m.assignedAmValue);
+      if (validAMs.includes(viewAs)) {
+        scopeFilter = viewAs;
+      }
+    }
+  }
 
   return {
     email: member.email,

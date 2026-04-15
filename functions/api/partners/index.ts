@@ -23,7 +23,10 @@ function buildPartner(row: Record<string, unknown>, now: Date): AmPartner {
     row.last_contact_date as string | null,
     now,
   );
-  const daysAtMilestone = diffDays(row.created_at as string, now); // TODO: track milestone change date
+  const daysAtMilestone = diffDays(
+    (row.milestone_changed_at || row.created_at) as string,
+    now,
+  );
 
   // Map existing portal columns (onboarding_*) to AM toolkit fields
   const agreementSigned =
@@ -188,11 +191,23 @@ async function buildStats(
     }
   }
 
+  // Count milestone progressions this week
+  let progressedCount = 0;
+  if (partnerIds.length > 0) {
+    const { count } = await supabase
+      .from("am_partner_notes")
+      .select("id", { count: "exact", head: true })
+      .in("company_id", partnerIds)
+      .eq("note_type", "milestone")
+      .gte("created_at", weekStart.toISOString());
+    progressedCount = count || 0;
+  }
+
   return {
     total_partners: partners.length,
     milestone_distribution: distribution,
     contacted_this_week: contactedCount,
-    progressed_this_week: 0, // TODO: track milestone change events
+    progressed_this_week: progressedCount,
     stuck_partners: stuck,
     new_leads: newLeads,
   };

@@ -83,12 +83,24 @@ export const onRequestGet = async (context: CFContext) => {
     contactedCount = count || 0;
   }
 
+  // Count milestone progressions this week
+  let progressedCount = 0;
+  if (companyIds.length > 0) {
+    const { count: milestoneCount } = await supabase
+      .from("am_partner_notes")
+      .select("id", { count: "exact", head: true })
+      .in("company_id", companyIds as string[])
+      .eq("note_type", "milestone")
+      .gte("created_at", weekStart.toISOString());
+    progressedCount = milestoneCount || 0;
+  }
+
   return json({
     stats: {
       total_partners: (companies || []).length,
       milestone_distribution: distribution,
       contacted_this_week: contactedCount,
-      progressed_this_week: 0,
+      progressed_this_week: progressedCount,
       stuck_partners: stuck,
       new_leads: newLeads,
     },

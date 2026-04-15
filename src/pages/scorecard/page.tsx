@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import type { AmStats, MilestoneLevel } from "@/lib/partner-types";
 import { MILESTONE_LABELS } from "@/lib/partner-types";
+import { apiFetch } from "@/hooks/useAuth";
 
 interface CallStats {
   calls_this_week: number;
@@ -13,18 +14,22 @@ export function ScorecardPage() {
   const [stats, setStats] = useState<AmStats | null>(null);
   const [callStats, setCallStats] = useState<CallStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function load() {
       try {
         const [statsRes, callsRes] = await Promise.all([
-          fetch("/api/stats"),
-          fetch("/api/aircall?page=1"),
+          apiFetch("/api/stats"),
+          apiFetch("/api/aircall?page=1"),
         ]);
-        if (statsRes.ok) {
-          const data = await statsRes.json();
-          setStats(data.stats);
+        if (!statsRes.ok) {
+          setError("Kon statistieken niet laden");
+          return;
         }
+        const data = await statsRes.json();
+        setStats(data.stats);
+
         if (callsRes.ok) {
           const data = await callsRes.json();
           const calls = data.calls || [];
@@ -68,6 +73,7 @@ export function ScorecardPage() {
         }
       } catch (err) {
         console.error("Failed to load stats:", err);
+        setError("Kon statistieken niet laden");
       } finally {
         setLoading(false);
       }
@@ -75,10 +81,18 @@ export function ScorecardPage() {
     load();
   }, []);
 
-  if (loading || !stats) {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="w-6 h-6 border-2 border-quatt-orange border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (error || !stats) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-quatt-text-secondary">{error || "Geen data beschikbaar"}</p>
       </div>
     );
   }

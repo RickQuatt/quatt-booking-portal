@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import type { AircallCall } from "@/lib/aircall-types";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth, apiFetch } from "@/hooks/useAuth";
 
 function formatDuration(seconds: number): string {
   const m = Math.floor(seconds / 60);
@@ -63,7 +63,7 @@ export function CallsPage() {
   async function loadCalls(p: number) {
     setLoading(true);
     try {
-      const res = await fetch(`/api/aircall?page=${p}`);
+      const res = await apiFetch(`/api/aircall?page=${p}`);
       if (!res.ok) throw new Error("Failed to fetch");
       const data = await res.json();
       setCalls(data.calls || []);
@@ -79,7 +79,7 @@ export function CallsPage() {
   async function handleDial(phoneNumber: string) {
     setDialing(phoneNumber);
     try {
-      const res = await fetch("/api/aircall/dial", {
+      const res = await apiFetch("/api/aircall/dial", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ phoneNumber }),

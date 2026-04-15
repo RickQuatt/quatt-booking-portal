@@ -2,7 +2,7 @@ import type { CFContext } from "../../../lib/types";
 import { json } from "../../../lib/types";
 import { requireAuth, isResponse } from "../../../lib/auth";
 import { createServiceClient } from "../../../lib/supabase";
-import { computeMilestone, computePriority } from "../../../lib/partner-types";
+import { computeMilestone, computePriority, DEAL_STAGES } from "../../../lib/partner-types";
 
 function diffDays(date: string | null, now: Date): number {
   if (!date) return 999;
@@ -36,12 +36,18 @@ export const onRequestGet = async (context: CFContext) => {
 
   const now = new Date();
   const daysSinceContact = diffDays(company.last_contact_date, now);
-  const daysAtMilestone = diffDays(company.created_at, now);
+  const daysAtMilestone = diffDays(company.milestone_changed_at || company.created_at, now);
+
+  const agreementSigned = company.onboarding_agreement_signed || false;
+  const trainingBooked = company.onboarding_training_booked || false;
+  const trainingCompleted = company.onboarding_training_completed || false;
+  const portalAccess = company.portal_access || false;
+  const hasOrdered = company.has_ordered || false;
 
   const milestone = computeMilestone({
-    agreement_signed: company.agreement_signed || false,
-    training_completed: company.training_completed || false,
-    has_ordered: company.has_ordered || false,
+    agreement_signed: agreementSigned,
+    training_completed: trainingCompleted,
+    has_ordered: hasOrdered,
     order_count: company.order_count || 0,
   });
 
@@ -71,11 +77,11 @@ export const onRequestGet = async (context: CFContext) => {
     postcode: company.business_address?.postal_code || null,
     region: null,
     current_milestone: milestone,
-    agreement_signed: company.agreement_signed || false,
-    training_booked: company.training_booked || false,
-    training_completed: company.training_completed || false,
-    portal_access: company.portal_access || false,
-    has_ordered: company.has_ordered || false,
+    agreement_signed: agreementSigned,
+    training_booked: trainingBooked,
+    training_completed: trainingCompleted,
+    portal_access: portalAccess,
+    has_ordered: hasOrdered,
     milestone_dates: {
       m1_contract_signed: null,
       m2_training_completed: null,
@@ -104,6 +110,14 @@ export const onRequestGet = async (context: CFContext) => {
   return json({ partner });
 };
 
+const MILESTONE_FIELD_LABELS: Record<string, string> = {
+  onboarding_agreement_signed: "Overeenkomst getekend",
+  onboarding_training_booked: "Training ingepland",
+  onboarding_training_completed: "Training afgerond",
+  portal_access: "Portaal toegang verleend",
+  has_ordered: "Eerste bestelling geplaatst",
+};
+
 export const onRequestPatch = async (context: CFContext) => {
   const { request, env, params } = context;
   const auth = await requireAuth(request, env);
@@ -115,7 +129,7 @@ export const onRequestPatch = async (context: CFContext) => {
   // Fetch company for ownership check
   const { data: company, error } = await supabase
     .from("companies")
-    .select("id, assigned_am")
+    .select("id, assigned_am, deal_stage, onboarding_agreement_signed, onboarding_training_booked, onboarding_training_completed, portal_access, has_ordered")
     .eq("id", id)
     .single();
 
@@ -128,10 +142,12 @@ export const onRequestPatch = async (context: CFContext) => {
   }
 
   const body = await request.json();
-  const allowedFields = ["contact_phone", "contact_name"];
-  const updates: Record<string, string | null> = {};
+  const updates: Record<string, unknown> = {};
+  const timelineEntries: { content: string; note_type: string }[] = [];
 
-  for (const field of allowedFields) {
+  // String fields
+  const stringFields = ["contact_phone", "contact_name"];
+  for (const field of stringFields) {
     if (field in body) {
       const val = body[field];
       updates[field] =
@@ -139,8 +155,53 @@ export const onRequestPatch = async (context: CFContext) => {
     }
   }
 
+  // Boolean milestone fields
+  const booleanFields = [
+    "onboarding_agreement_signed",
+    "onboarding_training_booked",
+    "onboarding_training_completed",
+    "portal_access",
+    "has_ordered",
+  ];
+  let milestoneChanged = false;
+  for (const field of booleanFields) {
+    if (field in body) {
+      const newVal = body[field] === true || body[field] === "true";
+      const oldVal = (company as Record<string, unknown>)[field] || false;
+      updates[field] = newVal;
+      if (newVal !== oldVal) {
+        milestoneChanged = true;
+        const label = MILESTONE_FIELD_LABELS[field] || field;
+        timelineEntries.push({
+          content: newVal ? label : `${label} (teruggedraaid)`,
+          note_type: "milestone",
+        });
+      }
+    }
+  }
+
+  // Deal stage
+  if ("deal_stage" in body) {
+    const newStage = body.deal_stage;
+    if (!DEAL_STAGES.includes(newStage)) {
+      return json({ error: `Invalid deal_stage. Must be one of: ${DEAL_STAGES.join(", ")}` }, 400);
+    }
+    if (newStage !== company.deal_stage) {
+      updates.deal_stage = newStage;
+      timelineEntries.push({
+        content: `Stage gewijzigd naar ${newStage}`,
+        note_type: "milestone",
+      });
+    }
+  }
+
   if (Object.keys(updates).length === 0) {
     return json({ error: "No valid fields to update" }, 400);
+  }
+
+  // Update milestone_changed_at if any milestone boolean changed
+  if (milestoneChanged) {
+    updates.milestone_changed_at = new Date().toISOString();
   }
 
   const { error: updateError } = await supabase
@@ -151,6 +212,32 @@ export const onRequestPatch = async (context: CFContext) => {
   if (updateError) {
     console.error("Failed to update partner:", updateError);
     return json({ error: "Failed to update" }, 500);
+  }
+
+  // Create timeline entries for milestone/stage changes
+  for (const entry of timelineEntries) {
+    await supabase
+      .from("am_partner_notes")
+      .insert({
+        company_id: id,
+        author_email: auth.email,
+        note_type: entry.note_type,
+        content: entry.content,
+      });
+  }
+
+  // Audit log
+  if (timelineEntries.length > 0) {
+    await supabase
+      .from("audit_log")
+      .insert({
+        user_email: auth.email,
+        action: "partner_updated",
+        entity_type: "companies",
+        entity_id: id,
+        details: { updates: Object.keys(updates), changes: timelineEntries.map((e) => e.content) },
+      })
+      .then(() => {});
   }
 
   return json({ ok: true, updated: updates });

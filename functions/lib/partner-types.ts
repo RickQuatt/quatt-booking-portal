@@ -82,6 +82,9 @@ export interface AmStats {
   new_leads: number;
 }
 
+export const DEAL_STAGES = ["Lead", "Onboarding", "Active", "Inactive", "Lost"] as const;
+export type DealStage = (typeof DEAL_STAGES)[number];
+
 export const MILESTONE_LABELS: Record<MilestoneLevel, string> = {
   0: "Lead",
   1: "Contract",

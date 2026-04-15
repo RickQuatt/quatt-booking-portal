@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import type { MilestoneLevel } from "@/lib/partner-types";
 import { MILESTONE_SHORT } from "@/lib/partner-types";
+import { apiFetch } from "@/hooks/useAuth";
 
 interface AmPerformance {
   name: string;
@@ -41,7 +42,7 @@ export function DashboardPage() {
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch("/api/dashboard");
+        const res = await apiFetch("/api/dashboard");
         if (!res.ok) throw new Error("Failed to fetch");
         const result = await res.json();
         setData(result);

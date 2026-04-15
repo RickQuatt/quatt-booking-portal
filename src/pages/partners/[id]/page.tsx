@@ -3,9 +3,11 @@ import { useState, useEffect } from "react";
 import type { AmPartner, AmActivity } from "@/lib/partner-types";
 import { MILESTONE_LABELS } from "@/lib/partner-types";
 import type { AircallCall } from "@/lib/aircall-types";
+import { apiFetch } from "@/hooks/useAuth";
 import { MilestoneBadge } from "@/components/shared/MilestoneBadge";
 import { MilestoneProgress } from "@/components/shared/MilestoneProgress";
 import { VoiceMemo } from "@/components/shared/VoiceMemo";
+import { GebeldDialog } from "@/components/shared/GebeldDialog";
 import { useAuth } from "@/hooks/useAuth";
 
 export function PartnerDetailPage() {
@@ -32,8 +34,8 @@ export function PartnerDetailPage() {
     async function load() {
       try {
         const [partnerRes, notesRes] = await Promise.all([
-          fetch(`/api/partners/${id}`),
-          fetch(`/api/partners/${id}/notes`),
+          apiFetch(`/api/partners/${id}`),
+          apiFetch(`/api/partners/${id}/notes`),
         ]);
         if (partnerRes.ok) {
           const data = await partnerRes.json();
@@ -88,7 +90,7 @@ export function PartnerDetailPage() {
   async function handleDial(phoneNumber: string) {
     setDialing(true);
     try {
-      const res = await fetch("/api/aircall/dial", {
+      const res = await apiFetch("/api/aircall/dial", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ phoneNumber }),
@@ -388,6 +390,19 @@ export function PartnerDetailPage() {
               WhatsApp
             </a>
           )}
+          <GebeldDialog
+            partnerId={partner.id}
+            onSuccess={(activity) => {
+              setActivities((prev) => [activity, ...prev]);
+              // Update last_contact_date optimistically
+              setPartner({
+                ...partner,
+                last_contact_date: new Date().toISOString(),
+                last_contact_method: "call",
+                days_since_contact: 0,
+              });
+            }}
+          />
           <button
             onClick={() => setShowNote(!showNote)}
             className="bg-white border border-quatt-border-light text-quatt-black rounded-full py-3 px-4 text-sm font-semibold flex items-center justify-center gap-2"
@@ -498,7 +513,83 @@ export function PartnerDetailPage() {
           </div>
         </div>
 
-        {/* Milestone progress */}
+        {/* Deal stage + Milestone editing */}
+        <div className="mt-3 bg-white rounded-[14px] p-5 border border-quatt-border-light">
+          {/* Deal stage dropdown */}
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-semibold text-sm tracking-[-0.04em]">Stage</h3>
+            <select
+              value={partner.deal_stage || "Lead"}
+              onChange={async (e) => {
+                const newStage = e.target.value;
+                const oldStage = partner.deal_stage;
+                setPartner({ ...partner, deal_stage: newStage });
+                try {
+                  const res = await apiFetch(`/api/partners/${id}`, {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ deal_stage: newStage }),
+                  });
+                  if (!res.ok) {
+                    setPartner({ ...partner, deal_stage: oldStage });
+                  }
+                } catch {
+                  setPartner({ ...partner, deal_stage: oldStage });
+                }
+              }}
+              className="text-sm bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-1.5 focus:border-quatt-orange focus:outline-none"
+            >
+              {["Lead", "Onboarding", "Active", "Inactive", "Lost"].map((s) => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Milestone checkboxes */}
+          <h3 className="font-semibold text-sm tracking-[-0.04em] mb-2">Onboarding</h3>
+          <div className="space-y-2">
+            {([
+              { field: "onboarding_agreement_signed", key: "agreement_signed", label: "Overeenkomst getekend" },
+              { field: "onboarding_training_booked", key: "training_booked", label: "Training ingepland" },
+              { field: "onboarding_training_completed", key: "training_completed", label: "Training afgerond" },
+              { field: "portal_access", key: "portal_access", label: "Portaal toegang" },
+              { field: "has_ordered", key: "has_ordered", label: "Eerste bestelling" },
+            ] as const).map(({ field, key, label }) => (
+              <label
+                key={field}
+                className="flex items-center gap-3 cursor-pointer group"
+              >
+                <input
+                  type="checkbox"
+                  checked={partner[key]}
+                  onChange={async (e) => {
+                    const newVal = e.target.checked;
+                    const oldPartner = { ...partner };
+                    setPartner({ ...partner, [key]: newVal });
+                    try {
+                      const res = await apiFetch(`/api/partners/${id}`, {
+                        method: "PATCH",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ [field]: newVal }),
+                      });
+                      if (!res.ok) {
+                        setPartner(oldPartner);
+                      }
+                    } catch {
+                      setPartner(oldPartner);
+                    }
+                  }}
+                  className="w-4 h-4 rounded border-gray-300 text-quatt-orange focus:ring-quatt-orange accent-quatt-orange"
+                />
+                <span className="text-sm text-quatt-ink group-hover:text-quatt-orange transition-colors">
+                  {label}
+                </span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Milestone progress (visual) */}
         <div className="mt-3">
           <MilestoneProgress partner={partner} />
         </div>

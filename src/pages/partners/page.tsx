@@ -3,6 +3,7 @@ import type { AmPartner, AmStats, MilestoneLevel } from "@/lib/partner-types";
 import { MILESTONE_SHORT } from "@/lib/partner-types";
 import { PartnerCard } from "@/components/shared/PartnerCard";
 import { StatsBar } from "@/components/shared/StatsBar";
+import { apiFetch } from "@/hooks/useAuth";
 
 type SortBy = "priority" | "milestone" | "newest" | "name";
 type FilterBy = "all" | "stuck" | "new" | "high" | MilestoneLevel;
@@ -18,7 +19,7 @@ export function PartnersPage() {
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch("/api/partners");
+        const res = await apiFetch("/api/partners");
         if (!res.ok) throw new Error("Failed to fetch");
         const data = await res.json();
         setPartners(data.partners);
